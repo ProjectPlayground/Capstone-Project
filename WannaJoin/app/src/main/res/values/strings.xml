@@ -6,4 +6,15 @@
     <string name="tab2title">Map</string>
     <string name="tab3title">Contacts</string>
     <string name="title_activity_new_event">New Event</string>
+    <string name="place_details">
+    <![CDATA[
+        <b>%1$s</b>
+        <br/>
+        Address: %2$s
+        <br/>
+        Phone: %3$s
+        <br/>
+        Website: %4$s
+    ]]>
+    </string>
 </resources>
