@@ -29,7 +29,7 @@ public class Util {
         String time = hourOfDay+":"+minute;
         Date utilDate=null;
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("H:m");
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
             utilDate = formatter.parse(time);
         } catch (ParseException e) {
             Log.d(LOG_TAG, e.toString());
