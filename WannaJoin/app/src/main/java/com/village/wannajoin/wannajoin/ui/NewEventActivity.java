@@ -1,40 +1,35 @@
 package com.village.wannajoin.wannajoin.ui;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
+import com.firebase.client.ServerValue;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.village.wannajoin.wannajoin.R;
+import com.village.wannajoin.wannajoin.model.Event;
+import com.village.wannajoin.wannajoin.util.Constants;
 import com.village.wannajoin.wannajoin.util.Util;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class NewEventActivity extends AppCompatActivity
         implements PlaceSelectionListener , DatePickerFragment.DateSelectedListener, TimePickerFragment.TimeSelectedListener {
@@ -46,6 +41,8 @@ public class NewEventActivity extends AppCompatActivity
     TextView mlocation;
     EditText mTitle;
     EditText mNotes;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +169,7 @@ public class NewEventActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
+            saveEvents();
             return true;
         }
 
@@ -184,5 +182,45 @@ public class NewEventActivity extends AppCompatActivity
             mStartTime.setText(Util.formatTime(hourOfDay,minute));
         if (viewId == R.id.event_end_time)
             mEndTime.setText(Util.formatTime(hourOfDay,minute));
+    }
+
+    public void saveEvents(){
+        String eventTitle = mTitle.getText().toString();
+        String eventOwner = "Anonymous Owner";
+        String eventNotes= mNotes.getText().toString();
+        String eventLocationName = mlocation.getText().toString();
+        long eventFrom = Util.getTimeStamp(mStartDate.getText().toString(), mStartTime.getText().toString());
+        long eventTo = Util.getTimeStamp(mEndDate.getText().toString(), mEndTime.getText().toString());
+
+        /**
+         * If EditText input is not empty
+         */
+        if (!eventTitle.equals("")) {
+
+            /**
+             * Create Firebase references
+             */
+            Firebase eventRef = new Firebase(Constants.FIREBASE_URL_USER_EVENTS);
+            Firebase newEventRef = eventRef.push();
+
+
+            final String eventId = newEventRef.getKey();
+
+            /**
+             * Set raw version of date to the ServerValue.TIMESTAMP value and save into
+             * timestampCreatedMap
+             */
+            HashMap<String, Object> timestampCreated = new HashMap<>();
+            timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+
+            Event newEvent = new Event(eventTitle, eventOwner, eventFrom, eventTo, timestampCreated);
+            newEvent.setLocation(eventLocationName);
+            newEvent.setNotes(eventNotes);
+
+            /* Add the shopping list */
+            newEventRef.setValue(newEvent);
+            finish();
+        }
     }
 }

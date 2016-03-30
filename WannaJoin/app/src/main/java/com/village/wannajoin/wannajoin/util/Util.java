@@ -38,4 +38,18 @@ public class Util {
         return  dateFormat.format(utilDate);
         //return time;
     }
+
+    public static long getTimeStamp(String date, String time){
+        String newDate = date +" "+ time;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MMM d, yyyy h:m a");
+        Date utilDate = null;
+        try {
+            utilDate = dateFormat.parse(newDate);
+        }catch (ParseException e){
+            Log.d(LOG_TAG, e.toString());
+        }
+
+        return utilDate.getTime();
+
+    }
 }
