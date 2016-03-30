@@ -41,7 +41,10 @@ public class NewEventActivity extends AppCompatActivity
     TextView mlocation;
     EditText mTitle;
     EditText mNotes;
-
+    static final String STATE_START_DATE = "startDate";
+    static final String STATE_START_TIME = "startTime";
+    static final String STATE_END_DATE = "endDate";
+    static final String STATE_END_TIME = "endTime";
 
 
     @Override
@@ -51,11 +54,11 @@ public class NewEventActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        initializeUI();
+        initializeUI(savedInstanceState);
 
     }
 
-    public void initializeUI(){
+    public void initializeUI(Bundle savedInstanceState){
 
         mTitle = (EditText)findViewById(R.id.event_title);
         mNotes = (EditText)findViewById(R.id.event_notes);
@@ -69,19 +72,27 @@ public class NewEventActivity extends AppCompatActivity
 
         //initialize date and time with current time
 
+
         mStartDate = (Button)findViewById(R.id.event_start_date);
         mEndDate = (Button)findViewById(R.id.event_end_date);
         mStartTime = (Button)findViewById(R.id.event_start_time);
         mEndTime = (Button)findViewById(R.id.event_end_time);
         mlocation = (TextView)findViewById(R.id.event_location);
-        final Calendar c = Calendar.getInstance();
+        if (savedInstanceState!=null){
+            mStartDate.setText(savedInstanceState.getString(STATE_START_DATE));
+            mStartTime.setText(savedInstanceState.getString(STATE_START_TIME));
+            mEndDate.setText(savedInstanceState.getString(STATE_END_DATE));
+            mEndTime.setText(savedInstanceState.getString(STATE_END_TIME));
+        }else {
+            final Calendar c = Calendar.getInstance();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MMM d, yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("h:m a");
-        mStartDate.setText(dateFormat.format(c.getTime()));
-        mEndDate.setText(dateFormat.format(c.getTime()));
-        mStartTime.setText(timeFormat.format(c.getTime()));
-        mEndTime.setText(timeFormat.format(c.getTime()));
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MMM d, yyyy");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("h:m a");
+            mStartDate.setText(dateFormat.format(c.getTime()));
+            mEndDate.setText(dateFormat.format(c.getTime()));
+            mStartTime.setText(timeFormat.format(c.getTime()));
+            mEndTime.setText(timeFormat.format(c.getTime()));
+        }
         // Retrieve the PlaceAutocompleteFragment.
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -222,5 +233,14 @@ public class NewEventActivity extends AppCompatActivity
             newEventRef.setValue(newEvent);
             finish();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(STATE_START_DATE,mStartDate.getText().toString());
+        outState.putString(STATE_START_TIME,mStartTime.getText().toString());
+        outState.putString(STATE_END_DATE,mEndDate.getText().toString());
+        outState.putString(STATE_END_TIME,mEndTime.getText().toString());
+        super.onSaveInstanceState(outState);
     }
 }
