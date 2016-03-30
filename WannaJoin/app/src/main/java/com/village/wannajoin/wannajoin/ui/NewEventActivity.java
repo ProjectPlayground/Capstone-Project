@@ -1,4 +1,4 @@
-package com.village.wannajoin.wannajoin;
+package com.village.wannajoin.wannajoin.ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -16,9 +16,12 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -27,6 +30,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.village.wannajoin.wannajoin.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,6 +42,8 @@ public class NewEventActivity extends AppCompatActivity implements PlaceSelectio
     Button mStartTime;
     Button mEndTime;
     TextView mlocation;
+    EditText mTitle;
+    EditText mNotes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,21 @@ public class NewEventActivity extends AppCompatActivity implements PlaceSelectio
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initializeUI();
+
+    }
+
+    public void initializeUI(){
+
+        mTitle = (EditText)findViewById(R.id.event_title);
+        mNotes = (EditText)findViewById(R.id.event_notes);
+
+        //to allow soft wrapping of text in multiple lines.
+        mTitle.setHorizontallyScrolling(false);
+        mTitle.setMaxLines(Integer.MAX_VALUE);
+        mNotes.setHorizontallyScrolling(false);
+        mNotes.setMaxLines(Integer.MAX_VALUE);
+
 
         //initialize date and time with current time
 
@@ -128,9 +149,6 @@ public class NewEventActivity extends AppCompatActivity implements PlaceSelectio
      */
     @Override
     public void onPlaceSelected(Place place) {
-        Log.d("RB",place.toString());
-       Log.d("RB", formatPlaceDetails(getResources(), place.getName(), place.getId(),
-               place.getAddress(), place.getPhoneNumber(), place.getWebsiteUri()).toString()) ;
 
         mlocation.setText(formatPlaceDetails(getResources(), place.getName(), place.getId(),
                 place.getAddress(), place.getPhoneNumber(), place.getWebsiteUri()).toString());
@@ -142,7 +160,6 @@ public class NewEventActivity extends AppCompatActivity implements PlaceSelectio
      */
     @Override
     public void onError(Status status) {
-        Log.d("RB", "onError: Status = " + status.toString());
 
         Toast.makeText(this, "Place selection failed: " + status.getStatusMessage(),
                 Toast.LENGTH_SHORT).show();
@@ -153,11 +170,32 @@ public class NewEventActivity extends AppCompatActivity implements PlaceSelectio
      */
     private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
                                               CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
-        Log.e("RB", res.getString(R.string.place_details, name, address, phoneNumber,
-                websiteUri));
+
         return Html.fromHtml(res.getString(R.string.place_details, name, address, phoneNumber,
                 websiteUri));
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_new_event, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_save) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

@@ -17,4 +17,7 @@
         Website: %4$s
     ]]>
     </string>
+    <string name="event_title_hint">Add title</string>
+    <string name="event_notes_hint">Add notes</string>
+    <string name="action_save">Save</string>
 </resources>
