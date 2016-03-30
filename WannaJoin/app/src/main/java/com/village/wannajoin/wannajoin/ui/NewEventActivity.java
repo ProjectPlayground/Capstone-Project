@@ -31,11 +31,13 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.village.wannajoin.wannajoin.R;
+import com.village.wannajoin.wannajoin.util.Util;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class NewEventActivity extends AppCompatActivity implements PlaceSelectionListener {
+public class NewEventActivity extends AppCompatActivity
+        implements PlaceSelectionListener , DatePickerFragment.DateSelectedListener, TimePickerFragment.TimeSelectedListener {
 
     Button mStartDate;
     Button mEndDate;
@@ -93,53 +95,31 @@ public class NewEventActivity extends AppCompatActivity implements PlaceSelectio
         autocompleteFragment.setOnPlaceSelectedListener(this);
     }
 
-    public static class TimePickerFragment extends DialogFragment
-            implements TimePickerDialog.OnTimeSetListener {
+    @Override
+    public void onDateSet(int viewId, int year, int month, int day) {
+        if (viewId == R.id.event_start_date)
+            mStartDate.setText(Util.formatDate(year,month,day));
+        if (viewId == R.id.event_end_date)
+            mEndDate.setText(Util.formatDate(year,month,day));
 
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-
-            // Create a new instance of TimePickerDialog and return it
-            return new TimePickerDialog(getActivity(), this, hour, minute,
-                    DateFormat.is24HourFormat(getActivity()));
-        }
-
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            // Do something with the time chosen by the user
-        }
     }
+
 
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new TimePickerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("view_id",v.getId() );
+        newFragment.setArguments(bundle);
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
-    public static class DatePickerFragment extends DialogFragment
-            implements DatePickerDialog.OnDateSetListener {
 
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            // Do something with the date chosen by the user
-        }
-    }
 
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("view_id",v.getId() );
+        newFragment.setArguments(bundle);
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
@@ -198,4 +178,11 @@ public class NewEventActivity extends AppCompatActivity implements PlaceSelectio
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onTimeSet(int viewId, int hourOfDay, int minute) {
+        if (viewId == R.id.event_start_time)
+            mStartTime.setText(Util.formatTime(hourOfDay,minute));
+        if (viewId == R.id.event_end_time)
+            mEndTime.setText(Util.formatTime(hourOfDay,minute));
+    }
 }
