@@ -20,8 +20,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.village.wannajoin.wannajoin.R;
+import com.village.wannajoin.wannajoin.model.Event;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EventFragment.OnListFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -142,6 +144,10 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            switch (position) {
+                case 0:
+                    return EventFragment.newInstance(1);
+            }
             return PlaceholderFragment.newInstance(position + 1);
         }
 
@@ -164,4 +170,10 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    @Override
+    public void onListFragmentInteraction(Event event) {
+
+    }
+
 }

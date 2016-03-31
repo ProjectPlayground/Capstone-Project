@@ -11,9 +11,7 @@ public class Constants {
      */
 
     public static final String FIREBASE_LOCATION_USER_EVENTS = "userEvents";
-
     public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
-
 
     public static final String FIREBASE_URL = BuildConfig.UNIQUE_FIREBASE_ROOT_URL;
     public static final String FIREBASE_URL_USER_EVENTS = FIREBASE_URL + "/" + FIREBASE_LOCATION_USER_EVENTS;
