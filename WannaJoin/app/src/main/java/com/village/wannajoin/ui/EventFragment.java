@@ -1,4 +1,4 @@
-package com.village.wannajoin.wannajoin.ui;
+package com.village.wannajoin.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.firebase.client.Firebase;
-import com.village.wannajoin.wannajoin.R;
-import com.village.wannajoin.wannajoin.model.Event;
-import com.village.wannajoin.wannajoin.util.Constants;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.village.wannajoin.R;
+import com.village.wannajoin.model.Event;
+import com.village.wannajoin.util.Constants;
 
 
 /**
@@ -29,7 +31,7 @@ public class EventFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    Firebase mRef;
+    DatabaseReference mRef;
     EventRecyclerViewAdapter mAdapter;
 
     /**
@@ -56,7 +58,7 @@ public class EventFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-        mRef = new Firebase(Constants.FIREBASE_URL_USER_EVENTS);
+        mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_USER_EVENTS);
     }
 
     @Override
@@ -75,7 +77,6 @@ public class EventFragment extends Fragment {
             }
 
             mAdapter = new EventRecyclerViewAdapter(Event.class, R.layout.fragment_event,EventRecyclerViewAdapter.ViewHolder.class,mRef);
-            //recyclerView.setAdapter(new MyEventRecyclerViewAdapter(DummyContent.ITEMS, mListener));
             recyclerView.setAdapter(mAdapter);
         }
         return view;

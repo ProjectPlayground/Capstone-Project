@@ -1,13 +1,13 @@
-package com.village.wannajoin.wannajoin.ui;
+package com.village.wannajoin.ui;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.firebase.client.Firebase;
-import com.firebase.ui.FirebaseRecyclerAdapter;
-import com.village.wannajoin.wannajoin.R;
-import com.village.wannajoin.wannajoin.model.Event;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.village.wannajoin.R;
+import com.village.wannajoin.model.Event;
 
 /**
  * Created by richa on 3/31/16.
@@ -15,7 +15,7 @@ import com.village.wannajoin.wannajoin.model.Event;
 public class EventRecyclerViewAdapter extends FirebaseRecyclerAdapter<Event, EventRecyclerViewAdapter.ViewHolder> {
 
 
-    public EventRecyclerViewAdapter(Class<Event> modelClass, int modelLayout, Class<ViewHolder> viewHolderClass, Firebase ref) {
+    public EventRecyclerViewAdapter(Class<Event> modelClass, int modelLayout, Class<ViewHolder> viewHolderClass, DatabaseReference ref) {
         super(modelClass, modelLayout, viewHolderClass, ref);
     }
 

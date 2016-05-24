@@ -1,4 +1,4 @@
-package com.village.wannajoin.wannajoin.util;
+package com.village.wannajoin.util;
 
 import android.util.Log;
 
@@ -34,14 +34,14 @@ public class Util {
         } catch (ParseException e) {
             Log.d(LOG_TAG, e.toString());
         }
-        SimpleDateFormat dateFormat = new SimpleDateFormat("h:m a");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
         return  dateFormat.format(utilDate);
         //return time;
     }
 
     public static long getTimeStamp(String date, String time){
         String newDate = date +" "+ time;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MMM d, yyyy h:m a");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MMM d, yyyy hh:mm a");
         Date utilDate = null;
         try {
             utilDate = dateFormat.parse(newDate);

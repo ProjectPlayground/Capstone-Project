@@ -1,4 +1,4 @@
-package com.village.wannajoin.wannajoin.ui;
+package com.village.wannajoin.ui;
 
 import android.app.Activity;
 import android.app.Dialog;

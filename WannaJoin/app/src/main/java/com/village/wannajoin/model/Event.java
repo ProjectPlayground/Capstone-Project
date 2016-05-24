@@ -1,7 +1,7 @@
-package com.village.wannajoin.wannajoin.model;
+package com.village.wannajoin.model;
 
-import com.firebase.client.ServerValue;
-import com.village.wannajoin.wannajoin.util.Constants;
+import com.google.firebase.database.ServerValue;
+import com.village.wannajoin.util.Constants;
 
 import java.util.HashMap;
 

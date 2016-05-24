@@ -1,4 +1,4 @@
-package com.village.wannajoin.wannajoin.ui;
+package com.village.wannajoin.ui;
 
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,16 +19,11 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-import com.firebase.client.AuthData;
-import com.firebase.client.Firebase;
-import com.firebase.ui.auth.core.AuthProviderType;
-import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
-import com.firebase.ui.auth.core.FirebaseLoginError;
-import com.village.wannajoin.wannajoin.R;
-import com.village.wannajoin.wannajoin.model.Event;
-import com.village.wannajoin.wannajoin.util.Constants;
 
-public class MainActivity extends FirebaseLoginBaseActivity implements EventFragment.OnListFragmentInteractionListener {
+import com.village.wannajoin.R;
+import com.village.wannajoin.model.Event;
+
+public class MainActivity extends AppCompatActivity implements EventFragment.OnListFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -40,7 +34,7 @@ public class MainActivity extends FirebaseLoginBaseActivity implements EventFrag
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      *
      */
-    Firebase mRef;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
@@ -78,29 +72,13 @@ public class MainActivity extends FirebaseLoginBaseActivity implements EventFrag
             }
         });
 
-        mRef= new Firebase(Constants.FIREBASE_URL);
 
 
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        setEnabledAuthProvider(AuthProviderType.GOOGLE);
 
     }
 
-    @Override
-    protected void onFirebaseLoggedIn(AuthData authData) {
-        super.onFirebaseLoggedIn(authData);
-    }
 
-    @Override
-    protected void onFirebaseLoggedOut() {
-        super.onFirebaseLoggedOut();
-        showFirebaseLoginPrompt();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -124,21 +102,7 @@ public class MainActivity extends FirebaseLoginBaseActivity implements EventFrag
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected Firebase getFirebaseRef() {
 
-        return mRef;
-    }
-
-    @Override
-    protected void onFirebaseLoginProviderError(FirebaseLoginError firebaseLoginError) {
-
-    }
-
-    @Override
-    protected void onFirebaseLoginUserError(FirebaseLoginError firebaseLoginError) {
-
-    }
 
 
     /**

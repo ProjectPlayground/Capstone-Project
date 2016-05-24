@@ -1,4 +1,4 @@
-package com.village.wannajoin.wannajoin.ui;
+package com.village.wannajoin.ui;
 
 import android.content.res.Resources;
 import android.net.Uri;
@@ -16,16 +16,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.Firebase;
-import com.firebase.client.ServerValue;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.village.wannajoin.wannajoin.R;
-import com.village.wannajoin.wannajoin.model.Event;
-import com.village.wannajoin.wannajoin.util.Constants;
-import com.village.wannajoin.wannajoin.util.Util;
+import com.village.wannajoin.R;
+import com.village.wannajoin.model.Event;
+import com.village.wannajoin.util.Constants;
+import com.village.wannajoin.util.Util;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -212,8 +214,8 @@ public class NewEventActivity extends AppCompatActivity
             /**
              * Create Firebase references
              */
-            Firebase eventRef = new Firebase(Constants.FIREBASE_URL_USER_EVENTS);
-            Firebase newEventRef = eventRef.push();
+            DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_USER_EVENTS);
+            DatabaseReference newEventRef = eventRef.push();
 
 
             final String eventId = newEventRef.getKey();

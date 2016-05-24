@@ -1,4 +1,4 @@
-package com.village.wannajoin.wannajoin;
+package com.village.wannajoin;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

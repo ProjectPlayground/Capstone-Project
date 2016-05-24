@@ -1,6 +1,5 @@
-package com.village.wannajoin.wannajoin;
+package com.village.wannajoin;
 
-import com.firebase.client.Firebase;
 
 /**
  * Created by richa on 3/29/16.
@@ -14,7 +13,7 @@ public class WannaJoinApplication extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         /* Initialize Firebase */
-        Firebase.setAndroidContext(this);
+        //Firebase.setAndroidContext(this);
         /* Enable disk persistence  */
         //Firebase.getDefaultConfig().setPersistenceEnabled(true);
     }
