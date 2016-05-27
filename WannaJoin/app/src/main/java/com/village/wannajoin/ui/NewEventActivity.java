@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
@@ -200,7 +201,7 @@ public class NewEventActivity extends AppCompatActivity
 
     public void saveEvents(){
         String eventTitle = mTitle.getText().toString();
-        String eventOwner = "Anonymous Owner";
+        String eventOwner = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String eventNotes= mNotes.getText().toString();
         String eventLocationName = mlocation.getText().toString();
         long eventFrom = Util.getTimeStamp(mStartDate.getText().toString(), mStartTime.getText().toString());
@@ -214,7 +215,7 @@ public class NewEventActivity extends AppCompatActivity
             /**
              * Create Firebase references
              */
-            DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_USER_EVENTS);
+            DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_USER_EVENTS).child(eventOwner);
             DatabaseReference newEventRef = eventRef.push();
 
 

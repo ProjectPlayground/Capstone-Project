@@ -1,6 +1,7 @@
 package com.village.wannajoin.ui;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +22,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Event;
 
@@ -36,20 +41,22 @@ public class MainActivity extends AppCompatActivity implements EventFragment.OnL
      */
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "Inside onCreate");
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -73,11 +80,7 @@ public class MainActivity extends AppCompatActivity implements EventFragment.OnL
         });
 
 
-
-
-
     }
-
 
 
     @Override
@@ -98,6 +101,20 @@ public class MainActivity extends AppCompatActivity implements EventFragment.OnL
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_signout) {
+            AuthUI.getInstance()
+                    .signOut(this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        public void onComplete(@NonNull Task<Void> task) {
+                            // user is now signed out
+                            Intent i = new Intent(MainActivity.this, WelcomeActivity.class);
+                            startActivity(i);
+                            finish();
+                        }
+                    });
+            return true;
+        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -185,5 +202,7 @@ public class MainActivity extends AppCompatActivity implements EventFragment.OnL
     public void onListFragmentInteraction(Event event) {
 
     }
+
+
 
 }
