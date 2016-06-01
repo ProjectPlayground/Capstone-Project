@@ -10,6 +10,7 @@ public class Constants {
 
     public static final String FIREBASE_LOCATION_USER_EVENTS = "userEvents";
     public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
+    public static final String FIREBASE_LOCATION_USERS = "users";
 
 }
 
