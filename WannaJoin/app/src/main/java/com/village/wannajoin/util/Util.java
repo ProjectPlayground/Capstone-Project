@@ -52,4 +52,20 @@ public class Util {
         return utilDate.getTime();
 
     }
+
+    public static String getDateFromTimeStamp(long timeStamp){
+        Date date = new Date(timeStamp);
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        return formatter.format(date);
+
+    }
+
+    public static String getTimeFromTimeStamp(long timeStamp){
+        Date date = new Date(timeStamp);
+        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+        return formatter.format(date);
+
+    }
+
+
 }

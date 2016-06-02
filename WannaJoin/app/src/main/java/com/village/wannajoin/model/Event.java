@@ -1,5 +1,7 @@
 package com.village.wannajoin.model;
 
+import android.net.Uri;
+
 import com.google.firebase.database.ServerValue;
 import com.village.wannajoin.util.Constants;
 
@@ -11,7 +13,9 @@ import java.util.HashMap;
 public class Event {
     private String title;
     private String location;
-    private String owner;
+    private String ownerId;
+    private String ownerName;
+    private Uri ownerPhotoUrl;
     private long fromTime;
     private long toTime;
     private String notes;
@@ -21,9 +25,11 @@ public class Event {
     public Event() {
     }
 
-    public Event(String title, String owner,  long fromTime, long toTime, HashMap<String, Object> timestampCreated) {
+    public Event(String title, String ownerId, String ownerName, Uri ownerPhotoUrl, long fromTime, long toTime, HashMap<String, Object> timestampCreated) {
         this.title = title;
-        this.owner = owner;
+        this.ownerId = ownerId;
+        this.ownerName = ownerName;
+        this.ownerPhotoUrl = ownerPhotoUrl;
         this.fromTime = fromTime;
         this.toTime = toTime;
         this.timestampCreated = timestampCreated;
@@ -83,12 +89,16 @@ public class Event {
         this.timestampLastChanged = timestampLastChanged;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public Uri getOwnerPhotoUrl() {
+        return ownerPhotoUrl;
     }
 
     public HashMap<String, Object> getTimestampCreated() {

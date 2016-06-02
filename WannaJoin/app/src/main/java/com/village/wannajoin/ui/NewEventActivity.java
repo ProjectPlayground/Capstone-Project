@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
@@ -90,7 +91,7 @@ public class NewEventActivity extends AppCompatActivity
             final Calendar c = Calendar.getInstance();
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MMM d, yyyy");
-            SimpleDateFormat timeFormat = new SimpleDateFormat("h:m a");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
             mStartDate.setText(dateFormat.format(c.getTime()));
             mEndDate.setText(dateFormat.format(c.getTime()));
             mStartTime.setText(timeFormat.format(c.getTime()));
@@ -99,7 +100,7 @@ public class NewEventActivity extends AppCompatActivity
         // Retrieve the PlaceAutocompleteFragment.
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-        autocompleteFragment.setHint("Search location");
+        autocompleteFragment.setHint(getString(R.string.hint_search_location));
 
         // Register a listener to receive callbacks when a place has been selected or an error has
         // occurred.
@@ -201,7 +202,7 @@ public class NewEventActivity extends AppCompatActivity
 
     public void saveEvents(){
         String eventTitle = mTitle.getText().toString();
-        String eventOwner = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String eventNotes= mNotes.getText().toString();
         String eventLocationName = mlocation.getText().toString();
         long eventFrom = Util.getTimeStamp(mStartDate.getText().toString(), mStartTime.getText().toString());
@@ -215,7 +216,7 @@ public class NewEventActivity extends AppCompatActivity
             /**
              * Create Firebase references
              */
-            DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_USER_EVENTS).child(eventOwner);
+            DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_USER_EVENTS).child(firebaseUser.getUid());
             DatabaseReference newEventRef = eventRef.push();
 
 
@@ -229,7 +230,7 @@ public class NewEventActivity extends AppCompatActivity
             timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
 
 
-            Event newEvent = new Event(eventTitle, eventOwner, eventFrom, eventTo, timestampCreated);
+            Event newEvent = new Event(eventTitle, firebaseUser.getUid(), firebaseUser.getDisplayName(),firebaseUser.getPhotoUrl(), eventFrom, eventTo, timestampCreated);
             newEvent.setLocation(eventLocationName);
             newEvent.setNotes(eventNotes);
 

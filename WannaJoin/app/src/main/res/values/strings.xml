@@ -22,4 +22,7 @@
     <string name="event_notes_hint">Add notes</string>
     <string name="action_save">Save</string>
     <string name="signin_button">Sign In</string>
+    <string name="hint_search_location">Search location</string>
+    <string name="text_after_event_title">" at"</string>
+    <string name="text_after_event_owner">" is going to"</string>
 </resources>
