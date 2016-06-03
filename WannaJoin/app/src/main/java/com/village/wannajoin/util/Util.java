@@ -67,5 +67,20 @@ public class Util {
 
     }
 
+    public static String capitalizeWords(String s){
+        String[] sa = s.split(" ");
+        StringBuilder sb = new StringBuilder();
+        int i=0;
+        for(i=0;i<sa.length-1;i++){
+            if (!sa[i].equals("")){
+                sb.append(sa[i].substring(0,1).toUpperCase()+sa[i].substring(1)+" ");
+            }
+        }
+        if (!sa[i].equals("")){
+            sb.append(sa[i].substring(0,1).toUpperCase()+sa[i].substring(1));
+        }
+        return sb.toString();
+    }
+
 
 }

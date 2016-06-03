@@ -30,9 +30,13 @@ public class EventRecyclerViewAdapter extends FirebaseRecyclerAdapter<Event, Eve
     @Override
     protected void populateViewHolder(ViewHolder viewHolder, Event event, int i) {
 
-        viewHolder.mTitleView.setText(event.getTitle()+ mContext.getString(R.string.text_after_event_title));
+        viewHolder.mTitleView.setText(event.getTitle());
+       // viewHolder.mTitleTemp.setText(mContext.getString(R.string.text_after_event_title));
         viewHolder.mLocationView.setText(event.getLocation());
-        viewHolder.mOwner.setText(event.getOwnerName()+ mContext.getString(R.string.text_after_event_owner));
+        String owner = event.getOwnerName();
+        //viewHolder.mOwner.setText(owner.substring(0,1).toUpperCase()+owner.substring(1));
+        viewHolder.mOwner.setText(Util.capitalizeWords(owner));
+        //viewHolder.mOwnerTemp.setText(mContext.getString(R.string.text_after_event_owner));
         if (event.getOwnerPhotoUrl() == null) {
             viewHolder.messengerImageView
                     .setImageDrawable(ContextCompat
@@ -45,12 +49,13 @@ public class EventRecyclerViewAdapter extends FirebaseRecyclerAdapter<Event, Eve
         }
         viewHolder.mDate.setText(Util.getDateFromTimeStamp(event.getFromTime()));
         viewHolder.mTime.setText(Util.getTimeFromTimeStamp(event.getFromTime()));
-
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public TextView mOwner;
+        //public TextView mOwnerTemp;
         public TextView mTitleView;
+        //public TextView mTitleTemp;
         public TextView mLocationView;
         public CircleImageView messengerImageView;
         public TextView mDate;
@@ -63,6 +68,8 @@ public class EventRecyclerViewAdapter extends FirebaseRecyclerAdapter<Event, Eve
             messengerImageView = (CircleImageView) itemView.findViewById(R.id.messengerImageView);
             mDate = (TextView) view.findViewById(R.id.date);
             mTime = (TextView) view.findViewById(R.id.time);
+           // mOwnerTemp = (TextView) view.findViewById(R.id.owner_temp);
+           // mTitleTemp = (TextView) view.findViewById(R.id.title_temp);
         }
     }
 }

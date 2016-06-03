@@ -25,4 +25,5 @@
     <string name="hint_search_location">Search location</string>
     <string name="text_after_event_title">" at"</string>
     <string name="text_after_event_owner">" is going to"</string>
+    <string name="join_button_text">Join</string>
 </resources>

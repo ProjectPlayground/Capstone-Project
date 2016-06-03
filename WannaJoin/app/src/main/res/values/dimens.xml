@@ -13,4 +13,8 @@
     <dimen name="event_view_top_margin">8dp</dimen>
     <dimen name="date_notes_icon_top_margin">10dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="std_margin">16dp</dimen>
+    <dimen name="std_margin_list">8dp</dimen>
+    <dimen name="primary_text_size">16sp</dimen>
+    <dimen name="secondary_text_size">14sp</dimen>
 </resources>

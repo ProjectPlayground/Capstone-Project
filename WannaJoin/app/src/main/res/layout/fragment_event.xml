@@ -2,34 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/std_margin"
+    android:layout_marginStart="@dimen/std_margin"
+    android:layout_marginRight="@dimen/std_margin"
+    android:layout_marginEnd="@dimen/std_margin"
+    android:layout_marginTop="@dimen/std_margin_list"
+    android:layout_marginBottom="@dimen/std_margin_list"
     android:orientation="horizontal">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/messengerImageView"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="left"
         android:src = "@drawable/ic_account_circle_black_48dp"/>
     <LinearLayout
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/std_margin"
+        android:layout_marginStart="@dimen/std_margin"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/owner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-             />
+            android:textSize="@dimen/primary_text_size"
+            android:textColor="@color/bodyTextColor"
+            android:singleLine="true"
+            android:ellipsize="end"
+            />
+
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-             />
+            android:textSize="@dimen/secondary_text_size"
+            android:singleLine="true"
+            android:textColor="@color/bodyTextColor"
+            android:ellipsize="end" />
 
         <TextView
             android:id="@+id/location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/secondary_text_size"
+            android:singleLine="true"
+            android:ellipsize="end"
              />
 
     </LinearLayout>
@@ -43,13 +63,23 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
             />
 
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
             />
+        <Button
+            android:id="@+id/join_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/join_button_text"
+            android:textColor="@color/colorPrimary"
+            style="?attr/borderlessButtonStyle"/>
 
     </LinearLayout>
 
