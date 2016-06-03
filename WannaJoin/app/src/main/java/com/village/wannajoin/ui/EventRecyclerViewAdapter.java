@@ -49,6 +49,7 @@ public class EventRecyclerViewAdapter extends FirebaseRecyclerAdapter<Event, Eve
         }
         viewHolder.mDate.setText(Util.getDateFromTimeStamp(event.getFromTime()));
         viewHolder.mTime.setText(Util.getTimeFromTimeStamp(event.getFromTime()));
+        viewHolder.mPeople.setText("+5 going");
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -57,6 +58,7 @@ public class EventRecyclerViewAdapter extends FirebaseRecyclerAdapter<Event, Eve
         public TextView mTitleView;
         //public TextView mTitleTemp;
         public TextView mLocationView;
+        public TextView mPeople;
         public CircleImageView messengerImageView;
         public TextView mDate;
         public TextView mTime;
@@ -70,6 +72,7 @@ public class EventRecyclerViewAdapter extends FirebaseRecyclerAdapter<Event, Eve
             mTime = (TextView) view.findViewById(R.id.time);
            // mOwnerTemp = (TextView) view.findViewById(R.id.owner_temp);
            // mTitleTemp = (TextView) view.findViewById(R.id.title_temp);
+            mPeople = (TextView) view.findViewById(R.id.people_going);
         }
     }
 }

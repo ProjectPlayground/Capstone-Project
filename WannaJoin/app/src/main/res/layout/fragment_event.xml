@@ -51,6 +51,16 @@
             android:singleLine="true"
             android:ellipsize="end"
              />
+        <TextView
+            android:id="@+id/people_going"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="@dimen/secondary_text_size"
+            android:textStyle="italic"
+            android:singleLine="true"
+            android:ellipsize="end"
+            />
 
     </LinearLayout>
 
@@ -79,7 +89,7 @@
             android:layout_gravity="right"
             android:text="@string/join_button_text"
             android:textColor="@color/colorPrimary"
-            style="?attr/borderlessButtonStyle"/>
+            />
 
     </LinearLayout>
 
