@@ -72,7 +72,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     HashMap<String, Object> timestampJoined = new HashMap<>();
                     timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
 
-                    User newUser = new User(firebaseUser.getDisplayName(), firebaseUser.getEmail(), firebaseUser.getPhotoUrl(),timestampJoined);
+                    User newUser = new User(firebaseUser.getDisplayName(), firebaseUser.getUid(),firebaseUser.getEmail(), firebaseUser.getPhotoUrl(),timestampJoined);
                     userLocation.setValue(newUser);
                 }
             }

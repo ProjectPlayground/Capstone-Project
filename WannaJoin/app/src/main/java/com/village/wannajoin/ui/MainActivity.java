@@ -98,6 +98,11 @@ public class MainActivity extends AppCompatActivity implements EventFragment.OnL
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
+        if(id == R.id.new_group){
+            Intent i = new Intent(this,NewGroupActivity.class);
+            startActivity(i);
+            return true;
+        }
         if (id == R.id.action_settings) {
             return true;
         }
