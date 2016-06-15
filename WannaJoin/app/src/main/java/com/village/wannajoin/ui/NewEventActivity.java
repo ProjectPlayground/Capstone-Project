@@ -200,7 +200,7 @@ public class NewEventActivity extends AppCompatActivity
             mEndTime.setText(Util.formatTime(hourOfDay,minute));
     }
 
-    public void saveEvents(){
+    private void saveEvents(){
         String eventTitle = mTitle.getText().toString();
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String eventNotes= mNotes.getText().toString();

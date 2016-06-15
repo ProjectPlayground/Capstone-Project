@@ -32,4 +32,7 @@
     <string name="search_contact_hint">Type contact email here</string>
     <string name="group_name_hint">Type group name here</string>
     <string name="button_group_member_add">Add</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -19,19 +19,14 @@ import com.village.wannajoin.model.Event;
 import com.village.wannajoin.util.Constants;
 
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
+
 public class EventFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
+   // private OnListFragmentInteractionListener mListener;
     DatabaseReference mRef;
     EventRecyclerViewAdapter mAdapter;
 
@@ -87,7 +82,7 @@ public class EventFragment extends Fragment {
     }
 
 
-    @Override
+  /*  @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
@@ -102,7 +97,7 @@ public class EventFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
+    }*/
 
     /**
      * This interface must be implemented by activities that contain this
@@ -114,10 +109,10 @@ public class EventFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+   /* public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Event event);
-    }
+    }*/
 
     @Override
     public void onDestroy() {

@@ -28,7 +28,7 @@ import com.google.android.gms.tasks.Task;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Event;
 
-public class MainActivity extends AppCompatActivity implements EventFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity  {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -179,14 +179,16 @@ public class MainActivity extends AppCompatActivity implements EventFragment.OnL
             switch (position) {
                 case 0:
                     return EventFragment.newInstance(1);
+                case 1:
+                    return ContactFragment.newInstance(1);
             }
             return PlaceholderFragment.newInstance(position + 1);
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+
+            return 2;
         }
 
         @Override
@@ -195,18 +197,12 @@ public class MainActivity extends AppCompatActivity implements EventFragment.OnL
                 case 0:
                     return getString(R.string.tab1title);
                 case 1:
-                    return getString(R.string.tab2title);
-                case 2:
                     return getString(R.string.tab3title);
             }
             return null;
         }
     }
 
-    @Override
-    public void onListFragmentInteraction(Event event) {
-
-    }
 
 
 
