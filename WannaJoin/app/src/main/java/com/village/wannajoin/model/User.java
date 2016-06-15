@@ -1,9 +1,10 @@
 package com.village.wannajoin.model;
 
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.firebase.database.ServerValue;
 
 import java.util.HashMap;
 
@@ -12,8 +13,8 @@ import java.util.HashMap;
  */
 public class User implements Parcelable{
     private String name;
-    private String userId;
     private String email;
+    private String userId;
     private Uri photoUrl;
     private HashMap<String, Object> timestampJoined;
 
@@ -42,9 +43,9 @@ public class User implements Parcelable{
 
     protected User(Parcel in) {
         name = in.readString();
-        userId = in.readString();
         email = in.readString();
-        timestampJoined = in.readBundle().getParcelable("timestamp");
+        userId = in.readString();
+        timestampJoined = in.readHashMap(ServerValue.class.getClassLoader());
         photoUrl = in.readParcelable(Uri.class.getClassLoader());
     }
 
@@ -89,11 +90,9 @@ public class User implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeString(userId);
         dest.writeString(email);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("timestamp", (Parcelable) timestampJoined);
-        dest.writeBundle(bundle);
+        dest.writeString(userId);
+        dest.writeMap(timestampJoined);
         dest.writeParcelable(photoUrl,0);
 
     }
