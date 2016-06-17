@@ -1,30 +1,39 @@
 package com.village.wannajoin.ui;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.village.wannajoin.R;
+import com.village.wannajoin.model.Group;
+import com.village.wannajoin.model.User;
+import com.village.wannajoin.util.Constants;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ContactFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ContactFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ContactFragment extends Fragment {
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    DatabaseReference mRef;
+    Query mGroupRef;
+    Query mContactRef;
+    GroupRecyclerViewAdapter mGroupsAdapter;
+    ContactRecyclerViewAdapter mContactsAdapter;
 
     //private OnFragmentInteractionListener mListener;
 
@@ -55,13 +64,44 @@ public class ContactFragment extends Fragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 
         }
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mGroupRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUPS).orderByChild("groupMembers/"+currentUserId).equalTo(true);
+        mContactRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_USERS).orderByChild("contactOf/"+currentUserId).equalTo(true);
+        setHasOptionsMenu(true);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_contact, container, false);
+        View view = inflater.inflate(R.layout.fragment_contact, container, false);
+        Context context = view.getContext();
+        RecyclerView groupRecyclerView = (RecyclerView) view.findViewById(R.id.group_list);
+        if (mColumnCount <= 1) {
+            groupRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            groupRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+        }
+
+        groupRecyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
+
+        mGroupsAdapter = new GroupRecyclerViewAdapter(Group.class, R.layout.group_list_item,GroupRecyclerViewAdapter.ViewHolder.class,mGroupRef, getContext());
+        groupRecyclerView.setAdapter(mGroupsAdapter);
+
+        RecyclerView contactRecyclerView = (RecyclerView) view.findViewById(R.id.contact_list);
+        if (mColumnCount <= 1) {
+            contactRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            contactRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+        }
+
+        contactRecyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
+
+        mContactsAdapter= new ContactRecyclerViewAdapter(User.class, R.layout.contact_list_item,ContactRecyclerViewAdapter.ViewHolder.class,mContactRef, getContext());
+        contactRecyclerView.setAdapter(mContactsAdapter);
+
+        return view;
     }
 
 
@@ -97,4 +137,44 @@ public class ContactFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }*/
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_contact_fragment,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if(id == R.id.new_contact){
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+
+            // Create and show the dialog.
+            DialogFragment newFragment = NewContactDialogFragment.newInstance();
+            newFragment.show(ft, "dialog");
+            return true;
+        }
+
+        if(id == R.id.new_group){
+            Intent i = new Intent(getActivity(),NewGroupActivity.class);
+            startActivity(i);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mGroupsAdapter.cleanup();
+        mContactsAdapter.cleanup();
+    }
 }

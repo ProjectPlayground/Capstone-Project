@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity  {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private FloatingActionButton mFab;
+    private int mTabNumber;
 
 
     @Override
@@ -68,14 +72,39 @@ public class MainActivity extends AppCompatActivity  {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if(position==0)
+                    mFab.setImageResource(R.drawable.ic_add_white_24dp);
+                else if(position ==1)
+                    mFab.setImageResource(R.drawable.ic_person_add_white_24dp);
+            }
+        };
+        mViewPager.addOnPageChangeListener(pageChangeListener);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
-                Intent i = new Intent(MainActivity.this, NewEventActivity.class);
-                startActivity(i);
+                if (mViewPager.getCurrentItem() ==0) {
+                    Intent i = new Intent(MainActivity.this, NewEventActivity.class);
+                    startActivity(i);
+                }else if(mViewPager.getCurrentItem() ==1){
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+                    if (prev != null) {
+                        ft.remove(prev);
+                    }
+                    ft.addToBackStack(null);
+
+                    // Create and show the dialog.
+                    DialogFragment newFragment = NewContactDialogFragment.newInstance();
+                    newFragment.show(ft, "dialog");
+
+                }
             }
         });
 
@@ -98,11 +127,7 @@ public class MainActivity extends AppCompatActivity  {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id == R.id.new_group){
-            Intent i = new Intent(this,NewGroupActivity.class);
-            startActivity(i);
-            return true;
-        }
+
         if (id == R.id.action_settings) {
             return true;
         }

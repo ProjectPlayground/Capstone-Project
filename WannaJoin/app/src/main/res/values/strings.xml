@@ -35,4 +35,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="group_list_label">Groups</string>
+    <string name="contacts_list_label">Contacts</string>
+    <string name="new_contact_menu_label">New Contact</string>
 </resources>

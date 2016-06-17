@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:paddingBottom="@dimen/std_margin"
+    android:paddingLeft="@dimen/std_margin"
+    android:paddingStart="@dimen/std_margin"
+    android:paddingRight="@dimen/std_margin"
+    android:paddingEnd="@dimen/std_margin"
+    android:paddingTop="@dimen/std_margin">
+    <EditText
+        android:id="@+id/edit_text_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/search_contact_hint"
+        android:imeOptions="actionDone"
+        android:inputType="textEmailAddress"
+        />
+
+</LinearLayout>

@@ -18,6 +18,7 @@ public class User implements Parcelable{
     private Uri photoUrl;
     private HashMap<String, Object> timestampJoined;
     private HashMap<String,Boolean> groups;
+    private HashMap<String,Boolean> contactOf;
 
 
     /**
@@ -48,6 +49,7 @@ public class User implements Parcelable{
         userId = in.readString();
         timestampJoined = in.readHashMap(ServerValue.class.getClassLoader());
         groups = in.readHashMap(Boolean.class.getClassLoader());
+        contactOf = in.readHashMap(Boolean.class.getClassLoader());
         photoUrl = in.readParcelable(Uri.class.getClassLoader());
     }
 
@@ -83,7 +85,13 @@ public class User implements Parcelable{
         return userId;
     }
 
+    public HashMap<String, Boolean> getGroups() {
+        return groups;
+    }
 
+    public HashMap<String, Boolean> getContactOf() {
+        return contactOf;
+    }
 
     @Override
     public int describeContents() {
@@ -97,6 +105,7 @@ public class User implements Parcelable{
         dest.writeString(userId);
         dest.writeMap(timestampJoined);
         dest.writeMap(groups);
+        dest.writeMap(contactOf);
         dest.writeParcelable(photoUrl,0);
 
     }
