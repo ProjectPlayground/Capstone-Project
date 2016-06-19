@@ -11,6 +11,7 @@ import java.util.HashMap;
  * Created by richa on 3/29/16.
  */
 public class Event {
+    private String eventId;
     private String title;
     private String location;
     private String ownerId;
@@ -21,11 +22,13 @@ public class Event {
     private String notes;
     private HashMap<String, Object> timestampLastChanged;
     private HashMap<String, Object> timestampCreated;
+    private HashMap<String,Boolean> eventMembers;
 
     public Event() {
     }
 
-    public Event(String title, String ownerId, String ownerName, Uri ownerPhotoUrl, long fromTime, long toTime, HashMap<String, Object> timestampCreated) {
+    public Event(String eventId, String title, String ownerId, String ownerName, Uri ownerPhotoUrl, long fromTime, long toTime, HashMap<String, Object> timestampCreated, HashMap<String,Boolean> eventMembers) {
+        this.eventId = eventId;
         this.title = title;
         this.ownerId = ownerId;
         this.ownerName = ownerName;
@@ -36,6 +39,7 @@ public class Event {
         HashMap<String, Object> timestampNowObject = new HashMap<String, Object>();
         timestampNowObject.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
         this.timestampLastChanged = timestampNowObject;
+        this.eventMembers =eventMembers;
 
     }
 
@@ -103,5 +107,13 @@ public class Event {
 
     public HashMap<String, Object> getTimestampCreated() {
         return timestampCreated;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public HashMap<String, Boolean> getEventMembers() {
+        return eventMembers;
     }
 }

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Event;
 import com.village.wannajoin.util.Util;
@@ -22,7 +22,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class EventRecyclerViewAdapter extends FirebaseRecyclerAdapter<Event, EventRecyclerViewAdapter.ViewHolder> {
 
     private Context mContext;
-    public EventRecyclerViewAdapter(Class<Event> modelClass, int modelLayout, Class<ViewHolder> viewHolderClass, DatabaseReference ref, Context context) {
+    public EventRecyclerViewAdapter(Class<Event> modelClass, int modelLayout, Class<ViewHolder> viewHolderClass, Query ref, Context context) {
         super(modelClass, modelLayout, viewHolderClass, ref);
         this.mContext = context;
     }

@@ -1,6 +1,10 @@
 package com.village.wannajoin.util;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -80,6 +84,15 @@ public class Util {
             sb.append(sa[i].substring(0,1).toUpperCase()+sa[i].substring(1));
         }
         return sb.toString();
+    }
+
+    public static void hideSoftKeyBoard(Activity activity){
+        View view = activity.getCurrentFocus();
+
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
 

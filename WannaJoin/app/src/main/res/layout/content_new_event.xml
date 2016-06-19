@@ -173,7 +173,40 @@
             </LinearLayout>
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/event_view_top_margin"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="@dimen/event_icons_dimen"
+                android:layout_height="@dimen/event_icons_dimen"
+                android:layout_marginTop="@dimen/date_notes_icon_top_margin"
+                android:src="@drawable/ic_group_black_36dp"
+                android:tint="@color/colorPrimary"
+                />
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/event_icon_text_gap"
+                android:layout_marginLeft="@dimen/event_icon_text_gap"
+                android:orientation="vertical">
+                <EditText
+                    android:id="@+id/event_member"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:minHeight="@dimen/edit_text_min_height"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:hint="@string/event_share_hint"
+                    android:background="@android:color/transparent"/>
+
+                <View style="@style/Divider"/>
+            </LinearLayout>
+
+        </LinearLayout>
 
 
     </LinearLayout>

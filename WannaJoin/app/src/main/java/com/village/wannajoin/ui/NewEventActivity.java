@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -105,6 +104,16 @@ public class NewEventActivity extends AppCompatActivity
         // Register a listener to receive callbacks when a place has been selected or an error has
         // occurred.
         autocompleteFragment.setOnPlaceSelectedListener(this);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(STATE_START_DATE,mStartDate.getText().toString());
+        outState.putString(STATE_START_TIME,mStartTime.getText().toString());
+        outState.putString(STATE_END_DATE,mEndDate.getText().toString());
+        outState.putString(STATE_END_TIME,mEndTime.getText().toString());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -216,7 +225,7 @@ public class NewEventActivity extends AppCompatActivity
             /**
              * Create Firebase references
              */
-            DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_USER_EVENTS).child(firebaseUser.getUid());
+            DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS);
             DatabaseReference newEventRef = eventRef.push();
 
 
@@ -228,9 +237,10 @@ public class NewEventActivity extends AppCompatActivity
              */
             HashMap<String, Object> timestampCreated = new HashMap<>();
             timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+            HashMap<String,Boolean> eventMembers = new HashMap<>();
+            eventMembers.put(firebaseUser.getUid(),true);
 
-
-            Event newEvent = new Event(eventTitle, firebaseUser.getUid(), firebaseUser.getDisplayName(),firebaseUser.getPhotoUrl(), eventFrom, eventTo, timestampCreated);
+            Event newEvent = new Event(eventId,eventTitle, firebaseUser.getUid(), firebaseUser.getDisplayName(),firebaseUser.getPhotoUrl(), eventFrom, eventTo, timestampCreated,eventMembers);
             newEvent.setLocation(eventLocationName);
             newEvent.setNotes(eventNotes);
 
@@ -240,12 +250,5 @@ public class NewEventActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(STATE_START_DATE,mStartDate.getText().toString());
-        outState.putString(STATE_START_TIME,mStartTime.getText().toString());
-        outState.putString(STATE_END_DATE,mEndDate.getText().toString());
-        outState.putString(STATE_END_TIME,mEndTime.getText().toString());
-        super.onSaveInstanceState(outState);
-    }
+
 }

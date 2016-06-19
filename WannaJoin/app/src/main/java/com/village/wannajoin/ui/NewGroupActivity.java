@@ -31,6 +31,7 @@ import com.village.wannajoin.R;
 import com.village.wannajoin.model.Group;
 import com.village.wannajoin.model.User;
 import com.village.wannajoin.util.Constants;
+import com.village.wannajoin.util.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,7 +114,7 @@ public class NewGroupActivity extends AppCompatActivity {
                             groupMemberAdapter.notifyDataSetChanged();
                         }
                         mContactEmail.setText("");
-                        hideSoftKeyBoard();
+                        Util.hideSoftKeyBoard(NewGroupActivity.this);
                     }
 
                 }
@@ -126,13 +127,6 @@ public class NewGroupActivity extends AppCompatActivity {
         });
     }
 
-    private void hideSoftKeyBoard(){
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

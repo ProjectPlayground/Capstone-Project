@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Event;
 import com.village.wannajoin.util.Constants;
@@ -27,7 +27,7 @@ public class EventFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
    // private OnListFragmentInteractionListener mListener;
-    DatabaseReference mRef;
+    Query mRef;
     EventRecyclerViewAdapter mAdapter;
 
     /**
@@ -55,7 +55,7 @@ public class EventFragment extends Fragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_USER_EVENTS).child(currentUserId);
+        mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).orderByChild("eventMembers/"+currentUserId).equalTo(true);
     }
 
     @Override
