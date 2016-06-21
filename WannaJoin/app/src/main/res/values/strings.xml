@@ -39,4 +39,5 @@
     <string name="contacts_list_label">Contacts</string>
     <string name="new_contact_menu_label">New Contact</string>
     <string name="event_share_hint">Share with others</string>
+    <string name="title_activity_share_event">ShareEventActivity</string>
 </resources>
