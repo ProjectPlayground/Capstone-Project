@@ -19,10 +19,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.village.wannajoin.R;
+import com.village.wannajoin.model.Member;
 import com.village.wannajoin.model.User;
 import com.village.wannajoin.util.Constants;
+
+import java.util.HashMap;
 
 /**
  * Created by richa on 6/16/16.
@@ -88,12 +92,13 @@ public class NewContactDialogFragment extends DialogFragment{
                 }else{
                     for( DataSnapshot ds: dataSnapshot.getChildren()){
                         User member = ds.getValue(User.class);
-                        DatabaseReference newContactRef = dbRef.child(Constants.FIREBASE_LOCATION_USERS).child(member.getUserId()).child(Constants.FIREBASE_LOCATION_CONTACTS).child(currentUserId);
-                        newContactRef.setValue(true);
+                        HashMap<String, Object> timestampCreated = new HashMap<>();
+                        timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+                        Member contact = new Member(member.getName(),member.getUserId(),member.getPhotoUrl(), timestampCreated);
+                        DatabaseReference newContactRef = dbRef.child(Constants.FIREBASE_LOCATION_CONTACTS).child(currentUserId).child(member.getUserId());
+                        newContactRef.setValue(contact);
                         getDialog().cancel();
-
                     }
-
                 }
             }
 

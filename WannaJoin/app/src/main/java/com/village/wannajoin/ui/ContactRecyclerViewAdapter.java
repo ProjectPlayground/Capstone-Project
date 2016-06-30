@@ -8,9 +8,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.village.wannajoin.R;
-import com.village.wannajoin.model.User;
+import com.village.wannajoin.model.Member;
 import com.village.wannajoin.util.Util;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -18,16 +19,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by richa on 6/16/16.
  */
-public class ContactRecyclerViewAdapter extends FirebaseRecyclerAdapter<User, ContactRecyclerViewAdapter.ViewHolder> {
+public class ContactRecyclerViewAdapter extends FirebaseRecyclerAdapter<Member, ContactRecyclerViewAdapter.ViewHolder> {
 
     private Context mContext;
 
-    public ContactRecyclerViewAdapter(Class<User> modelClass, int modelLayout, Class<ViewHolder> viewHolderClass, Query ref, Context context) {
+    public ContactRecyclerViewAdapter(Class<Member> modelClass, int modelLayout, Class<ViewHolder> viewHolderClass, DatabaseReference ref, Context context) {
         super(modelClass, modelLayout, viewHolderClass, ref);
         mContext = context;
     }
     @Override
-    protected void populateViewHolder(ViewHolder viewHolder, User model, int position) {
+    protected void populateViewHolder(ViewHolder viewHolder, Member model, int position) {
         viewHolder.contactName.setText(Util.capitalizeWords(model.getName()));
         if (model.getPhotoUrl() == null) {
             viewHolder.contactImageView

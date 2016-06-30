@@ -17,11 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Group;
-import com.village.wannajoin.model.User;
+import com.village.wannajoin.model.Member;
 import com.village.wannajoin.util.Constants;
 
 
@@ -31,7 +32,7 @@ public class ContactFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     Query mGroupRef;
-    Query mContactRef;
+    DatabaseReference mContactRef;
     GroupRecyclerViewAdapter mGroupsAdapter;
     ContactRecyclerViewAdapter mContactsAdapter;
 
@@ -66,7 +67,7 @@ public class ContactFragment extends Fragment {
         }
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mGroupRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUPS).orderByChild("groupMembers/"+currentUserId).equalTo(true);
-        mContactRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_USERS).orderByChild("contactOf/"+currentUserId).equalTo(true);
+        mContactRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_CONTACTS).child(currentUserId);
         setHasOptionsMenu(true);
     }
 
@@ -98,7 +99,7 @@ public class ContactFragment extends Fragment {
 
         contactRecyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
 
-        mContactsAdapter= new ContactRecyclerViewAdapter(User.class, R.layout.contact_list_item,ContactRecyclerViewAdapter.ViewHolder.class,mContactRef, getContext());
+        mContactsAdapter= new ContactRecyclerViewAdapter(Member.class, R.layout.contact_list_item,ContactRecyclerViewAdapter.ViewHolder.class,mContactRef, getContext());
         contactRecyclerView.setAdapter(mContactsAdapter);
 
         return view;

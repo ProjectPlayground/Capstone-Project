@@ -1,5 +1,6 @@
 package com.village.wannajoin.ui;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,10 +45,12 @@ public class NewEventActivity extends AppCompatActivity
     TextView mlocation;
     EditText mTitle;
     EditText mNotes;
+   // EditText mMembers;
     static final String STATE_START_DATE = "startDate";
     static final String STATE_START_TIME = "startTime";
     static final String STATE_END_DATE = "endDate";
     static final String STATE_END_TIME = "endTime";
+    //static final int SHARE_REQUEST = 1001;
 
 
     @Override
@@ -104,8 +107,18 @@ public class NewEventActivity extends AppCompatActivity
         // Register a listener to receive callbacks when a place has been selected or an error has
         // occurred.
         autocompleteFragment.setOnPlaceSelectedListener(this);
+       /* mMembers = (EditText) findViewById(R.id.event_member);
+        mMembers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(NewEventActivity.this, ShareEventActivity.class);
+                startActivityForResult(i,SHARE_REQUEST);
+            }
+        });*/
+
 
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -193,8 +206,8 @@ public class NewEventActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_save) {
-            saveEvents();
+        if (id == R.id.action_next) {
+            startEventSharingActivity();
             return true;
         }
 
@@ -209,32 +222,29 @@ public class NewEventActivity extends AppCompatActivity
             mEndTime.setText(Util.formatTime(hourOfDay,minute));
     }
 
-    private void saveEvents(){
+    private void startEventSharingActivity(){
         String eventTitle = mTitle.getText().toString();
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        String eventNotes= mNotes.getText().toString();
-        String eventLocationName = mlocation.getText().toString();
         long eventFrom = Util.getTimeStamp(mStartDate.getText().toString(), mStartTime.getText().toString());
         long eventTo = Util.getTimeStamp(mEndDate.getText().toString(), mEndTime.getText().toString());
+        String eventNotes= mNotes.getText().toString();
+        String eventLocationName = mlocation.getText().toString();
 
-        /**
-         * If EditText input is not empty
-         */
+        Intent i = new Intent(NewEventActivity.this, ShareEventActivity.class);
+        i.putExtra(Constants.EVENT_TITLE,eventTitle);
+        i.putExtra(Constants.EVENT_FROM, eventFrom);
+        i.putExtra(Constants.EVENT_TO,eventTo);
+        i.putExtra(Constants.EVENT_NOTES, eventNotes);
+        i.putExtra(Constants.EVENT_LOCATION,eventLocationName);
+        startActivity(i);
+        /*
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         if (!eventTitle.equals("")) {
 
-            /**
-             * Create Firebase references
-             */
             DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS);
             DatabaseReference newEventRef = eventRef.push();
-
-
             final String eventId = newEventRef.getKey();
 
-            /**
-             * Set raw version of date to the ServerValue.TIMESTAMP value and save into
-             * timestampCreatedMap
-             */
             HashMap<String, Object> timestampCreated = new HashMap<>();
             timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
             HashMap<String,Boolean> eventMembers = new HashMap<>();
@@ -243,11 +253,9 @@ public class NewEventActivity extends AppCompatActivity
             Event newEvent = new Event(eventId,eventTitle, firebaseUser.getUid(), firebaseUser.getDisplayName(),firebaseUser.getPhotoUrl(), eventFrom, eventTo, timestampCreated,eventMembers);
             newEvent.setLocation(eventLocationName);
             newEvent.setNotes(eventNotes);
-
-            /* Add the shopping list */
             newEventRef.setValue(newEvent);
             finish();
-        }
+        }*/
     }
 
 

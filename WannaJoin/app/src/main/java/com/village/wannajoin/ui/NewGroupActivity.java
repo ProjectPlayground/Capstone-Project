@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +30,7 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Group;
+import com.village.wannajoin.model.Member;
 import com.village.wannajoin.model.User;
 import com.village.wannajoin.util.Constants;
 import com.village.wannajoin.util.Util;
@@ -164,18 +166,17 @@ public class NewGroupActivity extends AppCompatActivity {
         Map<String, Object> childUpdates = new HashMap<>();
         for(User user: groupMembers){
             groupMembersMap.put(user.getUserId(),true);
-            childUpdates.put("/"+Constants.FIREBASE_LOCATION_USERS+"/"+ user.getUserId()+"/"+Constants.FIREBASE_LOCATION_GROUPS+"/"+groupId,true);
+            childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+user.getUserId(), new Member(user.getName(),user.getUserId(),user.getPhotoUrl(),timestampCreated).toMap());
         }
-
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         groupMembersMap.put(currentUserId,true);
-        childUpdates.put("/"+Constants.FIREBASE_LOCATION_USERS+"/"+ currentUserId+"/"+Constants.FIREBASE_LOCATION_GROUPS+"/"+groupId,true);
+        childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+currentUserId, new Member(currentUser.getDisplayName(),currentUser.getUid(),currentUser.getPhotoUrl(),timestampCreated).toMap());
 
         Group group = new Group(mGroupName.getText().toString(),groupId, currentUserId,null, timestampCreated,groupMembersMap);
 
 
         childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUPS+"/" + groupId, group.toMap());
-
 
         dbRef.updateChildren(childUpdates);
         finish();
