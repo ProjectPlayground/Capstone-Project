@@ -3,47 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context="com.village.wannajoin.ui.ContactFragment">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/primary_text_size"
-        android:textStyle="bold"
-        android:textColor="@color/bodyTextColor"
-        android:layout_gravity="left"
-        android:layout_marginBottom="@dimen/std_margin_list"
-        android:layout_marginLeft="@dimen/std_margin"
-        android:layout_marginStart="@dimen/std_margin"
-        android:layout_marginRight="@dimen/std_margin"
-        android:layout_marginEnd="@dimen/std_margin"
-        android:layout_marginTop="@dimen/std_margin_list"
-        android:text="@string/group_list_label"/>
-
-    <View style="@style/Divider"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/group_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-       />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/primary_text_size"
-        android:textStyle="bold"
-        android:textColor="@color/bodyTextColor"
-        android:layout_gravity="left"
-        android:layout_marginBottom="@dimen/std_margin_list"
-        android:layout_marginLeft="@dimen/std_margin"
-        android:layout_marginStart="@dimen/std_margin"
-        android:layout_marginRight="@dimen/std_margin"
-        android:layout_marginEnd="@dimen/std_margin"
-        android:layout_marginTop="@dimen/std_margin_list"
-        android:text="@string/contacts_list_label"/>
-
-    <View style="@style/Divider"/>
+    tools:context="com.village.wannajoin.ui.ContactFragment"
+    >
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/contact_list"

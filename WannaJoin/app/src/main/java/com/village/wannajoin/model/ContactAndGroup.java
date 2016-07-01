@@ -11,13 +11,15 @@ public class ContactAndGroup implements Comparable {
     private Uri photoUrl;
     private boolean isGroup;
     private boolean isSelected;
+    private int type;  //0 for label, 1 for group and 2 for contact
 
-    public ContactAndGroup(String name, String id, Uri photoUrl, boolean isGroup) {
+    public ContactAndGroup(String name, String id, Uri photoUrl, boolean isGroup, int type) {
         this.name = name;
         this.id = id;
         this.photoUrl = photoUrl;
         this.isGroup = isGroup;
         this.isSelected = false;
+        this.type = type;
     }
 
     public String getName() {
@@ -42,6 +44,14 @@ public class ContactAndGroup implements Comparable {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     @Override

@@ -21,9 +21,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.village.wannajoin.R;
+import com.village.wannajoin.model.ContactAndGroup;
 import com.village.wannajoin.model.Group;
 import com.village.wannajoin.model.Member;
+import com.village.wannajoin.util.ArrayFirebase;
 import com.village.wannajoin.util.Constants;
+import com.village.wannajoin.util.Util;
+
+import java.util.ArrayList;
 
 
 public class ContactFragment extends Fragment {
@@ -31,11 +36,11 @@ public class ContactFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    Query mGroupRef;
-    DatabaseReference mContactRef;
-    GroupRecyclerViewAdapter mGroupsAdapter;
-    ContactRecyclerViewAdapter mContactsAdapter;
-
+    ArrayList<ContactAndGroup> contactAndGroupArrayList;
+    ContactsRecyclerViewAdapter mContactsRecyclerViewAdapter;
+    ArrayFirebase mSnapshotsContacts;
+    ArrayFirebase mSnapshotsGroups;
+    int lastGroupPosition;
     //private OnFragmentInteractionListener mListener;
 
     public ContactFragment() {
@@ -65,9 +70,68 @@ public class ContactFragment extends Fragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
 
         }
+        contactAndGroupArrayList = new ArrayList<>();
+        contactAndGroupArrayList.add(new ContactAndGroup(getString(R.string.group_list_label), null,null,false,0));
+        contactAndGroupArrayList.add(new ContactAndGroup(getString(R.string.contacts_list_label), null,null,false,0));
+        lastGroupPosition =0;
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mGroupRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUPS).orderByChild("groupMembers/"+currentUserId).equalTo(true);
-        mContactRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_CONTACTS).child(currentUserId);
+        Query mGroupRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUPS).orderByChild("groupMembers/"+currentUserId).equalTo(true);
+        DatabaseReference mContactRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_CONTACTS).child(currentUserId);
+        mSnapshotsGroups = new ArrayFirebase(mGroupRef);
+        mSnapshotsContacts = new ArrayFirebase(mContactRef);
+
+        mSnapshotsContacts.setOnChangedListener(new ArrayFirebase.OnChangedListener() {
+            @Override
+            public void onChanged(EventType type, int index, int oldIndex) {
+                switch (type) {
+                    case Added:
+                        Member member = mSnapshotsContacts.getItem(index).getValue(Member.class);
+                        ContactAndGroup cg = new ContactAndGroup(Util.capitalizeWords(member.getName()),member.getUserId(),member.getPhotoUrl(),false,2);
+                        int pos = contactAndGroupArrayList.size();
+                        contactAndGroupArrayList.add(pos,cg);
+                        mContactsRecyclerViewAdapter.notifyItemInserted(pos);
+                        break;
+                    case Changed:
+                        //notifyItemChanged(index);
+                        break;
+                    case Removed:
+                        //notifyItemRemoved(index);
+                        break;
+                    case Moved:
+                        //notifyItemMoved(oldIndex, index);
+                        break;
+                    default:
+                        throw new IllegalStateException("Incomplete case statement");
+                }
+            }
+        });
+
+        mSnapshotsGroups.setOnChangedListener(new ArrayFirebase.OnChangedListener() {
+            @Override
+            public void onChanged(EventType type, int index, int oldIndex) {
+                switch (type) {
+                    case Added:
+                        Group group = mSnapshotsGroups.getItem(index).getValue(Group.class);
+                        ContactAndGroup cg = new ContactAndGroup(group.getName(),group.getGroupId(),group.getGroupPhotoUrl(),true,1);
+                        int pos = lastGroupPosition+1;
+                        contactAndGroupArrayList.add(pos,cg);
+                        lastGroupPosition = pos;
+                        mContactsRecyclerViewAdapter.notifyItemInserted(pos);
+                        break;
+                    case Changed:
+                        //notifyItemChanged(index);
+                        break;
+                    case Removed:
+                        //notifyItemRemoved(index);
+                        break;
+                    case Moved:
+                        //notifyItemMoved(oldIndex, index);
+                        break;
+                    default:
+                        throw new IllegalStateException("Incomplete case statement");
+                }
+            }
+        });
         setHasOptionsMenu(true);
     }
 
@@ -78,18 +142,6 @@ public class ContactFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_contact, container, false);
         Context context = view.getContext();
-        RecyclerView groupRecyclerView = (RecyclerView) view.findViewById(R.id.group_list);
-        if (mColumnCount <= 1) {
-            groupRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        } else {
-            groupRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-        }
-
-        groupRecyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
-
-        mGroupsAdapter = new GroupRecyclerViewAdapter(Group.class, R.layout.group_list_item,GroupRecyclerViewAdapter.ViewHolder.class,mGroupRef, getContext());
-        groupRecyclerView.setAdapter(mGroupsAdapter);
-
         RecyclerView contactRecyclerView = (RecyclerView) view.findViewById(R.id.contact_list);
         if (mColumnCount <= 1) {
             contactRecyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -98,10 +150,8 @@ public class ContactFragment extends Fragment {
         }
 
         contactRecyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
-
-        mContactsAdapter= new ContactRecyclerViewAdapter(Member.class, R.layout.contact_list_item,ContactRecyclerViewAdapter.ViewHolder.class,mContactRef, getContext());
-        contactRecyclerView.setAdapter(mContactsAdapter);
-
+        mContactsRecyclerViewAdapter = new ContactsRecyclerViewAdapter(context,getActivity().getClass().getSimpleName(),contactAndGroupArrayList);
+        contactRecyclerView.setAdapter(mContactsRecyclerViewAdapter);
         return view;
     }
 
@@ -175,7 +225,8 @@ public class ContactFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mGroupsAdapter.cleanup();
-        mContactsAdapter.cleanup();
+        mSnapshotsContacts.cleanup();
+        mSnapshotsGroups.cleanup();
+
     }
 }

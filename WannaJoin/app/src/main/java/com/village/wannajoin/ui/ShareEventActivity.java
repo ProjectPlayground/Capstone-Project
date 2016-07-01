@@ -1,6 +1,8 @@
 package com.village.wannajoin.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +13,7 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -25,8 +28,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ShareEventActivity extends AppCompatActivity {
-    ArrayList<ContactAndGroup> contactList;
-    ShareEventRecyclerViewAdapter_1 mShareEventRecyclerViewAdapter;
+
+    public static final String FRAGMENT_TAG = "ShareFragment";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +39,13 @@ public class ShareEventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        contactList = new ArrayList<>();
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.share_event_contacts_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mShareEventRecyclerViewAdapter = new ShareEventRecyclerViewAdapter_1(this,contactList);
-        initializeData();
-        recyclerView.setAdapter(mShareEventRecyclerViewAdapter);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ContactFragment contactFragment = (ContactFragment)fragmentManager.findFragmentByTag(FRAGMENT_TAG);
+        if (contactFragment ==null) {
+            contactFragment = ContactFragment.newInstance(1);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.share_container, contactFragment, FRAGMENT_TAG).commit();
+        }
     }
 
     @Override
@@ -49,45 +54,7 @@ public class ShareEventActivity extends AppCompatActivity {
         return true;
     }
 
-    public void initializeData(){
-        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Query mGroupRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUPS).orderByChild("groupMembers/"+currentUserId).equalTo(true);
-        Query mContactRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_USERS).orderByChild("contactOf/"+currentUserId).equalTo(true);
-        mGroupRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds:dataSnapshot.getChildren()){
-                    Group group = ds.getValue(Group.class);
-                    ContactAndGroup cg = new ContactAndGroup(group.getName(),group.getGroupId(),group.getGroupPhotoUrl(),true);
-                    contactList.add(cg);
-                }
-                mShareEventRecyclerViewAdapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        mContactRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds:dataSnapshot.getChildren()){
-                    User user = ds.getValue(User.class);
-                    ContactAndGroup cg = new ContactAndGroup(Util.capitalizeWords(user.getName()),user.getUserId(),user.getPhotoUrl(),false);
-                    contactList.add(cg);
-                }
-                mShareEventRecyclerViewAdapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        Collections.sort(contactList);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -104,4 +71,6 @@ public class ShareEventActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

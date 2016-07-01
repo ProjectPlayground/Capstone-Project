@@ -20,7 +20,8 @@
 
     <TextView
         android:id="@+id/contact_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/std_margin"
         android:layout_marginStart="@dimen/std_margin"
@@ -29,6 +30,13 @@
         android:textColor="@color/bodyTextColor"
         android:singleLine="true"
         android:ellipsize="end"
+        />
+    <CheckBox
+        android:id="@+id/select_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
         />
 
 
