@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,8 +10,9 @@
     android:paddingStart="@dimen/std_margin"
     android:paddingRight="@dimen/std_margin"
     android:paddingEnd="@dimen/std_margin"
-    android:paddingTop="@dimen/std_margin">
-    <EditText
+    android:paddingTop="@dimen/std_margin"
+    app:hintTextAppearance="@style/TextLabel">
+    <android.support.design.widget.TextInputEditText
         android:id="@+id/edit_text_contact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,4 +21,4 @@
         android:inputType="textEmailAddress"
         />
 
-</LinearLayout>
+</android.support.design.widget.TextInputLayout>

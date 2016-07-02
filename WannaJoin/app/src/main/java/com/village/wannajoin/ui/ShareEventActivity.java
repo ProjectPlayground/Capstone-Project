@@ -1,5 +1,6 @@
 package com.village.wannajoin.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -58,19 +59,12 @@ public class ShareEventActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_save) {
-            finish();
-            return true;
-        }
+
         if (id == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }

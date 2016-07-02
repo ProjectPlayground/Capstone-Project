@@ -1,6 +1,7 @@
 package com.village.wannajoin.ui;
 
 import android.content.Context;
+
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,13 +29,18 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     Context mContext;
     String mActivityName;
     ArrayList<ContactAndGroup> contactAndGroupArrayList;
+    EmptyViewClickedListener mListner;
+
+    interface EmptyViewClickedListener {
+        void onItemClicked(int type);
+    }
 
 
-    public ContactsRecyclerViewAdapter(Context context, String activityName, ArrayList<ContactAndGroup> cgList) {
+    public ContactsRecyclerViewAdapter(Context context, String activityName, ArrayList<ContactAndGroup> cgList, EmptyViewClickedListener listener) {
         mContext = context;
         mActivityName = activityName;
         contactAndGroupArrayList = cgList;
-
+        mListner = listener;
     }
 
     @Override
@@ -55,10 +61,13 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             view = layoutInflater.inflate(R.layout.list_label_item, parent, false);
             LabelViewHolder vh = new LabelViewHolder(view);
             return vh;
-        }else {
+        }else if(viewType ==-1) {
+            view = layoutInflater.inflate(R.layout.empty_recycler_view, parent, false);
+            EmptyViewHolder vh = new EmptyViewHolder(view);
+            return vh;
+        }else{
             view = layoutInflater.inflate(R.layout.contact_list_item, parent, false);
             ContactsRecyclerViewAdapter.ViewHolder vh = new ContactsRecyclerViewAdapter.ViewHolder(view);
-
             return vh;
         }
 
@@ -71,7 +80,20 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (holder.getItemViewType()==0){
             ContactsRecyclerViewAdapter.LabelViewHolder lvh = (ContactsRecyclerViewAdapter.LabelViewHolder)holder;
             lvh.label.setText(getItem(position).getName());
-        }else {
+        }else if(holder.getItemViewType()==-1){
+            ContactsRecyclerViewAdapter.EmptyViewHolder evh = (ContactsRecyclerViewAdapter.EmptyViewHolder)holder;
+            evh.defaultText.setText(getItem(position).getName());
+            evh.defaultText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getItem(position).isGroup())
+                        mListner.onItemClicked(1);
+                    else
+                        mListner.onItemClicked(2);
+                }
+            });
+        }
+        else {
             ContactsRecyclerViewAdapter.ViewHolder vh = (ContactsRecyclerViewAdapter.ViewHolder)holder;
             if (mActivityName.equals("ShareEventActivity"))
                 vh.isSelected.setVisibility(View.VISIBLE);
@@ -79,10 +101,11 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 vh.isSelected.setVisibility(View.GONE);
             vh.contactName.setText(getItem(position).getName());
             if (getItem(position).getPhotoUrl() == null) {
-                vh.contactImageView
-                        .setImageDrawable(ContextCompat
-                                .getDrawable(mContext,
-                                        R.drawable.ic_account_circle_black_48dp));
+                    vh.contactImageView
+                            .setImageDrawable(ContextCompat
+                                    .getDrawable(mContext,
+                                            R.drawable.ic_account_circle_black_48dp));
+
             } else {
                 Glide.with(mContext)
                         .load(getItem(position).getPhotoUrl())
@@ -128,6 +151,14 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         public LabelViewHolder(View view) {
             super(view);
             label = (TextView) view.findViewById(R.id.name);
+        }
+    }
+
+    public static class EmptyViewHolder extends RecyclerView.ViewHolder{
+        public TextView defaultText;
+        public EmptyViewHolder(View view) {
+            super(view);
+            defaultText = (TextView) view.findViewById(R.id.empty_view);
         }
     }
 }

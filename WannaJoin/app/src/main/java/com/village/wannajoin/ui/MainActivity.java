@@ -103,13 +103,13 @@ public class MainActivity extends AppCompatActivity  {
                     // Create and show the dialog.
                     DialogFragment newFragment = NewContactDialogFragment.newInstance();
                     newFragment.show(ft, "dialog");
-
                 }
             }
         });
 
 
     }
+
 
 
     @Override

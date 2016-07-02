@@ -13,6 +13,7 @@ public class Constants {
     public static final String FIREBASE_LOCATION_USERS = "users";
     public static final String FIREBASE_LOCATION_GROUPS = "groups";
     public static final String FIREBASE_LOCATION_GROUP_MEMBERS = "groupMembers";
+    public static final String FIREBASE_LOCATION_EVENT_MEMBERS = "eventMembers";
     public static final String FIREBASE_LOCATION_CONTACTS = "userContacts";
 
 

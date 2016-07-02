@@ -236,6 +236,7 @@ public class NewEventActivity extends AppCompatActivity
         i.putExtra(Constants.EVENT_NOTES, eventNotes);
         i.putExtra(Constants.EVENT_LOCATION,eventLocationName);
         startActivity(i);
+
         /*
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 

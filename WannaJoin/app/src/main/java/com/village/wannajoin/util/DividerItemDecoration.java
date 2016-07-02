@@ -1,4 +1,4 @@
-package com.village.wannajoin.ui;
+package com.village.wannajoin.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;

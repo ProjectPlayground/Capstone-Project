@@ -42,4 +42,7 @@
     <string name="title_activity_share_event">Select Contacts</string>
     <string name="action_done">Done</string>
     <string name="action_next">Next</string>
+    <string name="no_event_available">No available events. Add your plans and share.</string>
+    <string name="empty_group_list_text">Create groups to easily share your events</string>
+    <string name="empty_contact_list_text">Add a contact</string>
 </resources>

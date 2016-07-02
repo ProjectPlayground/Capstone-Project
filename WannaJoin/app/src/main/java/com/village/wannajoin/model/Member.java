@@ -44,6 +44,10 @@ public class Member {
         return timestampJoined;
     }
 
+    public void setTimestampJoined(HashMap<String, Object> timestampJoined) {
+        this.timestampJoined = timestampJoined;
+    }
+
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("name", name);

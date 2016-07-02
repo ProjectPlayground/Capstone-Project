@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,7 +18,7 @@ import com.google.firebase.database.Query;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Event;
 import com.village.wannajoin.util.Constants;
-
+import com.village.wannajoin.util.DividerItemDecoration;
 
 
 public class EventFragment extends Fragment {
@@ -56,6 +57,7 @@ public class EventFragment extends Fragment {
         }
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).orderByChild("eventMembers/"+currentUserId).equalTo(true);
+        mAdapter = new EventRecyclerViewAdapter(Event.class, R.layout.fragment_event,EventRecyclerViewAdapter.ViewHolder.class,mRef, getContext());
     }
 
     @Override
@@ -63,21 +65,33 @@ public class EventFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_event_list, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
 
-            recyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
 
-            mAdapter = new EventRecyclerViewAdapter(Event.class, R.layout.fragment_event,EventRecyclerViewAdapter.ViewHolder.class,mRef, getContext());
-            recyclerView.setAdapter(mAdapter);
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.event_list);
+        TextView emptyView = (TextView)view.findViewById(R.id.empty_view);
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
+        recyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
+        recyclerView.setAdapter(mAdapter);
+
+      /*  if (mAdapter.getItemCount()==0){
+            recyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getActivity(), NewEventActivity.class);
+                    startActivity(i);
+                }
+            });
+        }else{
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }*/
         return view;
     }
 
