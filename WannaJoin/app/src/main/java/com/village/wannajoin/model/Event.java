@@ -20,6 +20,7 @@ public class Event {
     private long fromTime;
     private long toTime;
     private String notes;
+    private int type; // 1 is event, -1 for empty view
     private HashMap<String, Object> timestampLastChanged;
     private HashMap<String, Object> timestampCreated;
     private HashMap<String,Boolean> eventMembers;
@@ -40,6 +41,7 @@ public class Event {
         timestampNowObject.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
         this.timestampLastChanged = timestampNowObject;
         this.eventMembers =eventMembers;
+        this.type = 1;
 
     }
 
@@ -115,5 +117,13 @@ public class Event {
 
     public HashMap<String, Boolean> getEventMembers() {
         return eventMembers;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

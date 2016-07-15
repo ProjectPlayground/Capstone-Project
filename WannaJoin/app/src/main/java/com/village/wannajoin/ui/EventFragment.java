@@ -17,8 +17,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Event;
+import com.village.wannajoin.util.ArrayFirebase;
 import com.village.wannajoin.util.Constants;
 import com.village.wannajoin.util.DividerItemDecoration;
+
+import java.util.ArrayList;
 
 
 public class EventFragment extends Fragment {
@@ -30,6 +33,8 @@ public class EventFragment extends Fragment {
    // private OnListFragmentInteractionListener mListener;
     Query mRef;
     EventRecyclerViewAdapter mAdapter;
+    ArrayList<Event> mEventList;
+    ArrayFirebase mSnapshotsEvents;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
