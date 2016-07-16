@@ -40,47 +40,54 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view;
-        /*if (viewType ==0){
-            view = layoutInflater.inflate(R.layout.list_label_item, parent, false);
-            LabelViewHolder vh = new LabelViewHolder(view);
-            return vh;
-        }else if(viewType ==-1) {
+        if (viewType ==-1){
             view = layoutInflater.inflate(R.layout.empty_recycler_view, parent, false);
             EmptyViewHolder vh = new EmptyViewHolder(view);
             return vh;
-        }else{
-            view = layoutInflater.inflate(R.layout.contact_list_item, parent, false);
-            ContactsRecyclerViewAdapter.ViewHolder vh = new ContactsRecyclerViewAdapter.ViewHolder(view);
+        }else {
+            view = layoutInflater.inflate(R.layout.fragment_event, parent, false);
+            EventsRecyclerViewAdapter.ViewHolder vh = new EventsRecyclerViewAdapter.ViewHolder(view);
             return vh;
-        }*/
-        view = layoutInflater.inflate(R.layout.fragment_event, parent, false);
-        EventsRecyclerViewAdapter.ViewHolder vh = new EventsRecyclerViewAdapter.ViewHolder(view);
-        return vh;
+        }
+
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        EventsRecyclerViewAdapter.ViewHolder viewHolder = (EventsRecyclerViewAdapter.ViewHolder)holder;
-        viewHolder.mTitleView.setText(mEventList.get(position).getTitle());
-        // viewHolder.mTitleTemp.setText(mContext.getString(R.string.text_after_event_title));
-        viewHolder.mLocationView.setText(mEventList.get(position).getLocation());
-        String owner = mEventList.get(position).getOwnerName();
-        //viewHolder.mOwner.setText(owner.substring(0,1).toUpperCase()+owner.substring(1));
-        viewHolder.mOwner.setText(Util.capitalizeWords(owner));
-        //viewHolder.mOwnerTemp.setText(mContext.getString(R.string.text_after_event_owner));
-        if (mEventList.get(position).getOwnerPhotoUrl() == null) {
-            viewHolder.messengerImageView
-                    .setImageDrawable(ContextCompat
-                            .getDrawable(mContext,
-                                    R.drawable.ic_account_circle_black_48dp));
-        } else {
-            Glide.with(mContext)
-                    .load(mEventList.get(position).getOwnerPhotoUrl())
-                    .into(viewHolder.messengerImageView);
+        if(holder.getItemViewType()==-1){
+            EventsRecyclerViewAdapter.EmptyViewHolder evh = (EventsRecyclerViewAdapter.EmptyViewHolder)holder;
+            evh.defaultText.setText(mEventList.get(position).getTitle());
+            evh.defaultText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                        mListner.onItemClicked(1);
+
+                }
+            });
+        }else {
+
+            EventsRecyclerViewAdapter.ViewHolder viewHolder = (EventsRecyclerViewAdapter.ViewHolder) holder;
+            viewHolder.mTitleView.setText(mEventList.get(position).getTitle());
+            // viewHolder.mTitleTemp.setText(mContext.getString(R.string.text_after_event_title));
+            viewHolder.mLocationView.setText(mEventList.get(position).getLocation());
+            String owner = mEventList.get(position).getOwnerName();
+            //viewHolder.mOwner.setText(owner.substring(0,1).toUpperCase()+owner.substring(1));
+            viewHolder.mOwner.setText(Util.capitalizeWords(owner));
+            //viewHolder.mOwnerTemp.setText(mContext.getString(R.string.text_after_event_owner));
+            if (mEventList.get(position).getOwnerPhotoUrl() == null) {
+                viewHolder.messengerImageView
+                        .setImageDrawable(ContextCompat
+                                .getDrawable(mContext,
+                                        R.drawable.ic_account_circle_black_48dp));
+            } else {
+                Glide.with(mContext)
+                        .load(mEventList.get(position).getOwnerPhotoUrl())
+                        .into(viewHolder.messengerImageView);
+            }
+            viewHolder.mDate.setText(Util.getDateFromTimeStamp(mEventList.get(position).getFromTime()));
+            viewHolder.mTime.setText(Util.getTimeFromTimeStamp(mEventList.get(position).getFromTime()));
+            viewHolder.mPeople.setText("+5 going");
         }
-        viewHolder.mDate.setText(Util.getDateFromTimeStamp(mEventList.get(position).getFromTime()));
-        viewHolder.mTime.setText(Util.getTimeFromTimeStamp(mEventList.get(position).getFromTime()));
-        viewHolder.mPeople.setText("+5 going");
     }
 
     @Override
@@ -114,6 +121,14 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             // mOwnerTemp = (TextView) view.findViewById(R.id.owner_temp);
             // mTitleTemp = (TextView) view.findViewById(R.id.title_temp);
             mPeople = (TextView) view.findViewById(R.id.people_going);
+        }
+    }
+
+    public static class EmptyViewHolder extends RecyclerView.ViewHolder{
+        public TextView defaultText;
+        public EmptyViewHolder(View view) {
+            super(view);
+            defaultText = (TextView) view.findViewById(R.id.empty_view);
         }
     }
 

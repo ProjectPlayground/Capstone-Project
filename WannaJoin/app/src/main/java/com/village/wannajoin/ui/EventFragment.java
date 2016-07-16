@@ -16,7 +16,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.village.wannajoin.R;
+import com.village.wannajoin.model.ContactAndGroup;
 import com.village.wannajoin.model.Event;
+import com.village.wannajoin.model.Group;
 import com.village.wannajoin.util.ArrayFirebase;
 import com.village.wannajoin.util.Constants;
 import com.village.wannajoin.util.DividerItemDecoration;
@@ -24,7 +26,7 @@ import com.village.wannajoin.util.DividerItemDecoration;
 import java.util.ArrayList;
 
 
-public class EventFragment extends Fragment {
+public class EventFragment extends Fragment implements EventsRecyclerViewAdapter.EmptyViewClickedListener{
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -32,7 +34,7 @@ public class EventFragment extends Fragment {
     private int mColumnCount = 1;
    // private OnListFragmentInteractionListener mListener;
     Query mRef;
-    EventRecyclerViewAdapter mAdapter;
+    EventsRecyclerViewAdapter mAdapter;
     ArrayList<Event> mEventList;
     ArrayFirebase mSnapshotsEvents;
 
@@ -62,7 +64,48 @@ public class EventFragment extends Fragment {
         }
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).orderByChild("eventMembers/"+currentUserId).equalTo(true);
-        mAdapter = new EventRecyclerViewAdapter(Event.class, R.layout.fragment_event,EventRecyclerViewAdapter.ViewHolder.class,mRef, getContext());
+       // mAdapter = new EventRecyclerViewAdapter(Event.class, R.layout.fragment_event,EventRecyclerViewAdapter.ViewHolder.class,mRef, getContext());
+        mEventList = new ArrayList<>();
+        Event emptyEvent = new Event(null,"No available events. Start by creating events and sharing with friends.",null,null,null,1,1,null,null);
+        emptyEvent.setType(-1); // set -1 for empty event
+        mEventList.add(emptyEvent);
+        mAdapter = new EventsRecyclerViewAdapter(getActivity(),mEventList, this);
+        mSnapshotsEvents = new ArrayFirebase(mRef);
+        mSnapshotsEvents.setOnChangedListener(new ArrayFirebase.OnChangedListener() {
+            @Override
+            public void onChanged(EventType type, int index, int oldIndex) {
+                switch (type) {
+                    case Added:
+                        Event event = mSnapshotsEvents.getItem(index).getValue(Event.class);
+                        int pos;
+                        if ((mEventList.size()==1)&&(mEventList.get(0).getType() ==-1)){
+                            mEventList.remove(0);
+                            mAdapter.notifyItemRemoved(0);
+                            pos=0;
+                        }else{
+                            pos = mEventList.size();
+                        }
+                        mEventList.add(pos,event);
+                        mAdapter.notifyItemInserted(pos);
+                        break;
+                    case Changed:
+                        Event eventc = mSnapshotsEvents.getItem(index).getValue(Event.class);
+                        mEventList.set(index,eventc);
+                        mAdapter.notifyItemChanged(index);
+                        break;
+                    case Removed:
+                        mEventList.remove(index);
+                        mAdapter.notifyItemRemoved(index);
+                        break;
+                    case Moved:
+                        //notifyItemMoved(oldIndex, index);
+                        break;
+                    default:
+                        throw new IllegalStateException("Incomplete case statement");
+                }
+            }
+        });
+
     }
 
     @Override
@@ -81,6 +124,7 @@ public class EventFragment extends Fragment {
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
         recyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
+
         recyclerView.setAdapter(mAdapter);
 
       /*  if (mAdapter.getItemCount()==0){
@@ -136,6 +180,11 @@ public class EventFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mAdapter.cleanup();
+       // mAdapter.cleanup();
+    }
+
+    @Override
+    public void onItemClicked(int type) {
+
     }
 }
