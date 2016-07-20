@@ -48,6 +48,10 @@
         <activity
             android:name=".ui.ShareEventActivity"
             android:label="@string/title_activity_share_event"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.EventDetailActivity"
+            android:label="@string/title_activity_event_detail"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

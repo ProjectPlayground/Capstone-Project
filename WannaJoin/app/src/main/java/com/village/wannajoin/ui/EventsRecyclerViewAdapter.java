@@ -1,12 +1,15 @@
 package com.village.wannajoin.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.village.wannajoin.R;
@@ -24,16 +27,16 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     Context mContext;
     ArrayList<Event> mEventList;
-    EmptyViewClickedListener mListner;
+    OnClickedListener mListener;
 
-    interface EmptyViewClickedListener {
-        void onItemClicked(int type);
+    interface OnClickedListener {
+        void onItemClicked(String eventId);
     }
 
-    public EventsRecyclerViewAdapter(Context mContext, ArrayList<Event> mEventList, EmptyViewClickedListener mListner) {
+    public EventsRecyclerViewAdapter(Context mContext, ArrayList<Event> mEventList, OnClickedListener mListener) {
         this.mContext = mContext;
         this.mEventList = mEventList;
-        this.mListner = mListner;
+        this.mListener = mListener;
     }
 
     @Override
@@ -42,11 +45,27 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         View view;
         if (viewType ==-1){
             view = layoutInflater.inflate(R.layout.empty_recycler_view, parent, false);
-            EmptyViewHolder vh = new EmptyViewHolder(view);
+            EmptyViewHolder vh = new EmptyViewHolder(view, new EmptyViewHolder.EmptyViewHolderClicks() {
+                @Override
+                public void onViewClicked() {
+                    mListener.onItemClicked("");
+
+                }
+            });
             return vh;
         }else {
             view = layoutInflater.inflate(R.layout.fragment_event, parent, false);
-            EventsRecyclerViewAdapter.ViewHolder vh = new EventsRecyclerViewAdapter.ViewHolder(view);
+            EventsRecyclerViewAdapter.ViewHolder vh = new EventsRecyclerViewAdapter.ViewHolder(view, new ViewHolder.ViewHolderClicks() {
+                @Override
+                public void onJoin(int pos) {
+                    Toast.makeText(mContext,"clicked join",Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onDetail(int pos) {
+                    mListener.onItemClicked(mEventList.get(pos).getEventId());
+                }
+            });
             return vh;
         }
 
@@ -57,13 +76,6 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         if(holder.getItemViewType()==-1){
             EventsRecyclerViewAdapter.EmptyViewHolder evh = (EventsRecyclerViewAdapter.EmptyViewHolder)holder;
             evh.defaultText.setText(mEventList.get(position).getTitle());
-            evh.defaultText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                        mListner.onItemClicked(1);
-
-                }
-            });
         }else {
 
             EventsRecyclerViewAdapter.ViewHolder viewHolder = (EventsRecyclerViewAdapter.ViewHolder) holder;
@@ -87,6 +99,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             viewHolder.mDate.setText(Util.getDateFromTimeStamp(mEventList.get(position).getFromTime()));
             viewHolder.mTime.setText(Util.getTimeFromTimeStamp(mEventList.get(position).getFromTime()));
             viewHolder.mPeople.setText("+5 going");
+
         }
     }
 
@@ -100,7 +113,8 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         return mEventList.get(position).getType();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        public ViewHolderClicks mClickListener;
         public TextView mOwner;
         //public TextView mOwnerTemp;
         public TextView mTitleView;
@@ -110,8 +124,10 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public CircleImageView messengerImageView;
         public TextView mDate;
         public TextView mTime;
-        public ViewHolder(View view) {
+        public Button mJoinButton;
+        public ViewHolder(View view, ViewHolderClicks clickListener) {
             super(view);
+
             mOwner = (TextView) view.findViewById(R.id.owner);
             mTitleView = (TextView) view.findViewById(R.id.title);
             mLocationView = (TextView) view.findViewById(R.id.location);
@@ -121,14 +137,43 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             // mOwnerTemp = (TextView) view.findViewById(R.id.owner_temp);
             // mTitleTemp = (TextView) view.findViewById(R.id.title_temp);
             mPeople = (TextView) view.findViewById(R.id.people_going);
+            mJoinButton = (Button) view.findViewById(R.id.join_button);
+            mJoinButton.setOnClickListener(this);
+            view.setOnClickListener(this);
+            mClickListener = clickListener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v instanceof Button){
+                mClickListener.onJoin(getAdapterPosition());
+            } else {
+                mClickListener.onDetail(getAdapterPosition());
+            }
+        }
+        public interface ViewHolderClicks {
+            void onJoin(int pos);
+            void onDetail(int pos);
         }
     }
 
-    public static class EmptyViewHolder extends RecyclerView.ViewHolder{
+    public static class EmptyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView defaultText;
-        public EmptyViewHolder(View view) {
+        public EmptyViewHolderClicks mEVClickListener;
+        public EmptyViewHolder(View view, EmptyViewHolderClicks mEVClickListener) {
             super(view);
             defaultText = (TextView) view.findViewById(R.id.empty_view);
+            this.mEVClickListener = mEVClickListener;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mEVClickListener.onViewClicked();
+        }
+
+        public interface EmptyViewHolderClicks {
+            void onViewClicked();
         }
     }
 

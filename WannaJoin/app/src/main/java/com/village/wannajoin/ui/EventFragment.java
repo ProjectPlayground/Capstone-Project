@@ -1,6 +1,7 @@
 package com.village.wannajoin.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -26,7 +27,7 @@ import com.village.wannajoin.util.DividerItemDecoration;
 import java.util.ArrayList;
 
 
-public class EventFragment extends Fragment implements EventsRecyclerViewAdapter.EmptyViewClickedListener{
+public class EventFragment extends Fragment implements EventsRecyclerViewAdapter.OnClickedListener{
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -180,11 +181,18 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mSnapshotsEvents.cleanup();
        // mAdapter.cleanup();
     }
 
     @Override
-    public void onItemClicked(int type) {
-
+    public void onItemClicked(String eventId) {
+        if (!eventId.equals("")){
+            Intent i = new Intent(getActivity(),EventDetailActivity.class);
+            startActivity(i);
+        }else{
+            Intent i = new Intent(getActivity(),NewEventActivity.class);
+            startActivity(i);
+        }
     }
 }

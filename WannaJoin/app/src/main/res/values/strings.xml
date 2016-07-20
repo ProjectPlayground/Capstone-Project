@@ -45,4 +45,5 @@
     <string name="no_event_available">No available events. Add your plans and share.</string>
     <string name="empty_group_list_text">Create groups to easily share your events</string>
     <string name="empty_contact_list_text">Add a contact</string>
+    <string name="title_activity_event_detail">EventDetailActivity</string>
 </resources>
