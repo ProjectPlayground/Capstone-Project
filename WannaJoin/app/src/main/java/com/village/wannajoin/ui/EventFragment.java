@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.village.wannajoin.util.Constants;
 import com.village.wannajoin.util.DividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class EventFragment extends Fragment implements EventsRecyclerViewAdapter.OnClickedListener{
@@ -64,7 +66,8 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).orderByChild("eventMembers/"+currentUserId).equalTo(true);
+        long currentTimeStamp = Calendar.getInstance().getTimeInMillis();
+        mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).orderByChild("eventMembers/"+currentUserId).startAt(currentTimeStamp);
        // mAdapter = new EventRecyclerViewAdapter(Event.class, R.layout.fragment_event,EventRecyclerViewAdapter.ViewHolder.class,mRef, getContext());
         mEventList = new ArrayList<>();
         Event emptyEvent = new Event(null,"No available events. Start by creating events and sharing with friends.",null,null,null,1,1,null,null);
@@ -78,16 +81,12 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
                 switch (type) {
                     case Added:
                         Event event = mSnapshotsEvents.getItem(index).getValue(Event.class);
-                        int pos;
                         if ((mEventList.size()==1)&&(mEventList.get(0).getType() ==-1)){
                             mEventList.remove(0);
                             mAdapter.notifyItemRemoved(0);
-                            pos=0;
-                        }else{
-                            pos = mEventList.size();
                         }
-                        mEventList.add(pos,event);
-                        mAdapter.notifyItemInserted(pos);
+                        mEventList.add(index,event);
+                        mAdapter.notifyItemInserted(index);
                         break;
                     case Changed:
                         Event eventc = mSnapshotsEvents.getItem(index).getValue(Event.class);

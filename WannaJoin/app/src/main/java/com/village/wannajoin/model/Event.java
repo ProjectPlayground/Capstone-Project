@@ -23,12 +23,12 @@ public class Event {
     private int type; // 1 is event, -1 for empty view
     private HashMap<String, Object> timestampLastChanged;
     private HashMap<String, Object> timestampCreated;
-    private HashMap<String,Boolean> eventMembers;
+    private HashMap<String,Long> eventMembers;
 
     public Event() {
     }
 
-    public Event(String eventId, String title, String ownerId, String ownerName, Uri ownerPhotoUrl, long fromTime, long toTime, HashMap<String, Object> timestampCreated, HashMap<String,Boolean> eventMembers) {
+    public Event(String eventId, String title, String ownerId, String ownerName, Uri ownerPhotoUrl, long fromTime, long toTime, HashMap<String, Object> timestampCreated, HashMap<String,Long> eventMembers) {
         this.eventId = eventId;
         this.title = title;
         this.ownerId = ownerId;
@@ -115,7 +115,7 @@ public class Event {
         return eventId;
     }
 
-    public HashMap<String, Boolean> getEventMembers() {
+    public HashMap<String, Long> getEventMembers() {
         return eventMembers;
     }
 
