@@ -22,6 +22,7 @@ public class Constants {
     public static final String EVENT_TO = "EventTo";
     public static final String EVENT_NOTES = "EventNotes";
     public static final String EVENT_LOCATION = "EventLocation";
+    public static final String EVENT_ID = "EventId";
 
 
 }

@@ -9,14 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Event;
+import com.village.wannajoin.util.Constants;
 import com.village.wannajoin.util.Util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -28,6 +33,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     Context mContext;
     ArrayList<Event> mEventList;
     OnClickedListener mListener;
+    FirebaseUser firebaseUser ;
 
     interface OnClickedListener {
         void onItemClicked(String eventId);
@@ -37,6 +43,8 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         this.mContext = mContext;
         this.mEventList = mEventList;
         this.mListener = mListener;
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
     }
 
     @Override
@@ -58,7 +66,18 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             EventsRecyclerViewAdapter.ViewHolder vh = new EventsRecyclerViewAdapter.ViewHolder(view, new ViewHolder.ViewHolderClicks() {
                 @Override
                 public void onJoin(int pos) {
-                    Toast.makeText(mContext,"clicked join",Toast.LENGTH_SHORT).show();
+                    String eventId = mEventList.get(pos).getEventId();
+
+                    DatabaseReference dbrefJoin = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).child(eventId).child(Constants.FIREBASE_LOCATION_EVENT_MEMBERS).child(firebaseUser.getUid());
+                    String status = mEventList.get(pos).getEventMembers().get(firebaseUser.getUid());
+                    String newStatus=null;
+                    String[] statusArray = status.split("-");
+                    if (statusArray[1].equals("0")){
+                        newStatus = mEventList.get(pos).getFromTime()+"-1";
+                    }else{
+                        newStatus = mEventList.get(pos).getFromTime()+"-0";
+                    }
+                    dbrefJoin.setValue(newStatus);
                 }
 
                 @Override
@@ -96,9 +115,23 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         .load(mEventList.get(position).getOwnerPhotoUrl())
                         .into(viewHolder.messengerImageView);
             }
+            String status = mEventList.get(position).getEventMembers().get(firebaseUser.getUid());
+            String[] statusarray = status.split("-");
+            if (statusarray[1].equals("1"))
+                viewHolder.mJoinButton.setText(R.string.cancel_button_text);
+            else
+                viewHolder.mJoinButton.setText(R.string.join_button_text);
             viewHolder.mDate.setText(Util.getDateFromTimeStamp(mEventList.get(position).getFromTime()));
             viewHolder.mTime.setText(Util.getTimeFromTimeStamp(mEventList.get(position).getFromTime()));
-            viewHolder.mPeople.setText("+5 going");
+            int count=0;
+            for(String s:mEventList.get(position).getEventMembers().values()){
+                if (s!=null) {
+                    String[] sa = s.split("-");
+                    if (sa[1].equals("1"))
+                        count++;
+                }
+            }
+            viewHolder.mPeople.setText("+"+count+" going");
 
         }
     }

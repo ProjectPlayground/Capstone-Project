@@ -188,6 +188,7 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
     public void onItemClicked(String eventId) {
         if (!eventId.equals("")){
             Intent i = new Intent(getActivity(),EventDetailActivity.class);
+            i.putExtra(Constants.EVENT_ID, eventId);
             startActivity(i);
         }else{
             Intent i = new Intent(getActivity(),NewEventActivity.class);

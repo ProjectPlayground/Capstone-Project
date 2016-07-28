@@ -1,5 +1,6 @@
 package com.village.wannajoin.ui;
 
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.village.wannajoin.R;
+import com.village.wannajoin.util.Constants;
 
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -34,6 +36,7 @@ public class EventDetailActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private String mEventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -49,7 +53,10 @@ public class EventDetailActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.event_tabs);
+        tabLayout.setupWithViewPager(mViewPager);
 
+        mEventId = getIntent().getStringExtra(Constants.EVENT_ID);
     }
 
 
@@ -124,6 +131,9 @@ public class EventDetailActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            switch (position){
+                case 0: return EventDetailFragment.newInstance(mEventId);
+            }
             return PlaceholderFragment.newInstance(position + 1);
         }
 
@@ -136,9 +146,9 @@ public class EventDetailActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "Detail";
                 case 1:
-                    return "SECTION 2";
+                    return "People";
             }
             return null;
         }

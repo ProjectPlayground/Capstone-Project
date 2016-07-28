@@ -294,18 +294,20 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
             DatabaseReference eventRef = dbRef.child(Constants.FIREBASE_LOCATION_EVENTS);
             DatabaseReference newEventRef = eventRef.push();
             final String eventId = newEventRef.getKey();
-            HashMap<String, Long> eventMembers = new HashMap<>();
-            final long eventFrom = i.getLongExtra(Constants.EVENT_FROM, 0);
-            eventMembers.put(firebaseUser.getUid(), eventFrom);
+            HashMap<String, String> eventMembers = new HashMap<>();
+            long eventFrom = i.getLongExtra(Constants.EVENT_FROM, 0);
+            String ownerStatus = String.valueOf(eventFrom)+"-1";
+            eventMembers.put(firebaseUser.getUid(), ownerStatus);
             Event newEvent = new Event(eventId, i.getStringExtra(Constants.EVENT_TITLE), firebaseUser.getUid(), firebaseUser.getDisplayName(), firebaseUser.getPhotoUrl(), i.getLongExtra(Constants.EVENT_FROM, 0), i.getLongExtra(Constants.EVENT_TO, 0), timestampCreated, eventMembers);
             newEvent.setLocation(i.getStringExtra(Constants.EVENT_LOCATION));
             newEvent.setNotes(i.getStringExtra(Constants.EVENT_NOTES));
             newEventRef.setValue(newEvent);
             Map<String, Object> childUpdates = new HashMap<>();
             childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + firebaseUser.getUid(), new Member(firebaseUser.getDisplayName(), firebaseUser.getUid(), firebaseUser.getPhotoUrl(), timestampCreated).toMap());
+            final String memberStatus = String.valueOf(eventFrom)+"-0";
             for (ContactAndGroup cg : contactAndGroupArrayList) {
                 if ((cg.getType() == 2) && (cg.isSelected())) {
-                    childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + cg.getId(), eventFrom);
+                    childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + cg.getId(), memberStatus);
                     childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + cg.getId(), new Member(cg.getName(), cg.getId(), cg.getPhotoUrl(), timestampCreated).toMap());
                 }
                 if ((cg.getType() == 1) && (cg.isSelected())) {
@@ -318,7 +320,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
                             for(DataSnapshot ds: dataSnapshot.getChildren()){
                                 Member member = ds.getValue(Member.class);
                                 member.setTimestampJoined(timestampCreated);
-                                groupUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + member.getUserId(), eventFrom);
+                                groupUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + member.getUserId(), memberStatus);
                                 groupUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + member.getUserId(), member.toMap());
 
                             }

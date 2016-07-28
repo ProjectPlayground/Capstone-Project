@@ -4,6 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:minWidth="@dimen/dialog_fragment_min_width"
     android:background="@android:color/transparent"
     android:paddingBottom="@dimen/std_margin"
     android:paddingLeft="@dimen/std_margin"

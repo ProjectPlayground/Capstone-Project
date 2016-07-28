@@ -64,6 +64,13 @@ public class Util {
 
     }
 
+    public static String getFormattedDateFromTimeStamp(long timeStamp){
+        Date date = new Date(timeStamp);
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE MMM d, yyyy");
+        return formatter.format(date);
+
+    }
+
     public static String getTimeFromTimeStamp(long timeStamp){
         Date date = new Date(timeStamp);
         SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
