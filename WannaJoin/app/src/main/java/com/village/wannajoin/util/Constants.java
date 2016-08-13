@@ -15,6 +15,7 @@ public class Constants {
     public static final String FIREBASE_LOCATION_GROUP_MEMBERS = "groupMembers";
     public static final String FIREBASE_LOCATION_EVENT_MEMBERS = "eventMembers";
     public static final String FIREBASE_LOCATION_CONTACTS = "userContacts";
+    public static final String FIREBASE_LOCATION_MEMBER_STATUS = "status";
 
 
     public static final String EVENT_TITLE = "EventTitle";
@@ -23,6 +24,7 @@ public class Constants {
     public static final String EVENT_NOTES = "EventNotes";
     public static final String EVENT_LOCATION = "EventLocation";
     public static final String EVENT_ID = "EventId";
+
 
 
 }

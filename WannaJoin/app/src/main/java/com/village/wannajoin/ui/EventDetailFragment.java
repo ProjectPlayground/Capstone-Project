@@ -1,9 +1,12 @@
 package com.village.wannajoin.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -11,6 +14,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,8 +38,9 @@ public class EventDetailFragment extends Fragment {
     private Event mEvent;
     private ValueEventListener valueEventListener;
     DatabaseReference eventRef;
+    FirebaseUser firebaseUser ;
 
-  //  private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener;
 
     public EventDetailFragment() {
         // Required empty public constructor
@@ -59,6 +68,7 @@ public class EventDetailFragment extends Fragment {
             mEventId = getArguments().getString(Constants.EVENT_ID);
 
         }
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
@@ -104,11 +114,26 @@ public class EventDetailFragment extends Fragment {
                     notesEditText.setText(mEvent.getNotes());
                 }
                 ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(mEvent.getTitle());
+                String status = mEvent.getEventMembers().get(firebaseUser.getUid());
+                String[] statusArray = status.split("-");
+                if (mListener != null) {
+                    mListener.onFragmentInteraction(statusArray[1], String.valueOf(mEvent.getFromTime()));
+                }
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        FragmentManager fmanager = getChildFragmentManager();
+        Fragment fragment = fmanager.findFragmentById(R.id.location_map);
+        SupportMapFragment supportmapfragment = (SupportMapFragment)fragment;
+        supportmapfragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
 
             }
         });
@@ -120,7 +145,7 @@ public class EventDetailFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
-    }
+    }*/
 
     @Override
     public void onAttach(Context context) {
@@ -138,7 +163,7 @@ public class EventDetailFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-*/
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -149,10 +174,10 @@ public class EventDetailFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-   /* public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }*/
+        void onFragmentInteraction(String status, String fromTime);
+    }
 
     @Override
     public void onDestroy() {

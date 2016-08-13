@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -91,6 +92,20 @@ public class Util {
             sb.append(sa[i].substring(0,1).toUpperCase()+sa[i].substring(1));
         }
         return sb.toString();
+    }
+
+    public static String getMidNightTimeStamp(){
+        Date currentDate = Calendar.getInstance().getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        String currentDateString = formatter.format(currentDate);
+        Date utilDate = null;
+        try {
+            utilDate = formatter.parse(currentDateString);
+        }catch (ParseException e){
+            Log.d(LOG_TAG, e.toString());
+        }
+        long currentTimeStamp = utilDate.getTime();
+        return String.valueOf(currentTimeStamp);
     }
 
     public static void hideSoftKeyBoard(Activity activity){

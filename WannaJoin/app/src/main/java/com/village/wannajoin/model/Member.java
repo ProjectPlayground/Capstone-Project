@@ -12,6 +12,7 @@ public class Member {
     private String name;
     private String userId;
     private Uri photoUrl;
+    private String status;
     private HashMap<String, Object> timestampJoined;
 
 
@@ -28,6 +29,14 @@ public class Member {
         this.timestampJoined = timestampJoined;
     }
 
+    public Member(String name, String userId, Uri photoUrl,  String status, HashMap<String, Object> timestampJoined) {
+        this.name = name;
+        this.userId = userId;
+        this.photoUrl = photoUrl;
+        this.status = status;
+        this.timestampJoined = timestampJoined;
+    }
+
     public String getName() {
         return name;
     }
@@ -38,6 +47,14 @@ public class Member {
 
     public Uri getPhotoUrl() {
         return photoUrl;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status){
+        this.status = status;
     }
 
     public HashMap<String, Object> getTimestampJoined() {
@@ -53,6 +70,7 @@ public class Member {
         result.put("name", name);
         result.put("userId", userId);
         result.put("photoUrl", photoUrl);
+        result.put("status",status);
         result.put("timestampJoined", timestampJoined);
         return result;
     }

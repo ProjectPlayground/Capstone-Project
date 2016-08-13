@@ -17,10 +17,17 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.village.wannajoin.R;
 import com.village.wannajoin.util.Constants;
 
-public class EventDetailActivity extends AppCompatActivity {
+import java.util.HashMap;
+import java.util.Map;
+
+public class EventDetailActivity extends AppCompatActivity implements EventDetailFragment.OnFragmentInteractionListener  {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -37,6 +44,8 @@ public class EventDetailActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private String mEventId;
+    private String menuTitle;
+    private String fromTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +66,7 @@ public class EventDetailActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         mEventId = getIntent().getStringExtra(Constants.EVENT_ID);
+        menuTitle = "0";
     }
 
 
@@ -68,6 +78,16 @@ public class EventDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        MenuItem item = menu.findItem(R.id.action_join);
+        if (menuTitle.equals("0"))
+            item.setTitle(getString(R.string.join_button_text));
+        else
+            item.setTitle(getString(R.string.cancel_button_text));
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -75,11 +95,36 @@ public class EventDetailActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_join) {
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            DatabaseReference dbrefJoin = FirebaseDatabase.getInstance().getReference();
+            String newStatus=null;
+            String newStatus1 = null;
+            if (fromTime !=null) {
+                if (menuTitle.equals("0")) {
+                    newStatus = fromTime + "-1";
+                    newStatus1 = "1";
+                } else {
+                    newStatus = fromTime + "-0";
+                    newStatus1 = "0";
+                }
+                Map<String, Object> childUpdates = new HashMap<>();
+                //dbrefJoin.setValue(newStatus);
+                childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + mEventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + firebaseUser.getUid(), newStatus);
+                childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + mEventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + firebaseUser.getUid() + "/" + Constants.FIREBASE_LOCATION_MEMBER_STATUS, newStatus1);
+                dbrefJoin.updateChildren(childUpdates);
+            }
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(String status, String fromTime) {
+        menuTitle = status;
+        this.fromTime = fromTime;
+        invalidateOptionsMenu();
     }
 
     /**
@@ -133,6 +178,7 @@ public class EventDetailActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position){
                 case 0: return EventDetailFragment.newInstance(mEventId);
+                case 1: return EventMemberFragment.newInstance(mEventId);
             }
             return PlaceholderFragment.newInstance(position + 1);
         }

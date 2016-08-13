@@ -47,4 +47,5 @@
     <string name="empty_contact_list_text">Add a contact</string>
     <string name="title_activity_event_detail">Event Details</string>
     <string name="cancel_button_text">Cancel</string>
+    <string name="event_member_going">going</string>
 </resources>

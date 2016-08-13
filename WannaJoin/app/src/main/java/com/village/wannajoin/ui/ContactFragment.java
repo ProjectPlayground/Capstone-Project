@@ -303,12 +303,13 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
             newEvent.setNotes(i.getStringExtra(Constants.EVENT_NOTES));
             newEventRef.setValue(newEvent);
             Map<String, Object> childUpdates = new HashMap<>();
-            childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + firebaseUser.getUid(), new Member(firebaseUser.getDisplayName(), firebaseUser.getUid(), firebaseUser.getPhotoUrl(), timestampCreated).toMap());
+
+            childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + firebaseUser.getUid(), new Member(firebaseUser.getDisplayName(), firebaseUser.getUid(), firebaseUser.getPhotoUrl(), "1",timestampCreated).toMap());
             final String memberStatus = String.valueOf(eventFrom)+"-0";
             for (ContactAndGroup cg : contactAndGroupArrayList) {
                 if ((cg.getType() == 2) && (cg.isSelected())) {
                     childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + cg.getId(), memberStatus);
-                    childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + cg.getId(), new Member(cg.getName(), cg.getId(), cg.getPhotoUrl(), timestampCreated).toMap());
+                    childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + cg.getId(), new Member(cg.getName(), cg.getId(), cg.getPhotoUrl(), "0",timestampCreated).toMap());
                 }
                 if ((cg.getType() == 1) && (cg.isSelected())) {
                    //get group members and associate them with the event
@@ -320,6 +321,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
                             for(DataSnapshot ds: dataSnapshot.getChildren()){
                                 Member member = ds.getValue(Member.class);
                                 member.setTimestampJoined(timestampCreated);
+                                member.setStatus("0");
                                 groupUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + member.getUserId(), memberStatus);
                                 groupUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + member.getUserId(), member.toMap());
 

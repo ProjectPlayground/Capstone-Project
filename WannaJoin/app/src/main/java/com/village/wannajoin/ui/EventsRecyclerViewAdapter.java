@@ -21,7 +21,9 @@ import com.village.wannajoin.util.Constants;
 import com.village.wannajoin.util.Util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -68,16 +70,23 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 public void onJoin(int pos) {
                     String eventId = mEventList.get(pos).getEventId();
 
-                    DatabaseReference dbrefJoin = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).child(eventId).child(Constants.FIREBASE_LOCATION_EVENT_MEMBERS).child(firebaseUser.getUid());
+                    DatabaseReference dbrefJoin = FirebaseDatabase.getInstance().getReference();
                     String status = mEventList.get(pos).getEventMembers().get(firebaseUser.getUid());
                     String newStatus=null;
+                    String newStatus1 = null;
                     String[] statusArray = status.split("-");
                     if (statusArray[1].equals("0")){
                         newStatus = mEventList.get(pos).getFromTime()+"-1";
+                        newStatus1 = "1";
                     }else{
                         newStatus = mEventList.get(pos).getFromTime()+"-0";
+                        newStatus1 = "0";
                     }
-                    dbrefJoin.setValue(newStatus);
+                    Map<String, Object> childUpdates = new HashMap<>();
+                    //dbrefJoin.setValue(newStatus);
+                    childUpdates.put("/"+Constants.FIREBASE_LOCATION_EVENTS+"/"+eventId+"/"+Constants.FIREBASE_LOCATION_EVENT_MEMBERS+"/"+firebaseUser.getUid(),newStatus);
+                    childUpdates.put("/"+Constants.FIREBASE_LOCATION_EVENT_MEMBERS+"/"+eventId+"/"+Constants.FIREBASE_LOCATION_USERS+"/"+firebaseUser.getUid()+"/"+Constants.FIREBASE_LOCATION_MEMBER_STATUS,newStatus1);
+                    dbrefJoin.updateChildren(childUpdates);
                 }
 
                 @Override

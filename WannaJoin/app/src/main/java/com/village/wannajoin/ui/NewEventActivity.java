@@ -168,6 +168,7 @@ public class NewEventActivity extends AppCompatActivity
                 place.getAddress(), place.getPhoneNumber(), place.getWebsiteUri()).toString());*/
         mlocation.setText(place.getName()+"\n"+place.getAddress());
 
+
     }
 
     /**

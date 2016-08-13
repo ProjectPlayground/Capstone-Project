@@ -24,9 +24,13 @@ import com.village.wannajoin.model.Group;
 import com.village.wannajoin.util.ArrayFirebase;
 import com.village.wannajoin.util.Constants;
 import com.village.wannajoin.util.DividerItemDecoration;
+import com.village.wannajoin.util.Util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class EventFragment extends Fragment implements EventsRecyclerViewAdapter.OnClickedListener{
@@ -66,8 +70,8 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        long currentTimeStamp = Calendar.getInstance().getTimeInMillis();
-        mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).orderByChild("eventMembers/"+currentUserId).startAt(currentTimeStamp);
+
+        mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).orderByChild("eventMembers/"+currentUserId).startAt(Util.getMidNightTimeStamp());
        // mAdapter = new EventRecyclerViewAdapter(Event.class, R.layout.fragment_event,EventRecyclerViewAdapter.ViewHolder.class,mRef, getContext());
         mEventList = new ArrayList<>();
         Event emptyEvent = new Event(null,"No available events. Start by creating events and sharing with friends.",null,null,null,1,1,null,null);

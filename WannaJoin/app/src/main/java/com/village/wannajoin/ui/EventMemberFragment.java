@@ -1,17 +1,24 @@
 package com.village.wannajoin.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.database.DatabaseReference;
+
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.Query;
+
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Member;
+import com.village.wannajoin.util.ArrayFirebase;
 import com.village.wannajoin.util.Constants;
+import com.village.wannajoin.util.DividerItemDecoration;
 
 import java.util.ArrayList;
 
@@ -20,8 +27,9 @@ public class EventMemberFragment extends Fragment {
 
     private String mEventId;
     private ArrayList<Member> mEventMemberList;
-    private ValueEventListener valueEventListener;
-    DatabaseReference eventMemberRef;
+    Query mRef;
+    ArrayFirebase mSnapshotsEventMembers;
+    EventMembersRecyclerViewAdapter mAdapter;
     //private OnFragmentInteractionListener mListener;
 
     public EventMemberFragment() {
@@ -43,7 +51,42 @@ public class EventMemberFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mEventId = getArguments().getString(Constants.EVENT_ID);
+            mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENT_MEMBERS).child(mEventId).child(Constants.FIREBASE_LOCATION_USERS).orderByChild("name");
+            mEventMemberList = new ArrayList<>();
+            mAdapter = new EventMembersRecyclerViewAdapter(getActivity(),mEventMemberList);
+            mSnapshotsEventMembers = new ArrayFirebase(mRef);
+            mSnapshotsEventMembers.setOnChangedListener(new ArrayFirebase.OnChangedListener() {
+                @Override
+                public void onChanged(EventType type, int index, int oldIndex) {
+                    switch (type) {
+                        case Added:
+                            Member member = mSnapshotsEventMembers.getItem(index).getValue(Member.class);
+                            mEventMemberList.add(index,member);
+                            mAdapter.notifyItemInserted(index);
+                            break;
+                        case Changed:
+                            Member memberc = mSnapshotsEventMembers.getItem(index).getValue(Member.class);
+                            mEventMemberList.set(index,memberc);
+                            mAdapter.notifyItemChanged(index);
+                            break;
+                        case Removed:
+                            mEventMemberList.remove(index);
+                            mAdapter.notifyItemRemoved(index);
+                            break;
+                        case Moved:
+                            //notifyItemMoved(oldIndex, index);
+                            break;
+                        default:
+                            throw new IllegalStateException("Incomplete case statement");
+                    }
+                }
+            });
+
+
+
+
         }
+
     }
 
     @Override
@@ -51,8 +94,11 @@ public class EventMemberFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event_member, container, false);
-        eventMemberRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENT_MEMBERS).child(mEventId).child(Constants.FIREBASE_LOCATION_USERS);
-        
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.event_member_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
+        recyclerView.setAdapter(mAdapter);
         return view;
     }
 
@@ -94,4 +140,11 @@ public class EventMemberFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }*/
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSnapshotsEventMembers.cleanup();
+        // mAdapter.cleanup();
+    }
 }
