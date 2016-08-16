@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +45,8 @@ public class NewEventActivity extends AppCompatActivity
     Button mStartTime;
     Button mEndTime;
     TextView mlocation;
+    double mLocationLat;
+    double mLocationLng;
     EditText mTitle;
     EditText mNotes;
    // EditText mMembers;
@@ -167,8 +171,8 @@ public class NewEventActivity extends AppCompatActivity
        /* mlocation.setText(formatPlaceDetails(getResources(), place.getName(), place.getId(),
                 place.getAddress(), place.getPhoneNumber(), place.getWebsiteUri()).toString());*/
         mlocation.setText(place.getName()+"\n"+place.getAddress());
-
-
+        mLocationLat = place.getLatLng().latitude;
+        mLocationLng = place.getLatLng().longitude;
     }
 
     /**
@@ -236,6 +240,8 @@ public class NewEventActivity extends AppCompatActivity
         i.putExtra(Constants.EVENT_TO,eventTo);
         i.putExtra(Constants.EVENT_NOTES, eventNotes);
         i.putExtra(Constants.EVENT_LOCATION,eventLocationName);
+        i.putExtra(Constants.EVENT_LOCATION_LAT,mLocationLat);
+        i.putExtra(Constants.EVENT_LOCATION_LNG,mLocationLng);
         startActivity(i);
 
         /*

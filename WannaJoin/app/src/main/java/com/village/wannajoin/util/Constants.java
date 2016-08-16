@@ -1,5 +1,7 @@
 package com.village.wannajoin.util;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by richa on 3/29/16.
  */
@@ -23,6 +25,8 @@ public class Constants {
     public static final String EVENT_TO = "EventTo";
     public static final String EVENT_NOTES = "EventNotes";
     public static final String EVENT_LOCATION = "EventLocation";
+    public static final String EVENT_LOCATION_LAT = "EventLocationLat";
+    public static final String EVENT_LOCATION_LNG = "EventLocationLng";
     public static final String EVENT_ID = "EventId";
 
 

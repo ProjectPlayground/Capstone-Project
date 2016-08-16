@@ -2,6 +2,7 @@ package com.village.wannajoin.model;
 
 import android.net.Uri;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.ServerValue;
 import com.village.wannajoin.util.Constants;
 
@@ -14,6 +15,8 @@ public class Event {
     private String eventId;
     private String title;
     private String location;
+    private double locationLat;
+    private double locationLng;
     private String ownerId;
     private String ownerName;
     private Uri ownerPhotoUrl;
@@ -61,7 +64,21 @@ public class Event {
         this.location = location;
     }
 
+    public double getLocationLat() {
+        return locationLat;
+    }
 
+    public void setLocationLat(double locationLat) {
+        this.locationLat = locationLat;
+    }
+
+    public double getLocationLng() {
+        return locationLng;
+    }
+
+    public void setLocationLng(double locationLng) {
+        this.locationLng = locationLng;
+    }
 
     public long getFromTime() {
         return fromTime;

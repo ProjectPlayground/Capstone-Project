@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -301,6 +302,8 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
             Event newEvent = new Event(eventId, i.getStringExtra(Constants.EVENT_TITLE), firebaseUser.getUid(), firebaseUser.getDisplayName(), firebaseUser.getPhotoUrl(), i.getLongExtra(Constants.EVENT_FROM, 0), i.getLongExtra(Constants.EVENT_TO, 0), timestampCreated, eventMembers);
             newEvent.setLocation(i.getStringExtra(Constants.EVENT_LOCATION));
             newEvent.setNotes(i.getStringExtra(Constants.EVENT_NOTES));
+            newEvent.setLocationLat(i.getDoubleExtra(Constants.EVENT_LOCATION_LAT,0.0));
+            newEvent.setLocationLng(i.getDoubleExtra(Constants.EVENT_LOCATION_LNG,0.0));
             newEventRef.setValue(newEvent);
             Map<String, Object> childUpdates = new HashMap<>();
 

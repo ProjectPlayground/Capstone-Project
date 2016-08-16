@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -11,12 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +46,8 @@ public class EventDetailFragment extends Fragment {
     private ValueEventListener valueEventListener;
     DatabaseReference eventRef;
     FirebaseUser firebaseUser ;
+    private GoogleMap mMap;
+    private LatLng mEventLocationLatLng;
 
     private OnFragmentInteractionListener mListener;
 
@@ -120,6 +129,14 @@ public class EventDetailFragment extends Fragment {
                     mListener.onFragmentInteraction(statusArray[1], String.valueOf(mEvent.getFromTime()));
                 }
 
+                mEventLocationLatLng = new LatLng(mEvent.getLocationLat(),mEvent.getLocationLng());
+                if (mMap!=null){
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mEventLocationLatLng, 10));
+                    Marker marker = mMap.addMarker(new MarkerOptions()
+                            .position(mEventLocationLatLng)
+                            .title(mEvent.getTitle()));
+                }
+
             }
 
             @Override
@@ -128,13 +145,28 @@ public class EventDetailFragment extends Fragment {
             }
         });
 
+        //Add google map
+
+        GoogleMapOptions options = new GoogleMapOptions();
+        options.mapType(GoogleMap.MAP_TYPE_NORMAL)
+                .compassEnabled(false)
+                .zoomControlsEnabled(false);
         FragmentManager fmanager = getChildFragmentManager();
-        Fragment fragment = fmanager.findFragmentById(R.id.location_map);
-        SupportMapFragment supportmapfragment = (SupportMapFragment)fragment;
+
+        SupportMapFragment supportmapfragment = SupportMapFragment.newInstance(options);
+        FragmentTransaction fragmentTransaction = fmanager.beginTransaction();
+        fragmentTransaction.add(R.id.location_map, supportmapfragment);
+        fragmentTransaction.commit();
         supportmapfragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-
+                mMap = googleMap;
+                if (mEventLocationLatLng!=null){
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mEventLocationLatLng, 10));
+                    Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(mEventLocationLatLng)
+                        .title(mEvent.getTitle()));
+                }
             }
         });
         return view;
