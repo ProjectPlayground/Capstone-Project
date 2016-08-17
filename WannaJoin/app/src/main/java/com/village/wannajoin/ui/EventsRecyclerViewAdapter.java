@@ -38,7 +38,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     FirebaseUser firebaseUser ;
 
     interface OnClickedListener {
-        void onItemClicked(String eventId);
+        void onItemClicked(Event event);
     }
 
     public EventsRecyclerViewAdapter(Context mContext, ArrayList<Event> mEventList, OnClickedListener mListener) {
@@ -58,7 +58,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             EmptyViewHolder vh = new EmptyViewHolder(view, new EmptyViewHolder.EmptyViewHolderClicks() {
                 @Override
                 public void onViewClicked() {
-                    mListener.onItemClicked("");
+                    mListener.onItemClicked(null);
 
                 }
             });
@@ -91,7 +91,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 @Override
                 public void onDetail(int pos) {
-                    mListener.onItemClicked(mEventList.get(pos).getEventId());
+                    mListener.onItemClicked(mEventList.get(pos));
                 }
             });
             return vh;

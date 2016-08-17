@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.village.wannajoin.R;
+import com.village.wannajoin.model.Event;
 import com.village.wannajoin.util.Constants;
 
 import java.util.HashMap;
@@ -44,6 +45,7 @@ public class EventDetailActivity extends AppCompatActivity implements EventDetai
      */
     private ViewPager mViewPager;
     private String mEventId;
+    private Event mEvent;
     private String menuTitle;
     private String fromTime;
 
@@ -64,9 +66,14 @@ public class EventDetailActivity extends AppCompatActivity implements EventDetai
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.event_tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        mEvent = getIntent().getParcelableExtra(Constants.EVENT);
+        mEventId = mEvent.getEventId();
 
-        mEventId = getIntent().getStringExtra(Constants.EVENT_ID);
-        menuTitle = "0";
+        getSupportActionBar().setTitle(mEvent.getTitle());
+        String status = mEvent.getEventMembers().get(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        String[] statusArray = status.split("-");
+        menuTitle = statusArray[1];
+        fromTime = String.valueOf(mEvent.getFromTime());
     }
 
 
@@ -84,6 +91,11 @@ public class EventDetailActivity extends AppCompatActivity implements EventDetai
             item.setTitle(getString(R.string.join_button_text));
         else
             item.setTitle(getString(R.string.cancel_button_text));
+        MenuItem itemDelete = menu.findItem(R.id.action_delete);
+        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(mEvent.getOwnerId())){
+            itemDelete.setVisible(true);
+        }else
+            itemDelete.setVisible(false);
         return true;
     }
 
@@ -114,6 +126,16 @@ public class EventDetailActivity extends AppCompatActivity implements EventDetai
                 childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + mEventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + firebaseUser.getUid() + "/" + Constants.FIREBASE_LOCATION_MEMBER_STATUS, newStatus1);
                 dbrefJoin.updateChildren(childUpdates);
             }
+            return true;
+        }
+
+        if (id == R.id.action_delete) {
+            DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + mEventId,null);
+            childUpdates.put("/"+Constants.FIREBASE_LOCATION_EVENT_MEMBERS+"/"+mEventId,null);
+            dbref.updateChildren(childUpdates);
+            finish();
             return true;
         }
 

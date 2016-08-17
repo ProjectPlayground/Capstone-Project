@@ -1,6 +1,8 @@
 package com.village.wannajoin.model;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.ServerValue;
@@ -11,7 +13,7 @@ import java.util.HashMap;
 /**
  * Created by richa on 3/29/16.
  */
-public class Event {
+public class Event implements Parcelable {
     private String eventId;
     private String title;
     private String location;
@@ -47,6 +49,35 @@ public class Event {
         this.type = 1;
 
     }
+
+    protected Event(Parcel in) {
+        eventId = in.readString();
+        title = in.readString();
+        location = in.readString();
+        locationLat = in.readDouble();
+        locationLng = in.readDouble();
+        ownerId = in.readString();
+        ownerName = in.readString();
+        fromTime = in.readLong();
+        toTime = in.readLong();
+        notes = in.readString();
+        timestampLastChanged = in.readHashMap(ServerValue.class.getClassLoader());
+        timestampCreated = in.readHashMap(ServerValue.class.getClassLoader());
+        eventMembers = in.readHashMap(String.class.getClassLoader());
+        ownerPhotoUrl = in.readParcelable(Uri.class.getClassLoader());
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
 
     public String getTitle() {
         return title;
@@ -144,4 +175,26 @@ public class Event {
         this.type = type;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(eventId);
+        dest.writeString(title);
+        dest.writeString(location);
+        dest.writeDouble(locationLat);
+        dest.writeDouble(locationLng);
+        dest.writeString(ownerId);
+        dest.writeString(ownerName);
+        dest.writeLong(fromTime);
+        dest.writeLong(toTime);
+        dest.writeString(notes);
+        dest.writeMap(timestampLastChanged);
+        dest.writeMap(timestampCreated);
+        dest.writeMap(eventMembers);
+        dest.writeParcelable(ownerPhotoUrl,0);
+    }
 }

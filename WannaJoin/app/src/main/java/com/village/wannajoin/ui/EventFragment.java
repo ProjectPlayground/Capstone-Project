@@ -189,10 +189,10 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
     }
 
     @Override
-    public void onItemClicked(String eventId) {
-        if (!eventId.equals("")){
+    public void onItemClicked(Event event) {
+        if (event!=null){
             Intent i = new Intent(getActivity(),EventDetailActivity.class);
-            i.putExtra(Constants.EVENT_ID, eventId);
+            i.putExtra(Constants.EVENT,event);
             startActivity(i);
         }else{
             Intent i = new Intent(getActivity(),NewEventActivity.class);

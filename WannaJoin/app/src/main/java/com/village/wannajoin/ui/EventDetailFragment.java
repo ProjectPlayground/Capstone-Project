@@ -110,6 +110,33 @@ public class EventDetailFragment extends Fragment {
                 }else {
                     setViewAndChildrenEnabled(locationLL,View.VISIBLE);
                     locationTextView.setText(mEvent.getLocation());
+                    mEventLocationLatLng = new LatLng(mEvent.getLocationLat(),mEvent.getLocationLng());
+
+                    //Add google map
+                    if (mEventLocationLatLng!=null) {
+                        GoogleMapOptions options = new GoogleMapOptions();
+                        options.mapType(GoogleMap.MAP_TYPE_NORMAL)
+                                .compassEnabled(false)
+                                .zoomControlsEnabled(false);
+                        FragmentManager fmanager = getChildFragmentManager();
+
+                        SupportMapFragment supportmapfragment = SupportMapFragment.newInstance(options);
+                        FragmentTransaction fragmentTransaction = fmanager.beginTransaction();
+                        fragmentTransaction.add(R.id.location_map, supportmapfragment);
+                        fragmentTransaction.commit();
+                        supportmapfragment.getMapAsync(new OnMapReadyCallback() {
+                            @Override
+                            public void onMapReady(GoogleMap googleMap) {
+                                mMap = googleMap;
+
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mEventLocationLatLng, 10));
+                                Marker marker = mMap.addMarker(new MarkerOptions()
+                                        .position(mEventLocationLatLng)
+                                        .title(mEvent.getTitle()));
+
+                            }
+                        });
+                    }
 
                 }
                 buttonStartDate.setText(Util.getFormattedDateFromTimeStamp(mEvent.getFromTime()));
@@ -129,13 +156,7 @@ public class EventDetailFragment extends Fragment {
                     mListener.onFragmentInteraction(statusArray[1], String.valueOf(mEvent.getFromTime()));
                 }
 
-                mEventLocationLatLng = new LatLng(mEvent.getLocationLat(),mEvent.getLocationLng());
-                if (mMap!=null){
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mEventLocationLatLng, 10));
-                    Marker marker = mMap.addMarker(new MarkerOptions()
-                            .position(mEventLocationLatLng)
-                            .title(mEvent.getTitle()));
-                }
+
 
             }
 
@@ -145,30 +166,7 @@ public class EventDetailFragment extends Fragment {
             }
         });
 
-        //Add google map
 
-        GoogleMapOptions options = new GoogleMapOptions();
-        options.mapType(GoogleMap.MAP_TYPE_NORMAL)
-                .compassEnabled(false)
-                .zoomControlsEnabled(false);
-        FragmentManager fmanager = getChildFragmentManager();
-
-        SupportMapFragment supportmapfragment = SupportMapFragment.newInstance(options);
-        FragmentTransaction fragmentTransaction = fmanager.beginTransaction();
-        fragmentTransaction.add(R.id.location_map, supportmapfragment);
-        fragmentTransaction.commit();
-        supportmapfragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                mMap = googleMap;
-                if (mEventLocationLatLng!=null){
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mEventLocationLatLng, 10));
-                    Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(mEventLocationLatLng)
-                        .title(mEvent.getTitle()));
-                }
-            }
-        });
         return view;
     }
 
