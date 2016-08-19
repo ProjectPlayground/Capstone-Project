@@ -29,14 +29,14 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     Context mContext;
     String mActivityName;
     ArrayList<ContactAndGroup> contactAndGroupArrayList;
-    EmptyViewClickedListener mListner;
+    ViewClickedListener mListner;
 
-    interface EmptyViewClickedListener {
-        void onItemClicked(int type);
+    interface ViewClickedListener {
+        void onItemClicked(int type, ContactAndGroup contactAndGroup);
     }
 
 
-    public ContactsRecyclerViewAdapter(Context context, String activityName, ArrayList<ContactAndGroup> cgList, EmptyViewClickedListener listener) {
+    public ContactsRecyclerViewAdapter(Context context, String activityName, ArrayList<ContactAndGroup> cgList, ViewClickedListener listener) {
         mContext = context;
         mActivityName = activityName;
         contactAndGroupArrayList = cgList;
@@ -63,11 +63,26 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             return vh;
         }else if(viewType ==-1) {
             view = layoutInflater.inflate(R.layout.empty_recycler_view, parent, false);
-            EmptyViewHolder vh = new EmptyViewHolder(view);
+            EmptyViewHolder vh = new EmptyViewHolder(view, new EmptyViewHolder.EmptyViewHolderClicks() {
+                @Override
+                public void onViewClicked(int pos) {
+                    if (getItem(pos).isGroup())
+                        mListner.onItemClicked(1, null);
+                    else
+                        mListner.onItemClicked(2, null);
+                }
+            });
             return vh;
         }else{
             view = layoutInflater.inflate(R.layout.contact_list_item, parent, false);
-            ContactsRecyclerViewAdapter.ViewHolder vh = new ContactsRecyclerViewAdapter.ViewHolder(view);
+            ContactsRecyclerViewAdapter.ViewHolder vh = new ContactsRecyclerViewAdapter.ViewHolder(view, new ViewHolder.ViewHolderClicks() {
+                @Override
+                public void onDetail(int pos) {
+                    if (getItem(pos).isGroup())
+                        mListner.onItemClicked(1, getItem(pos));
+
+                }
+            });
             return vh;
         }
 
@@ -83,7 +98,7 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }else if(holder.getItemViewType()==-1){
             ContactsRecyclerViewAdapter.EmptyViewHolder evh = (ContactsRecyclerViewAdapter.EmptyViewHolder)holder;
             evh.defaultText.setText(getItem(position).getName());
-            evh.defaultText.setOnClickListener(new View.OnClickListener() {
+           /* evh.defaultText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (getItem(position).isGroup())
@@ -91,7 +106,7 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     else
                         mListner.onItemClicked(2);
                 }
-            });
+            });*/
         }
         else {
             ContactsRecyclerViewAdapter.ViewHolder vh = (ContactsRecyclerViewAdapter.ViewHolder)holder;
@@ -134,15 +149,26 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        public ViewHolderClicks mClickListener;
         public CircleImageView contactImageView;
         public TextView contactName;
         public CheckBox isSelected;
-        public ViewHolder(View view) {
+        public ViewHolder(View view, ViewHolderClicks clickListener) {
             super(view);
             contactImageView = (CircleImageView) view.findViewById(R.id.contact_image_view);
             contactName = (TextView) view.findViewById(R.id.contact_name);
             isSelected = (CheckBox) view.findViewById(R.id.select_box);
+            view.setOnClickListener(this);
+            mClickListener = clickListener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            mClickListener.onDetail(getAdapterPosition());
+        }
+        public interface ViewHolderClicks {
+            void onDetail(int pos);
         }
     }
 
@@ -154,11 +180,23 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public static class EmptyViewHolder extends RecyclerView.ViewHolder{
+    public static class EmptyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView defaultText;
-        public EmptyViewHolder(View view) {
+        public EmptyViewHolderClicks mEVClickListener;
+        public EmptyViewHolder(View view, EmptyViewHolderClicks mEVClickListener) {
             super(view);
             defaultText = (TextView) view.findViewById(R.id.empty_view);
+            this.mEVClickListener = mEVClickListener;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mEVClickListener.onViewClicked(getAdapterPosition());
+        }
+
+        public interface EmptyViewHolderClicks {
+            void onViewClicked(int pos);
         }
     }
 }

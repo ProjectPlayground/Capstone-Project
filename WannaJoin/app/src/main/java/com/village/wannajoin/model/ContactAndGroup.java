@@ -1,11 +1,13 @@
 package com.village.wannajoin.model;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by richa on 6/21/16.
  */
-public class ContactAndGroup implements Comparable {
+public class ContactAndGroup implements Comparable, Parcelable {
     private String name;
     private String id;
     private Uri photoUrl;
@@ -21,6 +23,27 @@ public class ContactAndGroup implements Comparable {
         this.isSelected = false;
         this.type = type;
     }
+
+    protected ContactAndGroup(Parcel in) {
+        name = in.readString();
+        id = in.readString();
+        isGroup = in.readByte() != 0;
+        isSelected = in.readByte() != 0;
+        type = in.readInt();
+        photoUrl = in.readParcelable(Uri.class.getClassLoader());
+    }
+
+    public static final Creator<ContactAndGroup> CREATOR = new Creator<ContactAndGroup>() {
+        @Override
+        public ContactAndGroup createFromParcel(Parcel in) {
+            return new ContactAndGroup(in);
+        }
+
+        @Override
+        public ContactAndGroup[] newArray(int size) {
+            return new ContactAndGroup[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -67,5 +90,20 @@ public class ContactAndGroup implements Comparable {
             return 1;
         else return this.name.compareTo(((ContactAndGroup)another).getName());
 
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(id);
+        dest.writeByte((byte) (isGroup ? 1 : 0));
+        dest.writeByte((byte) (isSelected ? 1 : 0));
+        dest.writeInt(type);
+        dest.writeParcelable(photoUrl,0);
     }
 }

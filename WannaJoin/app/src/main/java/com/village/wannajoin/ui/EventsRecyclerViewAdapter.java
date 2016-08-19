@@ -158,9 +158,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ViewHolderClicks mClickListener;
         public TextView mOwner;
-        //public TextView mOwnerTemp;
         public TextView mTitleView;
-        //public TextView mTitleTemp;
         public TextView mLocationView;
         public TextView mPeople;
         public CircleImageView messengerImageView;
@@ -176,8 +174,6 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             messengerImageView = (CircleImageView) itemView.findViewById(R.id.messengerImageView);
             mDate = (TextView) view.findViewById(R.id.date);
             mTime = (TextView) view.findViewById(R.id.time);
-            // mOwnerTemp = (TextView) view.findViewById(R.id.owner_temp);
-            // mTitleTemp = (TextView) view.findViewById(R.id.title_temp);
             mPeople = (TextView) view.findViewById(R.id.people_going);
             mJoinButton = (Button) view.findViewById(R.id.join_button);
             mJoinButton.setOnClickListener(this);

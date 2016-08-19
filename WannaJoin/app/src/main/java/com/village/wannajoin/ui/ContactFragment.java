@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ContactFragment extends Fragment implements ContactsRecyclerViewAdapter.EmptyViewClickedListener{
+public class ContactFragment extends Fragment implements ContactsRecyclerViewAdapter.ViewClickedListener{
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
@@ -351,23 +351,32 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
     }
 
     @Override
-    public void onItemClicked(int type) {
-        if(type ==1){
-            //create a new group
-            Intent i = new Intent(getActivity(),NewGroupActivity.class);
-            startActivity(i);
-        }else if(type==2){
-            //add a contact
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-            if (prev != null) {
-                ft.remove(prev);
-            }
-            ft.addToBackStack(null);
+    public void onItemClicked(int type, ContactAndGroup contactAndGroup) {
+        if (contactAndGroup ==null ){
+            if (type == 1) {
+                //create a new group
+                Intent i = new Intent(getActivity(), NewGroupActivity.class);
+                startActivity(i);
+            } else if (type == 2) {
+                //add a contact
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
 
-            // Create and show the dialog.
-            DialogFragment newFragment = NewContactDialogFragment.newInstance();
-            newFragment.show(ft, "dialog");
+                // Create and show the dialog.
+                DialogFragment newFragment = NewContactDialogFragment.newInstance();
+                newFragment.show(ft, "dialog");
+            }
+        }else{
+            if (type == 1) {
+                //create a new group
+                Intent i = new Intent(getActivity(), GroupDetailActivity.class);
+                i.putExtra(Constants.GROUP, contactAndGroup);
+                startActivity(i);
+            }
         }
 
     }
