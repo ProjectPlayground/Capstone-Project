@@ -63,6 +63,7 @@ public class NewContactDialogFragment extends DialogFragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        getDialog().setTitle(R.string.new_contact_dialog_title);
         View v = inflater.inflate(R.layout.dialog_fragment_new_contact, container, false);
         mEditTextContact = (EditText) v.findViewById(R.id.edit_text_contact);
         mEditTextContact.setOnEditorActionListener(new TextView.OnEditorActionListener() {

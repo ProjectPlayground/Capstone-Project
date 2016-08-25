@@ -50,4 +50,9 @@
     <string name="event_member_going">going</string>
     <string name="menu_delete_title">Delete</string>
     <string name="title_activity_group_detail">Group Detail</string>
+    <string name="menu_edit_title">Edit</string>
+    <string name="contact_email_label">Email:</string>
+    <string name="contact_detail_dialog_title">Contact Detail</string>
+    <string name="ok_button_text">Ok</string>
+    <string name="new_contact_dialog_title">New Contact</string>
 </resources>

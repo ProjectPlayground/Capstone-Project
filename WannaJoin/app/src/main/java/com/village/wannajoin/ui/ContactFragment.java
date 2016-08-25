@@ -376,6 +376,19 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
                 Intent i = new Intent(getActivity(), GroupDetailActivity.class);
                 i.putExtra(Constants.GROUP, contactAndGroup);
                 startActivity(i);
+            }else if(type ==2){
+                //show contact detail dialog fragment
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag("contactdetail");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
+
+                // Create and show the dialog.
+                DialogFragment newFragment = ContactDetailDialogFragment.newInstance(contactAndGroup.getId(),contactAndGroup.getName(),contactAndGroup.getPhotoUrl());
+                newFragment.show(ft, "contactdetail");
+
             }
         }
 

@@ -1,8 +1,10 @@
 package com.village.wannajoin.ui;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,24 +27,43 @@ public class GroupDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
     Context mContext;
     ArrayList<Member> mGroupMemberList;
+    ViewClickedListener mListner;
 
-    public GroupDetailRecyclerViewAdapter (Context mContext, ArrayList<Member> memberList){
+    public GroupDetailRecyclerViewAdapter (Context mContext, ArrayList<Member> memberList, ViewClickedListener listener){
         this.mContext = mContext;
         mGroupMemberList = memberList;
+        mListner = listener;
+    }
+
+    interface ViewClickedListener {
+        void onItemClicked(Member member);
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.group_member_list, parent, false);
-        GroupDetailRecyclerViewAdapter.ViewHolder vh = new GroupDetailRecyclerViewAdapter.ViewHolder(view);
+        GroupDetailRecyclerViewAdapter.ViewHolder vh = new GroupDetailRecyclerViewAdapter.ViewHolder(view, new GroupDetailRecyclerViewAdapter.ViewHolder.ViewHolderClicks() {
+            @Override
+            public void onDetail(int pos) {
+                mListner.onItemClicked(getItem(pos));
+            }
+        });
+
         return vh;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        GroupDetailRecyclerViewAdapter.ViewHolder vh = (GroupDetailRecyclerViewAdapter.ViewHolder)holder;
+        ViewHolder vh = (ViewHolder)holder;
         vh.contactName.setText(Util.capitalizeWords(mGroupMemberList.get(position).getName()));
-        vh.contactName.setTextSize(mContext.getResources().getDimension(R.dimen.primary_text_size));
+       vh.contactName.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+               mContext.getResources().getDimension(R.dimen.primary_text_size));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            vh.contactName.setTextColor(mContext.getResources().getColor(R.color.bodyTextColor,mContext.getTheme()));
+        }else{
+            vh.contactName.setTextColor(mContext.getResources().getColor(R.color.bodyTextColor));
+        }
         if (mGroupMemberList.get(position).getPhotoUrl() == null) {
             vh.contactImageView
                     .setImageDrawable(ContextCompat
@@ -62,15 +83,31 @@ public class GroupDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         return mGroupMemberList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public Member getItem(int position){
+        return mGroupMemberList.get(position);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        public ViewHolderClicks mClickListener;
         public CircleImageView contactImageView;
         public TextView contactName;
         public ImageButton removeMember;
-        public ViewHolder(View view) {
+        public ViewHolder(View view, ViewHolderClicks clickListener) {
             super(view);
             contactImageView = (CircleImageView) view.findViewById(R.id.user_image);
             contactName = (TextView) view.findViewById(R.id.user_name);
             removeMember = (ImageButton) view.findViewById(R.id.remove_user);
+            mClickListener = clickListener;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mClickListener.onDetail(getAdapterPosition());
+        }
+
+        public interface ViewHolderClicks {
+            void onDetail(int pos);
         }
     }
 }

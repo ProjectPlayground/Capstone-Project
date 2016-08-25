@@ -20,4 +20,5 @@
     <dimen name="edit_text_min_height">48dp</dimen>
     <dimen name="group_name_image_margin">16dp</dimen>
     <dimen name="dialog_fragment_min_width">300dp</dimen>
+    <dimen name="group_photo_height">250dp</dimen>
 </resources>

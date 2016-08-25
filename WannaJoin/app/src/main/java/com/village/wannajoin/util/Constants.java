@@ -30,6 +30,9 @@ public class Constants {
     public static final String EVENT_ID = "EventId";
     public static final String EVENT = "Event";
     public static final String GROUP = "Group";
+    public static final String CONTACT_ID = "ContactId";
+    public static final String CONTACT_NAME = "ContactName";
+    public static final String CONTACT_PHOTO_URL = "ContactPhotoUrl";
 
 
 

@@ -78,9 +78,8 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             ContactsRecyclerViewAdapter.ViewHolder vh = new ContactsRecyclerViewAdapter.ViewHolder(view, new ViewHolder.ViewHolderClicks() {
                 @Override
                 public void onDetail(int pos) {
-                    if (getItem(pos).isGroup())
-                        mListner.onItemClicked(1, getItem(pos));
-
+                        int type = getItem(pos).getType();
+                        mListner.onItemClicked(type, getItem(pos));
                 }
             });
             return vh;
