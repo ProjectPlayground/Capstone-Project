@@ -38,7 +38,6 @@ public class WelcomeActivity extends AppCompatActivity {
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
                             .setProviders(
-                                    AuthUI.EMAIL_PROVIDER,
                                     AuthUI.GOOGLE_PROVIDER)
                             .build(),
                     RC_SIGN_IN);
@@ -74,6 +73,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
                     User newUser = new User(firebaseUser.getDisplayName(), firebaseUser.getUid(),firebaseUser.getEmail(), firebaseUser.getPhotoUrl(),timestampJoined);
                     userLocation.setValue(newUser);
+                }else{
+                    User user = dataSnapshot.getValue(User.class);
+                    User updateUser = new User(firebaseUser.getDisplayName(), firebaseUser.getUid(),firebaseUser.getEmail(), firebaseUser.getPhotoUrl(),user.getTimestampJoined());
+                    userLocation.setValue(updateUser);
                 }
             }
 
@@ -91,7 +94,6 @@ public class WelcomeActivity extends AppCompatActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setProviders(
-                                AuthUI.EMAIL_PROVIDER,
                                 AuthUI.GOOGLE_PROVIDER)
                         .build(),
                 RC_SIGN_IN);
