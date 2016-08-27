@@ -108,6 +108,22 @@ public class Util {
         return String.valueOf(currentTimeStamp);
     }
 
+    public static String getMidNightTimeStampNextDay(){
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE,1);
+        Date nextDate = c.getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        String nextDateString = formatter.format(nextDate);
+        Date utilDate = null;
+        try {
+            utilDate = formatter.parse(nextDateString);
+        }catch (ParseException e){
+            Log.d(LOG_TAG, e.toString());
+        }
+        long nextTimeStamp = utilDate.getTime();
+        return String.valueOf(nextTimeStamp);
+    }
+
     public static void hideSoftKeyBoard(Activity activity){
         View view = activity.getCurrentFocus();
 

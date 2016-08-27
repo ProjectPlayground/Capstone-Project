@@ -21,4 +21,7 @@
     <dimen name="group_name_image_margin">16dp</dimen>
     <dimen name="dialog_fragment_min_width">300dp</dimen>
     <dimen name="group_photo_height">250dp</dimen>
+    <dimen name="today_widget_min_width">180dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="list_view_margin">5dp</dimen>
 </resources>

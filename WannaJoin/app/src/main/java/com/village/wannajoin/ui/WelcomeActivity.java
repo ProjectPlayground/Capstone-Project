@@ -39,6 +39,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             .createSignInIntentBuilder()
                             .setProviders(
                                     AuthUI.GOOGLE_PROVIDER)
+                            .setTheme(R.style.SignInTheme)
                             .build(),
                     RC_SIGN_IN);
         }else{
@@ -95,6 +96,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         .createSignInIntentBuilder()
                         .setProviders(
                                 AuthUI.GOOGLE_PROVIDER)
+                        .setTheme(R.style.SignInTheme)
                         .build(),
                 RC_SIGN_IN);
     }
