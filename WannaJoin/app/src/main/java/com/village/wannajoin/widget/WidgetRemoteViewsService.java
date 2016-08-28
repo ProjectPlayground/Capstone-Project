@@ -1,17 +1,12 @@
 package com.village.wannajoin.widget;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Binder;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
+
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,9 +18,7 @@ import com.village.wannajoin.model.Event;
 import com.village.wannajoin.util.Constants;
 import com.village.wannajoin.util.Util;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by richa on 8/26/16.
@@ -58,7 +51,7 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
                 if (FirebaseAuth.getInstance().getCurrentUser() !=null) {
 
                     String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    Query dbRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).orderByChild("eventMembers/" + currentUserId).startAt(Util.getMidNightTimeStamp()).endAt(Util.getMidNightTimeStampNextDay());
+                    Query dbRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).orderByChild("eventMembers/" + currentUserId).startAt(Util.getMidNightTimeStamp());//.endAt(Util.getMidNightTimeStampNextDay());
                     dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
