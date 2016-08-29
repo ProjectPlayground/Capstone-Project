@@ -55,6 +55,6 @@
     <string name="contact_detail_dialog_title">Contact Detail</string>
     <string name="ok_button_text">Ok</string>
     <string name="new_contact_dialog_title">New Contact</string>
-    <string name="widget_name">Today\'s Events</string>
+    <string name="widget_name">WannaJoin Events</string>
     <string name="empty_list_text">No events.</string>
 </resources>

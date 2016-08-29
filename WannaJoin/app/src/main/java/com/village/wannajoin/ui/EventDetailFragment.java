@@ -104,59 +104,60 @@ public class EventDetailFragment extends Fragment {
         valueEventListener = eventRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mEvent = dataSnapshot.getValue(Event.class);
-                if (mEvent.getLocation().equals("")){
-                    setViewAndChildrenEnabled(locationLL,View.GONE);
-                }else {
-                    setViewAndChildrenEnabled(locationLL,View.VISIBLE);
-                    locationTextView.setText(mEvent.getLocation());
-                    mEventLocationLatLng = new LatLng(mEvent.getLocationLat(),mEvent.getLocationLng());
+                if (dataSnapshot.exists()) {
+                    mEvent = dataSnapshot.getValue(Event.class);
+                    if (mEvent.getLocation().equals("")) {
+                        setViewAndChildrenEnabled(locationLL, View.GONE);
+                    } else {
+                        setViewAndChildrenEnabled(locationLL, View.VISIBLE);
+                        locationTextView.setText(mEvent.getLocation());
+                        mEventLocationLatLng = new LatLng(mEvent.getLocationLat(), mEvent.getLocationLng());
 
-                    //Add google map
-                    if (mEventLocationLatLng!=null) {
-                        GoogleMapOptions options = new GoogleMapOptions();
-                        options.mapType(GoogleMap.MAP_TYPE_NORMAL)
-                                .compassEnabled(false)
-                                .zoomControlsEnabled(false);
-                        FragmentManager fmanager = getChildFragmentManager();
+                        //Add google map
+                        if (mEventLocationLatLng != null) {
+                            GoogleMapOptions options = new GoogleMapOptions();
+                            options.mapType(GoogleMap.MAP_TYPE_NORMAL)
+                                    .compassEnabled(false)
+                                    .zoomControlsEnabled(false);
+                            FragmentManager fmanager = getChildFragmentManager();
 
-                        SupportMapFragment supportmapfragment = SupportMapFragment.newInstance(options);
-                        FragmentTransaction fragmentTransaction = fmanager.beginTransaction();
-                        fragmentTransaction.add(R.id.location_map, supportmapfragment);
-                        fragmentTransaction.commit();
-                        supportmapfragment.getMapAsync(new OnMapReadyCallback() {
-                            @Override
-                            public void onMapReady(GoogleMap googleMap) {
-                                mMap = googleMap;
+                            SupportMapFragment supportmapfragment = SupportMapFragment.newInstance(options);
+                            FragmentTransaction fragmentTransaction = fmanager.beginTransaction();
+                            fragmentTransaction.add(R.id.location_map, supportmapfragment);
+                            fragmentTransaction.commit();
+                            supportmapfragment.getMapAsync(new OnMapReadyCallback() {
+                                @Override
+                                public void onMapReady(GoogleMap googleMap) {
+                                    mMap = googleMap;
 
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mEventLocationLatLng, 10));
-                                Marker marker = mMap.addMarker(new MarkerOptions()
-                                        .position(mEventLocationLatLng)
-                                        .title(mEvent.getTitle()));
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mEventLocationLatLng, 10));
+                                    Marker marker = mMap.addMarker(new MarkerOptions()
+                                            .position(mEventLocationLatLng)
+                                            .title(mEvent.getTitle()));
 
-                            }
-                        });
+                                }
+                            });
+                        }
+
+                    }
+                    buttonStartDate.setText(Util.getFormattedDateFromTimeStamp(mEvent.getFromTime()));
+                    buttonStartTime.setText(Util.getTimeFromTimeStamp(mEvent.getFromTime()));
+                    buttonEndDate.setText(Util.getFormattedDateFromTimeStamp(mEvent.getToTime()));
+                    buttonEndTime.setText(Util.getTimeFromTimeStamp(mEvent.getToTime()));
+                    if (mEvent.getNotes().equals("")) {
+                        setViewAndChildrenEnabled(notesLL, View.GONE);
+                    } else {
+                        setViewAndChildrenEnabled(notesLL, View.VISIBLE);
+                        notesEditText.setText(mEvent.getNotes());
+                    }
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mEvent.getTitle());
+                    String status = mEvent.getEventMembers().get(firebaseUser.getUid());
+                    String[] statusArray = status.split("-");
+                    if (mListener != null) {
+                        mListener.onFragmentInteraction(statusArray[1], String.valueOf(mEvent.getFromTime()));
                     }
 
                 }
-                buttonStartDate.setText(Util.getFormattedDateFromTimeStamp(mEvent.getFromTime()));
-                buttonStartTime.setText(Util.getTimeFromTimeStamp(mEvent.getFromTime()));
-                buttonEndDate.setText(Util.getFormattedDateFromTimeStamp(mEvent.getToTime()));
-                buttonEndTime.setText(Util.getTimeFromTimeStamp(mEvent.getToTime()));
-                if (mEvent.getNotes().equals("")){
-                    setViewAndChildrenEnabled(notesLL,View.GONE);
-                }else {
-                    setViewAndChildrenEnabled(notesLL,View.VISIBLE);
-                    notesEditText.setText(mEvent.getNotes());
-                }
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(mEvent.getTitle());
-                String status = mEvent.getEventMembers().get(firebaseUser.getUid());
-                String[] statusArray = status.split("-");
-                if (mListener != null) {
-                    mListener.onFragmentInteraction(statusArray[1], String.valueOf(mEvent.getFromTime()));
-                }
-
-
 
             }
 

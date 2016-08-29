@@ -3,6 +3,6 @@
     android:minWidth="@dimen/today_widget_min_width"
     android:minHeight="@dimen/today_widget_min_width"
     android:updatePeriodMillis="10800000"
-    android:initialLayout="@layout/widget_today_events"
+    android:initialLayout="@layout/widget_events"
    >
 </appwidget-provider>

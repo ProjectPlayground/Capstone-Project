@@ -304,6 +304,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
             newEvent.setNotes(i.getStringExtra(Constants.EVENT_NOTES));
             newEvent.setLocationLat(i.getDoubleExtra(Constants.EVENT_LOCATION_LAT,0.0));
             newEvent.setLocationLng(i.getDoubleExtra(Constants.EVENT_LOCATION_LNG,0.0));
+            newEvent.setLocationId(i.getStringExtra(Constants.EVENT_LOCATION_ID));
             newEventRef.setValue(newEvent);
             Map<String, Object> childUpdates = new HashMap<>();
 

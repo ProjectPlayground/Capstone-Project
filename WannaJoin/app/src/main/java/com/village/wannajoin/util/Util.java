@@ -2,6 +2,7 @@ package com.village.wannajoin.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -15,6 +16,8 @@ import java.util.Date;
  * Created by richa on 3/29/16.
  */
 public class Util {
+    public static final String ACTION_DATA_UPDATED =
+            "com.village.wannajoin.ACTION_DATA_UPDATED";
     private static final String LOG_TAG = Util.class.getSimpleName();
     public static String formatDate(int year, int month, int day){
         String date = year + "/" + month + "/" + day;
@@ -131,6 +134,13 @@ public class Util {
             InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    public static void updateWidgets(Context context) {
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                .setPackage(context.getPackageName());
+        context.sendBroadcast(dataUpdatedIntent);
     }
 
 

@@ -27,6 +27,7 @@ public class Constants {
     public static final String EVENT_LOCATION = "EventLocation";
     public static final String EVENT_LOCATION_LAT = "EventLocationLat";
     public static final String EVENT_LOCATION_LNG = "EventLocationLng";
+    public static final String EVENT_LOCATION_ID = "EventLocationId";
     public static final String EVENT_ID = "EventId";
     public static final String EVENT = "Event";
     public static final String GROUP = "Group";

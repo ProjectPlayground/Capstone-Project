@@ -38,6 +38,7 @@ public class NewEventActivity extends AppCompatActivity
     TextView mlocation;
     double mLocationLat;
     double mLocationLng;
+    String mLocationId;
     EditText mTitle;
     EditText mNotes;
    // EditText mMembers;
@@ -164,6 +165,7 @@ public class NewEventActivity extends AppCompatActivity
         mlocation.setText(place.getName()+"\n"+place.getAddress());
         mLocationLat = place.getLatLng().latitude;
         mLocationLng = place.getLatLng().longitude;
+        mLocationId = place.getId();
     }
 
     /**
@@ -233,6 +235,7 @@ public class NewEventActivity extends AppCompatActivity
         i.putExtra(Constants.EVENT_LOCATION,eventLocationName);
         i.putExtra(Constants.EVENT_LOCATION_LAT,mLocationLat);
         i.putExtra(Constants.EVENT_LOCATION_LNG,mLocationLng);
+        i.putExtra(Constants.EVENT_LOCATION_ID,mLocationId);
         startActivity(i);
 
         /*

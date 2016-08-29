@@ -3,6 +3,7 @@ package com.village.wannajoin.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -11,15 +12,16 @@ import android.widget.RemoteViews;
 
 import com.village.wannajoin.R;
 import com.village.wannajoin.ui.WelcomeActivity;
+import com.village.wannajoin.util.Util;
 
 /**
  * Created by richa on 8/26/16.
  */
-public class TodayWidgetProvider extends AppWidgetProvider {
+public class EventsWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_today_events);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_events);
 
             // Create an Intent to launch MainActivity
             Intent intent = new Intent(context, WelcomeActivity.class);
@@ -45,12 +47,12 @@ public class TodayWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
-        /*if (myFetchService.ACTION_DATA_UPDATED.equals(intent.getAction())) {
+        if (Util.ACTION_DATA_UPDATED.equals(intent.getAction())) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
                     new ComponentName(context, getClass()));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);
-        }*/
+        }
     }
 
     /**

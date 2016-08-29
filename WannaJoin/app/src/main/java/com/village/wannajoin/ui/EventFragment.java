@@ -109,6 +109,7 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
                 }
             }
         });
+        Util.updateWidgets(getContext());
 
     }
 
@@ -199,4 +200,5 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
             startActivity(i);
         }
     }
+
 }

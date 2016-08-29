@@ -19,6 +19,7 @@ public class Event implements Parcelable {
     private String location;
     private double locationLat;
     private double locationLng;
+    private String locationId; //place id from google place api
     private String ownerId;
     private String ownerName;
     private Uri ownerPhotoUrl;
@@ -56,6 +57,7 @@ public class Event implements Parcelable {
         location = in.readString();
         locationLat = in.readDouble();
         locationLng = in.readDouble();
+        locationId = in.readString();
         ownerId = in.readString();
         ownerName = in.readString();
         fromTime = in.readLong();
@@ -109,6 +111,14 @@ public class Event implements Parcelable {
 
     public void setLocationLng(double locationLng) {
         this.locationLng = locationLng;
+    }
+
+    public String getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(String locationId) {
+        this.locationId = locationId;
     }
 
     public long getFromTime() {
@@ -187,6 +197,7 @@ public class Event implements Parcelable {
         dest.writeString(location);
         dest.writeDouble(locationLat);
         dest.writeDouble(locationLng);
+        dest.writeString(locationId);
         dest.writeString(ownerId);
         dest.writeString(ownerName);
         dest.writeLong(fromTime);
