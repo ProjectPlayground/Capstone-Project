@@ -199,7 +199,7 @@ public class EventDetailActivity extends AppCompatActivity implements EventDetai
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position){
-                case 0: return EventDetailFragment.newInstance(mEventId);
+                case 0: return EventDetailFragment.newInstance(mEvent);
                 case 1: return EventMemberFragment.newInstance(mEventId);
             }
             return PlaceholderFragment.newInstance(position + 1);

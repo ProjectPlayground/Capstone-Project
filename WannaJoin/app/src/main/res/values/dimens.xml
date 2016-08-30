@@ -24,4 +24,5 @@
     <dimen name="today_widget_min_width">180dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="list_view_margin">5dp</dimen>
+    <integer name="list_column_count">1</integer>
 </resources>

@@ -128,6 +128,12 @@ public class MainActivity extends AppCompatActivity  {
 
         //noinspection SimplifiableIfStatement
 
+        if (id == R.id.action_favorite_location) {
+            Intent i = new Intent(this,FavoriteLocationsActivity.class);
+            startActivity(i);
+            return true;
+        }
+
         if (id == R.id.action_settings) {
             return true;
         }

@@ -57,4 +57,9 @@
     <string name="new_contact_dialog_title">New Contact</string>
     <string name="widget_name">WannaJoin Events</string>
     <string name="empty_list_text">No events.</string>
+    <string name="title_activity_favorite_locations">Favorite Locations</string>
+    <string name="action_favorite_locations">Favorite Locations</string>
+    <string name="empty_view_no_locations">No locations</string>
+    <string name="location_saved_string">Location saved</string>
+
 </resources>

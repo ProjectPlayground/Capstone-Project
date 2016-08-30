@@ -3,13 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_favorite_location"
         android:orderInCategory="201"
+        android:title="@string/action_favorite_locations"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="202"
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_signout"
-        android:orderInCategory="202"
+        android:orderInCategory="203"
         android:title="@string/action_signout"
         app:showAsAction="never" />
 </menu>
