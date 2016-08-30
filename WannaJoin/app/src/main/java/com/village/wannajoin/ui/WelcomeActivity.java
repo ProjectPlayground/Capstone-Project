@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +41,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             .setProviders(
                                     AuthUI.GOOGLE_PROVIDER)
                             .setTheme(R.style.SignInTheme)
+                            .setLogo(R.drawable.wannajoin)
                             .build(),
                     RC_SIGN_IN);
         }else{
@@ -58,6 +60,8 @@ public class WelcomeActivity extends AppCompatActivity {
                 Intent i = new Intent(this,MainActivity.class);
                 startActivity(i);
                 finish();
+            }else{
+                Toast.makeText(this,"Sign in failed. Please try again.",Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -97,6 +101,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         .setProviders(
                                 AuthUI.GOOGLE_PROVIDER)
                         .setTheme(R.style.SignInTheme)
+                        .setLogo(R.drawable.wannajoin)
                         .build(),
                 RC_SIGN_IN);
     }

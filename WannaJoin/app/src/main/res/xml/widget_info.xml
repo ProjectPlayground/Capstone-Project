@@ -3,6 +3,7 @@
     android:minWidth="@dimen/today_widget_min_width"
     android:minHeight="@dimen/today_widget_min_width"
     android:updatePeriodMillis="10800000"
+    android:previewImage="@drawable/wannajoin_ori_portrait"
     android:initialLayout="@layout/widget_events"
    >
 </appwidget-provider>
