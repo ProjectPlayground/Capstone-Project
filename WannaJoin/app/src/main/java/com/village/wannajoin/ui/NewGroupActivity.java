@@ -153,30 +153,41 @@ public class NewGroupActivity extends AppCompatActivity {
 
     private void saveGroup(){
 
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference newGroupRef = dbRef.child(Constants.FIREBASE_LOCATION_GROUPS).push();
+        if (mGroupName.getText().toString().equals("")){
+            Toast.makeText(this, R.string.group_name_data_error,Toast.LENGTH_SHORT).show();
+        }else{
+            if (groupMembers.size()==0){
+                Toast.makeText(this, R.string.min_group_member_data_error,Toast.LENGTH_SHORT).show();
+            }else{
+                //save data in firebase
+                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+                DatabaseReference newGroupRef = dbRef.child(Constants.FIREBASE_LOCATION_GROUPS).push();
 
 
-        final String groupId = newGroupRef.getKey();
-        HashMap<String, Object> timestampCreated = new HashMap<>();
-        timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
-        HashMap<String, Boolean> groupMembersMap = new HashMap<>();
-        Map<String, Object> childUpdates = new HashMap<>();
-        for(User user: groupMembers){
-            groupMembersMap.put(user.getUserId(),true);
-            childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+user.getUserId(), new Member(user.getName(),user.getUserId(),user.getPhotoUrl(),timestampCreated).toMap());
+                final String groupId = newGroupRef.getKey();
+                HashMap<String, Object> timestampCreated = new HashMap<>();
+                timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+                HashMap<String, Boolean> groupMembersMap = new HashMap<>();
+                Map<String, Object> childUpdates = new HashMap<>();
+                for(User user: groupMembers){
+                    groupMembersMap.put(user.getUserId(),true);
+                    childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+user.getUserId(), new Member(user.getName(),user.getUserId(),user.getPhotoUrl(),timestampCreated).toMap());
+                }
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                groupMembersMap.put(currentUserId,true);
+                childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+currentUserId, new Member(currentUser.getDisplayName(),currentUser.getUid(),currentUser.getPhotoUrl(),timestampCreated).toMap());
+
+                Group group = new Group(mGroupName.getText().toString(),groupId, currentUserId,null, timestampCreated,groupMembersMap);
+
+
+                childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUPS+"/" + groupId, group.toMap());
+
+                dbRef.updateChildren(childUpdates);
+                finish();
+            }
         }
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        groupMembersMap.put(currentUserId,true);
-        childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+currentUserId, new Member(currentUser.getDisplayName(),currentUser.getUid(),currentUser.getPhotoUrl(),timestampCreated).toMap());
-
-        Group group = new Group(mGroupName.getText().toString(),groupId, currentUserId,null, timestampCreated,groupMembersMap);
 
 
-        childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUPS+"/" + groupId, group.toMap());
-
-        dbRef.updateChildren(childUpdates);
-        finish();
     }
 }

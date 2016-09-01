@@ -61,5 +61,9 @@
     <string name="action_favorite_locations">Favorite Locations</string>
     <string name="empty_view_no_locations">No locations</string>
     <string name="location_saved_string">Location saved</string>
+    <string name="event_title_data_error">Please enter event title.</string>
+    <string name="event_timing_data_error">Please correct event timing.</string>
+    <string name="group_name_data_error">Please enter group name</string>
+    <string name="min_group_member_data_error">Please add atleast one member to the group</string>
 
 </resources>

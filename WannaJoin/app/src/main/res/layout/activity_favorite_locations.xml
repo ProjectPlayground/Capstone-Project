@@ -52,7 +52,8 @@
         android:layout_gravity="center"
         android:textAlignment="center"
         android:visibility="gone"
-        android:text="@string/empty_view_no_locations"/>
+        android:text="@string/empty_view_no_locations"
+        android:contentDescription="@string/empty_view_no_locations"/>
 
 
 

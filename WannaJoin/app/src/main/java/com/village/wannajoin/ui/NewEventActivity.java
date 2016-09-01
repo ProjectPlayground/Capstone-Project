@@ -127,10 +127,26 @@ public class NewEventActivity extends AppCompatActivity
 
     @Override
     public void onDateSet(int viewId, int year, int month, int day) {
-        if (viewId == R.id.event_start_date)
-            mStartDate.setText(Util.formatDate(year,month,day));
-        if (viewId == R.id.event_end_date)
-            mEndDate.setText(Util.formatDate(year,month,day));
+        if (viewId == R.id.event_start_date) {
+            String startDate = Util.formatDate(year, month, day);
+            String endDate = mEndDate.getText().toString();
+            if (Util.isDateBefore(startDate,endDate)){
+                mStartDate.setText(startDate);
+            }else{
+                mStartDate.setText(startDate);
+                mEndDate.setText(startDate);
+            }
+        }
+        if (viewId == R.id.event_end_date) {
+            String endDate = Util.formatDate(year, month, day);
+            String startDate = mStartDate.getText().toString();
+            if (Util.isDateBefore(startDate,endDate)){
+                mEndDate.setText(endDate);
+            }else{
+                mStartDate.setText(endDate);
+                mEndDate.setText(endDate);
+            }
+        }
 
     }
 
@@ -227,16 +243,27 @@ public class NewEventActivity extends AppCompatActivity
         String eventNotes= mNotes.getText().toString();
         String eventLocationName = mlocation.getText().toString();
 
-        Intent i = new Intent(NewEventActivity.this, ShareEventActivity.class);
-        i.putExtra(Constants.EVENT_TITLE,eventTitle);
-        i.putExtra(Constants.EVENT_FROM, eventFrom);
-        i.putExtra(Constants.EVENT_TO,eventTo);
-        i.putExtra(Constants.EVENT_NOTES, eventNotes);
-        i.putExtra(Constants.EVENT_LOCATION,eventLocationName);
-        i.putExtra(Constants.EVENT_LOCATION_LAT,mLocationLat);
-        i.putExtra(Constants.EVENT_LOCATION_LNG,mLocationLng);
-        i.putExtra(Constants.EVENT_LOCATION_ID,mLocationId);
-        startActivity(i);
+        if (eventTitle.equals("")){
+            Toast.makeText(this, R.string.event_title_data_error,Toast.LENGTH_SHORT).show();
+        }else{
+            if (eventFrom>eventTo){
+                Toast.makeText(this, R.string.event_timing_data_error,Toast.LENGTH_SHORT).show();
+            }else{
+
+                Intent i = new Intent(NewEventActivity.this, ShareEventActivity.class);
+                i.putExtra(Constants.EVENT_TITLE,eventTitle);
+                i.putExtra(Constants.EVENT_FROM, eventFrom);
+                i.putExtra(Constants.EVENT_TO,eventTo);
+                i.putExtra(Constants.EVENT_NOTES, eventNotes);
+                i.putExtra(Constants.EVENT_LOCATION,eventLocationName);
+                i.putExtra(Constants.EVENT_LOCATION_LAT,mLocationLat);
+                i.putExtra(Constants.EVENT_LOCATION_LNG,mLocationLng);
+                i.putExtra(Constants.EVENT_LOCATION_ID,mLocationId);
+                startActivity(i);
+            }
+        }
+
+
 
         /*
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();

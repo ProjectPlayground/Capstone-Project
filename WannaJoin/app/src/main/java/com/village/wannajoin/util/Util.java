@@ -3,6 +3,8 @@ package com.village.wannajoin.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -143,5 +145,26 @@ public class Util {
         context.sendBroadcast(dataUpdatedIntent);
     }
 
-
+    public static boolean isDateBefore(String d1, String d2)    {
+        boolean b = false;
+        SimpleDateFormat dfDate = new SimpleDateFormat("EEEE MMM d, yyyy");
+        try {
+            if(dfDate.parse(d1).before(dfDate.parse(d2)))
+            {
+                b = true;//If start date is before end date
+            }
+            else if(dfDate.parse(d1).equals(dfDate.parse(d2)))
+            {
+                b = true;//If two dates are equal
+            }
+            else
+            {
+                b = false; //If start date is after the end date
+            }
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return b;
+    }
 }
