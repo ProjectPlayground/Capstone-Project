@@ -1,7 +1,9 @@
 package com.village.wannajoin.ui;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -374,9 +376,19 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
         }else{
             if (type == 1) {
                 //create a new group
-                Intent i = new Intent(getActivity(), GroupDetailActivity.class);
-                i.putExtra(Constants.GROUP, contactAndGroup);
-                startActivity(i);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle();
+                    // startActivity(i, bundle);
+                    Intent i = new Intent(getActivity(), GroupDetailActivity.class);
+                    i.putExtra(Constants.GROUP, contactAndGroup);
+                    startActivity(i,bundle);
+                } else {
+                    Intent i = new Intent(getActivity(), GroupDetailActivity.class);
+                    i.putExtra(Constants.GROUP, contactAndGroup);
+                    startActivity(i);
+                }
+
+
             }else if(type ==2){
                 //show contact detail dialog fragment
                 FragmentTransaction ft = getFragmentManager().beginTransaction();

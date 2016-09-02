@@ -60,7 +60,7 @@
         <activity
             android:name=".ui.EventDetailActivity"
             android:label="@string/title_activity_event_detail"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/ActivityFade">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.village.wannajoin.ui.MainActivity" />
@@ -68,10 +68,7 @@
         <activity
             android:name=".ui.GroupDetailActivity"
             android:label="@string/title_activity_group_detail"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.village.wannajoin.ui.MainActivity" />
+            android:theme="@style/ActivityFade">
         </activity>
 
         <receiver android:name=".widget.EventsWidgetProvider">

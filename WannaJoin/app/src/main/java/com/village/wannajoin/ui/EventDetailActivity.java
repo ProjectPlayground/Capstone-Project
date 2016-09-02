@@ -139,6 +139,11 @@ public class EventDetailActivity extends AppCompatActivity implements EventDetai
             return true;
         }
 
+        if (id ==android.R.id.home){
+            supportFinishAfterTransition();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

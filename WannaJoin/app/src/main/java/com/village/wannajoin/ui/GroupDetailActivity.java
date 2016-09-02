@@ -1,5 +1,6 @@
 package com.village.wannajoin.ui;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -85,6 +86,10 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id ==android.R.id.home){
+            supportFinishAfterTransition();
+            return true;
+        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_delete) {
@@ -93,9 +98,16 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
             childUpdates.put("/" + Constants.FIREBASE_LOCATION_GROUPS + "/" + mContactAndGroup.getId(),null);
             childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS+"/"+mContactAndGroup.getId(),null);
             dbref.updateChildren(childUpdates);
-            finish();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                finishAfterTransition();
+            }else{
+                finish();
+            }
             return true;
         }
+
+
+
         return super.onOptionsItemSelected(item);
     }
 

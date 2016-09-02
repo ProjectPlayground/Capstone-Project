@@ -1,7 +1,9 @@
 package com.village.wannajoin.ui;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -192,9 +194,16 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
     @Override
     public void onItemClicked(Event event) {
         if (event!=null){
-            Intent i = new Intent(getActivity(),EventDetailActivity.class);
-            i.putExtra(Constants.EVENT,event);
-            startActivity(i);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle();
+                Intent i = new Intent(getActivity(), EventDetailActivity.class);
+                i.putExtra(Constants.EVENT, event);
+                startActivity(i, bundle);
+            }else {
+                Intent i = new Intent(getActivity(), EventDetailActivity.class);
+                i.putExtra(Constants.EVENT, event);
+                startActivity(i);
+            }
         }else{
             Intent i = new Intent(getActivity(),NewEventActivity.class);
             startActivity(i);
