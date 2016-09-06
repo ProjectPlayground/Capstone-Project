@@ -106,8 +106,11 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
                 views.setTextViewText(R.id.title,eventsData.get(position).getTitle());
                 views.setTextViewText(R.id.location,eventsData.get(position).getLocation() );
 
-                views.setTextViewText(R.id.date,Util.getDateFromTimeStamp(eventsData.get(position).getFromTime()));
-                views.setTextViewText(R.id.time,Util.getTimeFromTimeStamp(eventsData.get(position).getFromTime()));
+                String dateString = Util.getDateFromTimeStamp(eventsData.get(position).getFromTime());
+                String timeString = Util.getTimeFromTimeStamp(eventsData.get(position).getFromTime());
+
+                views.setTextViewText(R.id.date,dateString);
+                views.setTextViewText(R.id.time,timeString);
                /* (eventsData.get(position).getOwnerPhotoUrl() != null) {
                     views.setImageViewUri(R.id.messengerImageView,eventsData.get(position).getOwnerPhotoUrl());
                 }else{
@@ -121,7 +124,18 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
                             count++;
                     }
                 }
-                views.setTextViewText(R.id.people_going,"+"+count+" going");
+                views.setTextViewText(R.id.people_going,"+"+count+" "+getString(R.string.event_member_going));
+                if (eventsData.get(position).getLocation().equals("")){
+                    if (count>1)
+                        views.setContentDescription(R.id.widget_list_item,getString(R.string.event_list_item_content_description2,eventsData.get(position).getOwnerName(),eventsData.get(position).getTitle(),dateString,timeString,count));
+                    else
+                        views.setContentDescription(R.id.widget_list_item,getString(R.string.event_list_item_content_description1,eventsData.get(position).getOwnerName(),eventsData.get(position).getTitle(),dateString,timeString,count));
+                }else {
+                    if (count>1)
+                        views.setContentDescription(R.id.widget_list_item,getString(R.string.event_list_item_content_description2l,eventsData.get(position).getOwnerName(),eventsData.get(position).getTitle(),dateString,timeString,eventsData.get(position).getLocation(),count));
+                    else
+                        views.setContentDescription(R.id.widget_list_item,getString(R.string.event_list_item_content_description1l,eventsData.get(position).getOwnerName(),eventsData.get(position).getTitle(),dateString,timeString,eventsData.get(position).getLocation(),count));
+                }
 
 
                 final Intent fillInIntent = new Intent();
@@ -130,11 +144,6 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
 
                 return views;
             }
-
-            private void setRemoteContentDescription(RemoteViews views, int viewId, String description) {
-                views.setContentDescription(viewId, description);
-            }
-
 
             @Override
             public RemoteViews getLoadingView() {

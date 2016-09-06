@@ -65,5 +65,11 @@
     <string name="event_timing_data_error">Please correct event timing.</string>
     <string name="group_name_data_error">Please enter group name</string>
     <string name="min_group_member_data_error">Please add atleast one member to the group</string>
+    <string name="new_event_menu_label">New Event</string>
+    <string name="event_list_item_content_description1l">%1$s invited you to %2$s on %3$s at %4$s. Location of the event is %5$s. %6$d person is going.</string>
+    <string name="event_list_item_content_description2l">%1$s invited you to %2$s on %3$s at %4$s. Location of the event is %5$s. %6$d people are going.</string>
+    <string name="event_list_item_content_description1">%1$s invited you to %2$s on %3$s at %4$s. %5$d person is going.</string>
+    <string name="event_list_item_content_description2">%1$s invited you to %2$s on %3$s at %4$s. %5$d people are going.</string>
+    <string name="favorite_location_button">favorite location</string>
 
 </resources>

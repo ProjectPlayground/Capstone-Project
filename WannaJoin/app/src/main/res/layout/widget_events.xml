@@ -58,7 +58,8 @@
             android:gravity="center"
             android:textSize="@dimen/primary_text_size"
             android:textColor="@color/bodyTextColor"
-            android:text="@string/empty_list_text"/>
+            android:text="@string/empty_list_text"
+            android:contentDescription="@string/empty_list_text"/>
     </FrameLayout>
 
 </LinearLayout>

@@ -1,7 +1,6 @@
 package com.village.wannajoin.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import com.village.wannajoin.util.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -104,6 +102,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         if(holder.getItemViewType()==-1){
             EventsRecyclerViewAdapter.EmptyViewHolder evh = (EventsRecyclerViewAdapter.EmptyViewHolder)holder;
             evh.defaultText.setText(mEventList.get(position).getTitle());
+            evh.itemView.setContentDescription(mEventList.get(position).getTitle());
         }else {
 
             EventsRecyclerViewAdapter.ViewHolder viewHolder = (EventsRecyclerViewAdapter.ViewHolder) holder;
@@ -130,8 +129,10 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 viewHolder.mJoinButton.setText(R.string.cancel_button_text);
             else
                 viewHolder.mJoinButton.setText(R.string.join_button_text);
-            viewHolder.mDate.setText(Util.getDateFromTimeStamp(mEventList.get(position).getFromTime()));
-            viewHolder.mTime.setText(Util.getTimeFromTimeStamp(mEventList.get(position).getFromTime()));
+            String dateString = Util.getDateFromTimeStamp(mEventList.get(position).getFromTime());
+            String timeString = Util.getTimeFromTimeStamp(mEventList.get(position).getFromTime());
+            viewHolder.mDate.setText(dateString);
+            viewHolder.mTime.setText(timeString);
             int count=0;
             for(String s:mEventList.get(position).getEventMembers().values()){
                 if (s!=null) {
@@ -140,8 +141,18 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         count++;
                 }
             }
-            viewHolder.mPeople.setText("+"+count+" going");
-
+            viewHolder.mPeople.setText("+"+count+ " "+mContext.getString(R.string.event_member_going));
+            if (mEventList.get(position).getLocation().equals("")){
+                if (count>1)
+                    viewHolder.itemView.setContentDescription(mContext.getString(R.string.event_list_item_content_description2,owner,mEventList.get(position).getTitle(),dateString,timeString,count));
+                else
+                    viewHolder.itemView.setContentDescription(mContext.getString(R.string.event_list_item_content_description1,owner,mEventList.get(position).getTitle(),dateString,timeString,count));
+            }else {
+                if (count > 1)
+                    viewHolder.itemView.setContentDescription(mContext.getString(R.string.event_list_item_content_description2l, owner, mEventList.get(position).getTitle(), dateString, timeString, mEventList.get(position).getLocation(), count));
+                else
+                    viewHolder.itemView.setContentDescription(mContext.getString(R.string.event_list_item_content_description1l, owner, mEventList.get(position).getTitle(), dateString, timeString, mEventList.get(position).getLocation(), count));
+            }
         }
     }
 

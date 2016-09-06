@@ -82,10 +82,14 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                if(position==0)
-                    mFab.setImageResource(R.drawable.ic_add_white_24dp);
-                else if(position ==1)
+                if(position==0) {
+                    mFab.setImageResource(R.drawable.ic_note_add_white_24dp);
+                    mFab.setContentDescription(getString(R.string.new_event_menu_label));
+                }
+                else if(position ==1) {
                     mFab.setImageResource(R.drawable.ic_person_add_white_24dp);
+                    mFab.setContentDescription(getString(R.string.new_contact_menu_label));
+                }
             }
         };
         mViewPager.addOnPageChangeListener(pageChangeListener);
@@ -139,9 +143,9 @@ public class MainActivity extends AppCompatActivity  {
             return true;
         }
 
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
         if (id == R.id.action_signout) {
             AuthUI.getInstance()
                     .signOut(this)

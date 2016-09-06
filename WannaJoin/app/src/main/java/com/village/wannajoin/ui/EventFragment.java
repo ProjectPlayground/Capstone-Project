@@ -5,12 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -112,6 +117,7 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
             }
         });
         Util.updateWidgets(getContext());
+        setHasOptionsMenu(true);
 
     }
 
@@ -183,6 +189,26 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
         // TODO: Update argument type and name
         void onListFragmentInteraction(Event event);
     }*/
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_event_fragment,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if(id == R.id.new_event){
+            Intent i = new Intent(getActivity(),NewEventActivity.class);
+            startActivity(i);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onDestroy() {

@@ -76,6 +76,7 @@ public class GroupDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         }
 
         vh.removeMember.setVisibility(View.GONE);
+        vh.itemView.setContentDescription(mGroupMemberList.get(position).getName());
     }
 
     @Override

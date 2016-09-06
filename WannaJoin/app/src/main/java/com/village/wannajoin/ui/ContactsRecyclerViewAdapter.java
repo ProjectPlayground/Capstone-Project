@@ -94,9 +94,11 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (holder.getItemViewType()==0){
             ContactsRecyclerViewAdapter.LabelViewHolder lvh = (ContactsRecyclerViewAdapter.LabelViewHolder)holder;
             lvh.label.setText(getItem(position).getName());
+            lvh.itemView.setContentDescription(getItem(position).getName());
         }else if(holder.getItemViewType()==-1){
             ContactsRecyclerViewAdapter.EmptyViewHolder evh = (ContactsRecyclerViewAdapter.EmptyViewHolder)holder;
             evh.defaultText.setText(getItem(position).getName());
+            evh.itemView.setContentDescription(getItem(position).getName());
            /* evh.defaultText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -114,18 +116,24 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             if (mActivityName.equals("MainActivity"))
                 vh.isSelected.setVisibility(View.GONE);
             vh.contactName.setText(getItem(position).getName());
+            int imageId=R.drawable.ic_account_circle_black_48dp;
+            if(getItem(position).getType()==1){
+                imageId = R.drawable.ic_group_black_36dp;
+            }else if (getItem(position).getType()==2){
+                imageId = R.drawable.ic_account_circle_black_48dp;
+            }
             if (getItem(position).getPhotoUrl() == null) {
                     vh.contactImageView
                             .setImageDrawable(ContextCompat
                                     .getDrawable(mContext,
-                                            R.drawable.ic_account_circle_black_48dp));
+                                            imageId));
 
             } else {
                 Glide.with(mContext)
                         .load(getItem(position).getPhotoUrl())
                         .into(vh.contactImageView);
             }
-
+            vh.itemView.setContentDescription(getItem(position).getName());
             vh.isSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

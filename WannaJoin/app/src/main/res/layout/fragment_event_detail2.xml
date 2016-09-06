@@ -51,6 +51,7 @@
                         android:layout_height="36dp"
                         android:src="@drawable/ic_grade_black_36dp"
                         android:background="@android:color/transparent"
+                        android:contentDescription="@string/favorite_location_button"
                         android:tint="@color/colorAccent"/>
 
                 </LinearLayout>
