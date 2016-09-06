@@ -88,6 +88,7 @@
             android:layout_height="wrap_content"
             android:text="@string/menu_delete_title"
             android:textColor="@color/colorPrimary"
+            android:contentDescription="@string/menu_delete_title"
             style="?attr/borderlessButtonStyle"
             />
         <Button
@@ -96,6 +97,7 @@
             android:layout_height="wrap_content"
             android:text="@string/ok_button_text"
             android:textColor="@color/colorPrimary"
+            android:contentDescription="@string/ok_button_text"
             style="?attr/borderlessButtonStyle"
             />
     </LinearLayout>

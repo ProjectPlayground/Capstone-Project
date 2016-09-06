@@ -42,6 +42,7 @@ import com.village.wannajoin.util.Constants;
 import com.village.wannajoin.util.Util;
 
 
+
 public class EventDetailFragment extends Fragment {
 
 
@@ -54,11 +55,11 @@ public class EventDetailFragment extends Fragment {
     private GoogleMap mMap;
     private LatLng mEventLocationLatLng;
     TextView locationTextView;
-    Button buttonStartDate;
-    Button buttonStartTime;
-    Button buttonEndDate;
-    Button buttonEndTime;
-    EditText notesEditText;
+    TextView startDateTextView;
+    TextView startTimeTextView;
+    TextView endDateTextView;
+    TextView endTimeTextView;
+    TextView notesTextView;
     LinearLayout locationLL;
     LinearLayout notesLL;
     ImageButton buttonFavLocation;
@@ -100,19 +101,15 @@ public class EventDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event_detail2, container, false);
         locationTextView = (TextView) view.findViewById(R.id.event_location);
-        buttonStartDate = (Button) view.findViewById(R.id.event_start_date);
-        buttonStartTime = (Button) view.findViewById(R.id.event_start_time);
-        buttonEndDate = (Button) view.findViewById(R.id.event_end_date);
-        buttonEndTime = (Button) view.findViewById(R.id.event_end_time);
-        notesEditText = (EditText) view.findViewById(R.id.event_notes) ;
+        startDateTextView = (TextView) view.findViewById(R.id.event_start_date);
+        startTimeTextView = (TextView) view.findViewById(R.id.event_start_time);
+        endDateTextView = (TextView) view.findViewById(R.id.event_end_date);
+        endTimeTextView = (TextView) view.findViewById(R.id.event_end_time);
+        notesTextView = (TextView) view.findViewById(R.id.event_notes) ;
         locationLL = (LinearLayout) view.findViewById(R.id.location_layout);
         notesLL = (LinearLayout) view.findViewById(R.id.notes_layout);
         buttonFavLocation = (ImageButton) view.findViewById(R.id.fav_button);
-        buttonStartDate.setClickable(false);
-        buttonEndDate.setClickable(false);
-        buttonStartTime.setClickable(false);
-        buttonEndTime.setClickable(false);
-        notesEditText.setKeyListener(null);
+
 
         eventRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).child(mEventId);
         valueEventListener = eventRef.addValueEventListener(new ValueEventListener() {
@@ -142,6 +139,7 @@ public class EventDetailFragment extends Fragment {
         } else {
             setViewAndChildrenEnabled(locationLL, View.VISIBLE);
             locationTextView.setText(mEvent.getLocation());
+            locationTextView.setContentDescription(getString(R.string.event_location_content_description,mEvent.getLocation()));
             mEventLocationLatLng = new LatLng(mEvent.getLocationLat(), mEvent.getLocationLng());
             buttonFavLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -177,15 +175,28 @@ public class EventDetailFragment extends Fragment {
             }
 
         }
-        buttonStartDate.setText(Util.getFormattedDateFromTimeStamp(mEvent.getFromTime()));
-        buttonStartTime.setText(Util.getTimeFromTimeStamp(mEvent.getFromTime()));
-        buttonEndDate.setText(Util.getFormattedDateFromTimeStamp(mEvent.getToTime()));
-        buttonEndTime.setText(Util.getTimeFromTimeStamp(mEvent.getToTime()));
+        String startDateString = Util.getFormattedDateFromTimeStamp(mEvent.getFromTime());
+        startDateTextView.setText(startDateString);
+        startDateTextView.setContentDescription(getString(R.string.event_start_date_content_description,startDateString));
+
+        String startTimeString = Util.getTimeFromTimeStamp(mEvent.getFromTime());
+        startTimeTextView.setText(startTimeString);
+        startTimeTextView.setContentDescription(getString(R.string.event_start_time_content_description,startTimeString));
+
+        String endDateString = Util.getFormattedDateFromTimeStamp(mEvent.getToTime());
+        endDateTextView.setText(endDateString);
+        endDateTextView.setContentDescription(getString(R.string.event_end_date_content_description,endDateString));
+
+        String endTimeString = Util.getTimeFromTimeStamp(mEvent.getToTime());
+        endTimeTextView.setText(endTimeString);
+        endTimeTextView.setContentDescription(getString(R.string.event_end_time_content_description,endTimeString));
+
         if (mEvent.getNotes().equals("")) {
             setViewAndChildrenEnabled(notesLL, View.GONE);
         } else {
             setViewAndChildrenEnabled(notesLL, View.VISIBLE);
-            notesEditText.setText(mEvent.getNotes());
+            notesTextView.setText(mEvent.getNotes());
+            notesTextView.setContentDescription(getString(R.string.event_notes_content_description,mEvent.getNotes()));
         }
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mEvent.getTitle());
         String status = mEvent.getEventMembers().get(firebaseUser.getUid());

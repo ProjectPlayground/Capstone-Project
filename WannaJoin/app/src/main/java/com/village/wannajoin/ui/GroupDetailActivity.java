@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -41,6 +43,8 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mContactAndGroup = getIntent().getParcelableExtra(Constants.GROUP);
         getSupportActionBar().setTitle(mContactAndGroup.getName());
+        ImageView backdropImage = (ImageView)findViewById(R.id.backdrop);
+        backdropImage.setContentDescription(mContactAndGroup.getName());
         mGroupMemberList = new ArrayList<>();
         mGroupMemberRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUP_MEMBERS).child(mContactAndGroup.getId()).orderByChild("name");
         mSnapshotsGroupMembers = new ArrayFirebase(mGroupMemberRef);

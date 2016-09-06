@@ -55,7 +55,9 @@ public class GroupDetailRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder vh = (ViewHolder)holder;
-        vh.contactName.setText(Util.capitalizeWords(mGroupMemberList.get(position).getName()));
+        String name = Util.capitalizeWords(mGroupMemberList.get(position).getName());
+        vh.contactName.setText(name);
+        vh.contactName.setContentDescription(name);
        vh.contactName.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                mContext.getResources().getDimension(R.dimen.primary_text_size));
 

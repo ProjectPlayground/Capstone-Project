@@ -10,7 +10,7 @@
     <dimen name="event_date_time_gap">16dp</dimen>
     <dimen name="event_location_icon_margintop">24dp</dimen>
     <dimen name="event_location_view_margin">16dp</dimen>
-    <dimen name="event_view_top_margin">8dp</dimen>
+    <dimen name="event_view_top_margin">12dp</dimen>
     <dimen name="date_notes_icon_top_margin">10dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="std_margin">16dp</dimen>

@@ -71,6 +71,7 @@ public class ContactDetailDialogFragment extends DialogFragment {
         Button buttonOk = (Button) v.findViewById(R.id.button_ok);
         Button buttonDelete = (Button) v.findViewById(R.id.button_delete);
         contactNameTV.setText(mContactName);
+        contactNameTV.setContentDescription(mContactName);
         if (mContactPhotoUrl == null) {
             circleImageView
                     .setImageDrawable(ContextCompat
@@ -88,6 +89,7 @@ public class ContactDetailDialogFragment extends DialogFragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 contactEmailTV.setText(user.getEmail());
+                contactEmailTV.setContentDescription(user.getEmail());
             }
 
             @Override

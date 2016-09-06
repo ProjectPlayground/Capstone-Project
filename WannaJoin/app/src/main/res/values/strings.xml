@@ -71,5 +71,15 @@
     <string name="event_list_item_content_description1">%1$s invited you to %2$s on %3$s at %4$s. %5$d person is going.</string>
     <string name="event_list_item_content_description2">%1$s invited you to %2$s on %3$s at %4$s. %5$d people are going.</string>
     <string name="favorite_location_button">favorite location</string>
+    <string name="event_location_content_description">location %1$s</string>
+    <string name="event_start_date_content_description">start date %1$s</string>
+    <string name="event_start_time_content_description">start time %1$s</string>
+    <string name="event_end_date_content_description">end date %1$s</string>
+    <string name="event_end_time_content_description">end time %1$s</string>
+    <string name="event_notes_content_description">comments: %1$s</string>
+    <string name="event_member_status_going_content_description">is %1$s</string>
+    <string name="event_member_status_content_description">has not responded</string>
+    <string name="event_member_no_response">no response</string>
+
 
 </resources>

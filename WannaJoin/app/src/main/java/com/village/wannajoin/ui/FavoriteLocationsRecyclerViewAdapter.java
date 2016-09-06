@@ -52,6 +52,7 @@ public class FavoriteLocationsRecyclerViewAdapter extends RecyclerView.Adapter<R
             if (mCursor.moveToPosition(position)) {
                 FavoriteLocationsRecyclerViewAdapter.ViewHolder vh = (FavoriteLocationsRecyclerViewAdapter.ViewHolder) holder;
                 vh.favLocationTV.setText(mCursor.getString(EventLocationLoader.Query.COLUMN_LOCATION_ADDRESS));
+                vh.favLocationTV.setContentDescription(mCursor.getString(EventLocationLoader.Query.COLUMN_LOCATION_ADDRESS));
             }
         }
     }

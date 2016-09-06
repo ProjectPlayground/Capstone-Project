@@ -41,7 +41,9 @@ public class EventMembersRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         EventMembersRecyclerViewAdapter.ViewHolder vh = (EventMembersRecyclerViewAdapter.ViewHolder) holder;
-        vh.contactName.setText(Util.capitalizeWords(mEventMemberList.get(position).getName()));
+        String name = Util.capitalizeWords(mEventMemberList.get(position).getName());
+        vh.contactName.setText(name);
+        vh.contactName.setContentDescription(name);
         if (mEventMemberList.get(position).getPhotoUrl() == null) {
             vh.contactImageView
                     .setImageDrawable(ContextCompat
@@ -55,8 +57,10 @@ public class EventMembersRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
 
         if(mEventMemberList.get(position).getStatus().equals("1")){
             vh.memberStatus.setText(R.string.event_member_going);
+            vh.memberStatus.setContentDescription(mContext.getString(R.string.event_member_status_going_content_description,mContext.getString(R.string.event_member_going)));
         }else{
-            vh.memberStatus.setText("");
+            vh.memberStatus.setText(R.string.event_member_no_response);
+            vh.memberStatus.setContentDescription(mContext.getString(R.string.event_member_status_content_description));
         }
     }
 
