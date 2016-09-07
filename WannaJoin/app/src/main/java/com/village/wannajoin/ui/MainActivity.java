@@ -218,9 +218,9 @@ public class MainActivity extends AppCompatActivity  {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return EventFragment.newInstance(1);
+                    return EventFragment.newInstance(getResources().getInteger(R.integer.column_count));
                 case 1:
-                    return ContactFragment.newInstance(1);
+                    return ContactFragment.newInstance(getResources().getInteger(R.integer.column_count));
             }
             return PlaceholderFragment.newInstance(position + 1);
         }
