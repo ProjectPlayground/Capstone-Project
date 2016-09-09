@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -20,6 +21,8 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
 
+    public static final int GRID = -1;
+
     private Drawable mDivider;
 
     private int mOrientation;
@@ -32,7 +35,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     public void setOrientation(int orientation) {
-        if (orientation != HORIZONTAL_LIST && orientation != VERTICAL_LIST) {
+        if (orientation != HORIZONTAL_LIST && orientation != VERTICAL_LIST && orientation != GRID) {
             throw new IllegalArgumentException("invalid orientation");
         }
         mOrientation = orientation;
@@ -42,7 +45,10 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         if (mOrientation == VERTICAL_LIST) {
             drawVertical(c, parent);
-        } else {
+        } else if (mOrientation == HORIZONTAL_LIST){
+            drawHorizontal(c, parent);
+        }else{
+            drawVertical(c, parent);
             drawHorizontal(c, parent);
         }
     }
@@ -83,8 +89,10 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         if (mOrientation == VERTICAL_LIST) {
             outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
-        } else {
+        } else if (mOrientation == HORIZONTAL_LIST) {
             outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
+        }else{
+            outRect.set(0, 0, mDivider.getIntrinsicWidth(), mDivider.getIntrinsicHeight());
         }
     }
 }

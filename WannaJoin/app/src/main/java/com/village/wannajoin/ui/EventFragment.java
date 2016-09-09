@@ -3,6 +3,7 @@ package com.village.wannajoin.ui;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -81,7 +82,7 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
         mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).orderByChild("eventMembers/"+currentUserId).startAt(Util.getMidNightTimeStamp());
        // mAdapter = new EventRecyclerViewAdapter(Event.class, R.layout.fragment_event,EventRecyclerViewAdapter.ViewHolder.class,mRef, getContext());
         mEventList = new ArrayList<>();
-        Event emptyEvent = new Event(null,"No available events. Start by creating events and sharing with friends.",null,null,null,1,1,null,null);
+        Event emptyEvent = new Event(null,getString(R.string.empty_event_list_text),null,null,null,1,1,null,null);
         emptyEvent.setType(-1); // set -1 for empty event
         mEventList.add(emptyEvent);
         mAdapter = new EventsRecyclerViewAdapter(getActivity(),mEventList, this);
@@ -112,11 +113,12 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
                         //notifyItemMoved(oldIndex, index);
                         break;
                     default:
-                        throw new IllegalStateException("Incomplete case statement");
+                        throw new IllegalStateException(getString(R.string.snapshots_incomplete_case_error));
                 }
+                Util.updateWidgets(getContext());
             }
         });
-        Util.updateWidgets(getContext());
+
         setHasOptionsMenu(true);
 
     }
@@ -133,10 +135,13 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
         TextView emptyView = (TextView)view.findViewById(R.id.empty_view);
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
         } else {
+           // mColumnCount = getResources().getInteger(R.integer.column_count);
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            recyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.GRID));
         }
-        recyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
+
 
         recyclerView.setAdapter(mAdapter);
 

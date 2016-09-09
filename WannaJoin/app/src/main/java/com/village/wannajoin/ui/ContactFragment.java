@@ -53,6 +53,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
     ArrayFirebase mSnapshotsContacts;
     ArrayFirebase mSnapshotsGroups;
     int lastGroupPosition;
+    private boolean mTwoPane;
     //private OnFragmentInteractionListener mListener;
 
     public ContactFragment() {
@@ -126,7 +127,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
                         //notifyItemMoved(oldIndex, index);
                         break;
                     default:
-                        throw new IllegalStateException("Incomplete case statement");
+                        throw new IllegalStateException(getString(R.string.snapshots_incomplete_case_error));
                 }
             }
         });
@@ -190,6 +191,10 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
         contactRecyclerView.addItemDecoration(new DividerItemDecoration(context,DividerItemDecoration.VERTICAL_LIST));
         mContactsRecyclerViewAdapter = new ContactsRecyclerViewAdapter(context,getActivity().getClass().getSimpleName(),contactAndGroupArrayList,this);
         contactRecyclerView.setAdapter(mContactsRecyclerViewAdapter);
+        if (view.findViewById(R.id.detail_container)!=null)
+            mTwoPane = true;
+        else
+            mTwoPane=false;
         return view;
     }
 
@@ -375,17 +380,26 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
             }
         }else{
             if (type == 1) {
-                //create a new group
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle();
-                    // startActivity(i, bundle);
-                    Intent i = new Intent(getActivity(), GroupDetailActivity.class);
-                    i.putExtra(Constants.GROUP, contactAndGroup);
-                    startActivity(i,bundle);
-                } else {
-                    Intent i = new Intent(getActivity(), GroupDetailActivity.class);
-                    i.putExtra(Constants.GROUP, contactAndGroup);
-                    startActivity(i);
+                //show group details
+                if (mTwoPane){
+                    GroupDetailFragment groupDetailFragment = new GroupDetailFragment();
+                    Bundle args = new Bundle();
+                    args.putParcelable(Constants.GROUP,contactAndGroup);
+                    groupDetailFragment.setArguments(args);
+                    getChildFragmentManager().beginTransaction().replace(R.id.detail_container, groupDetailFragment).commit();
+
+                }else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle();
+                        // startActivity(i, bundle);
+                        Intent i = new Intent(getActivity(), GroupDetailActivity.class);
+                        i.putExtra(Constants.GROUP, contactAndGroup);
+                        startActivity(i, bundle);
+                    } else {
+                        Intent i = new Intent(getActivity(), GroupDetailActivity.class);
+                        i.putExtra(Constants.GROUP, contactAndGroup);
+                        startActivity(i);
+                    }
                 }
 
 
@@ -406,4 +420,5 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
         }
 
     }
+
 }

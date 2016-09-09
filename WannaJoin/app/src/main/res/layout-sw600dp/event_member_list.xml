@@ -21,8 +21,7 @@
 
     <TextView
         android:id="@+id/contact_name"
-        android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_width="600dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/std_margin"
         android:layout_marginStart="@dimen/std_margin"

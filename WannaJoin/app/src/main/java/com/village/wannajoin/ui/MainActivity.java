@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity  {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
@@ -220,7 +219,7 @@ public class MainActivity extends AppCompatActivity  {
                 case 0:
                     return EventFragment.newInstance(getResources().getInteger(R.integer.column_count));
                 case 1:
-                    return ContactFragment.newInstance(getResources().getInteger(R.integer.column_count));
+                    return ContactFragment.newInstance(1);
             }
             return PlaceholderFragment.newInstance(position + 1);
         }
