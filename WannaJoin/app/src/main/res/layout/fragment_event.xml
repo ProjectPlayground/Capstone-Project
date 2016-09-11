@@ -89,6 +89,7 @@
             android:layout_gravity="right"
             android:text="@string/join_button_text"
             android:textColor="@color/colorPrimary"
+            android:contentDescription="@string/join_button_text"
             style="?attr/borderlessButtonStyle"
             />
 

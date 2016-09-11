@@ -83,6 +83,7 @@
     <string name="menu_delete_group">Delete Group</string>
     <string name="empty_event_list_text">No available events. Start by creating events and sharing with friends.</string>
     <string name="snapshots_incomplete_case_error">Incomplete case statement</string>
+    <string name="sign_in_failed_msg">Sign in failed. Please try again.</string>
 
 
 </resources>

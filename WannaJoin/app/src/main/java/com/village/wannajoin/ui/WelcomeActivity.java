@@ -61,7 +61,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
             }else{
-                Toast.makeText(this,"Sign in failed. Please try again.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.sign_in_failed_msg,Toast.LENGTH_SHORT).show();
             }
         }
     }
