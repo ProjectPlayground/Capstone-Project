@@ -1,9 +1,8 @@
 package com.village.wannajoin.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
-
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -16,9 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,15 +33,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+public class EditGroupActivity extends AppCompatActivity {
 
-public class NewGroupActivity extends AppCompatActivity {
-
-    ArrayList<Member> groupMembers;
+    ArrayList<Member> mGroupMemberList;
+    Group mGroup;
     static final String GROUP_NAME = "group_name";
     static final String GROUP_MEMBERS = "group_members";
     EditText mGroupName;
     EditText mContactEmail;
     GroupMemberAdapter groupMemberAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,18 +50,21 @@ public class NewGroupActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent i = getIntent();
+        mGroup = i.getParcelableExtra(Constants.GROUP);
         mGroupName = (EditText) findViewById(R.id.group_name);
         mContactEmail = (EditText) findViewById(R.id.participant_email);
         Button memberAddButton = (Button)findViewById(R.id.member_add);
         if(savedInstanceState!=null){
             mGroupName.setText(savedInstanceState.getString(GROUP_NAME));
-            groupMembers = savedInstanceState.getParcelableArrayList(GROUP_MEMBERS);
+            mGroupMemberList = savedInstanceState.getParcelableArrayList(GROUP_MEMBERS);
 
         }else {
-            groupMembers = new ArrayList<>();
+            mGroupName.setText(mGroup.getName());
+            mGroupMemberList = i.getParcelableArrayListExtra(Constants.GROUP_MEMBERS);
         }
         ListView listView = (ListView)findViewById(R.id.member_list);
-        groupMemberAdapter = new GroupMemberAdapter(groupMembers,this,null);
+        groupMemberAdapter = new GroupMemberAdapter(mGroupMemberList,this,mGroup);
         listView.setAdapter(groupMemberAdapter);
 
         mContactEmail.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -93,7 +93,7 @@ public class NewGroupActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(GROUP_NAME,mGroupName.getText().toString());
-        outState.putParcelableArrayList(GROUP_MEMBERS,groupMembers);
+        outState.putParcelableArrayList(GROUP_MEMBERS,mGroupMemberList);
         super.onSaveInstanceState(outState);
     }
 
@@ -104,20 +104,20 @@ public class NewGroupActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
-                    Toast.makeText(NewGroupActivity.this,"User doesn't exist",Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditGroupActivity.this, R.string.user_not_exist_error,Toast.LENGTH_LONG).show();
                 }else{
                     for( DataSnapshot ds: dataSnapshot.getChildren()){
                         User user = ds.getValue(User.class);
                         HashMap<String, Object> timestampCreated = new HashMap<>();
                         timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
                         Member member = new Member(user.getName(),user.getUserId(),user.getPhotoUrl(),timestampCreated);
-                        if(!groupMembers.contains(member)) {
-                            groupMembers.add(member);
-                            groupMemberAdapter.updateAdapter(groupMembers);
+                        if(!mGroupMemberList.contains(member)) {
+                            mGroupMemberList.add(member);
+                            groupMemberAdapter.updateAdapter(mGroupMemberList);
                             groupMemberAdapter.notifyDataSetChanged();
                         }
                         mContactEmail.setText("");
-                        Util.hideSoftKeyBoard(NewGroupActivity.this);
+                        Util.hideSoftKeyBoard(EditGroupActivity.this);
                     }
 
                 }
@@ -159,32 +159,23 @@ public class NewGroupActivity extends AppCompatActivity {
         if (mGroupName.getText().toString().equals("")){
             Toast.makeText(this, R.string.group_name_data_error,Toast.LENGTH_SHORT).show();
         }else{
-            if (groupMembers.size()==0){
+            if (mGroupMemberList.size()==0){
                 Toast.makeText(this, R.string.min_group_member_data_error,Toast.LENGTH_SHORT).show();
             }else{
                 //save data in firebase
                 DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference newGroupRef = dbRef.child(Constants.FIREBASE_LOCATION_GROUPS).push();
 
-
-                final String groupId = newGroupRef.getKey();
-                HashMap<String, Object> timestampCreated = new HashMap<>();
-                timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
                 HashMap<String, Boolean> groupMembersMap = new HashMap<>();
                 Map<String, Object> childUpdates = new HashMap<>();
-                for(Member member: groupMembers){
+                for(Member member: mGroupMemberList){
                     groupMembersMap.put(member.getUserId(),true);
-                    childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+member.getUserId(), member.toMap());
+                    childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + mGroup.getGroupId()+"/"+member.getUserId(), member.toMap());
                 }
-                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                groupMembersMap.put(currentUserId,true);
-                childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+currentUserId, new Member(currentUser.getDisplayName(),currentUser.getUid(),currentUser.getPhotoUrl(),timestampCreated).toMap());
 
-                Group group = new Group(mGroupName.getText().toString(),groupId, currentUserId,null, timestampCreated,groupMembersMap);
+                mGroup.setName(mGroupName.getText().toString());
+                mGroup.setGroupMembers(groupMembersMap);
 
-
-                childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUPS+"/" + groupId, group.toMap());
+                childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUPS+"/" + mGroup.getGroupId(), mGroup.toMap());
 
                 dbRef.updateChildren(childUpdates);
                 finish();

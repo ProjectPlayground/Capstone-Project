@@ -110,7 +110,7 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
                         mAdapter.notifyItemRemoved(index);
                         break;
                     case Moved:
-                        //notifyItemMoved(oldIndex, index);
+                        mAdapter.notifyItemMoved(oldIndex, index);
                         break;
                     default:
                         throw new IllegalStateException(getString(R.string.snapshots_incomplete_case_error));

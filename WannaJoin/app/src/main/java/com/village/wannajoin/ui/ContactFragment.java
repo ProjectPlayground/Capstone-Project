@@ -274,10 +274,15 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
         }
 
         if (id == R.id.action_save) {
-            saveEvent();
-            Intent intent = new Intent(getContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            String actionType = getActivity().getIntent().getStringExtra("type");
+            if (actionType.equals("NEW")) {
+                saveNewEvent();
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }else{
+                updateEvent();
+            }
             getActivity().finish();
             return true;
         }
@@ -292,7 +297,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
 
     }
 
-    private void saveEvent(){
+    private void saveNewEvent(){
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
         final HashMap<String, Object> timestampCreated = new HashMap<>();
@@ -355,6 +360,57 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
             dbRef.updateChildren(childUpdates);
         }
 
+
+    }
+
+    private void updateEvent(){
+        Intent i = getActivity().getIntent();
+        final Event event = i.getParcelableExtra(Constants.EVENT);
+        final String eventId = event.getEventId();
+        ArrayList<Member> eventMembers = i.getParcelableArrayListExtra(Constants.EVENT_MEMBERS);
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+        final HashMap<String, Object> timestampCreated = new HashMap<>();
+        timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        final String memberStatus = String.valueOf(event.getFromTime())+"-0";
+        for (final ContactAndGroup cg : contactAndGroupArrayList) {
+            if ((cg.getType() == 2) && (cg.isSelected()) && (!event.getEventMembers().containsKey(cg.getId()))) {
+                childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + cg.getId(), memberStatus);
+                childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + cg.getId(), new Member(cg.getName(), cg.getId(), cg.getPhotoUrl(), "0",timestampCreated).toMap());
+            }
+            if ((cg.getType() == 1) && (cg.isSelected())) {
+                //get group members and associate them with the event
+                DatabaseReference groupRef = dbRef.child(Constants.FIREBASE_LOCATION_GROUP_MEMBERS).child(cg.getId());
+                groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Map<String, Object> groupUpdates = new HashMap<>();
+                        for(DataSnapshot ds: dataSnapshot.getChildren()){
+                            Member member = ds.getValue(Member.class);
+                            member.setTimestampJoined(timestampCreated);
+                            member.setStatus("0");
+                            if (!event.getEventMembers().containsKey(member.getUserId())) {
+                                groupUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + member.getUserId(), memberStatus);
+                                groupUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + member.getUserId(), member.toMap());
+                            }
+                        }
+                        dbRef.updateChildren(groupUpdates);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+            }
+
+
+        }
+        dbRef.updateChildren(childUpdates);
 
     }
 

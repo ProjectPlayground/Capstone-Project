@@ -21,14 +21,19 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.village.wannajoin.R;
+import com.village.wannajoin.model.Event;
 import com.village.wannajoin.util.Constants;
 import com.village.wannajoin.util.Util;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
-public class NewEventActivity extends AppCompatActivity
+public class EditEventActivity extends AppCompatActivity
         implements PlaceSelectionListener , DatePickerFragment.DateSelectedListener, TimePickerFragment.TimeSelectedListener {
 
     Button mStartDate;
@@ -41,11 +46,15 @@ public class NewEventActivity extends AppCompatActivity
     String mLocationId;
     EditText mTitle;
     EditText mNotes;
-   // EditText mMembers;
+    // EditText mMembers;
     static final String STATE_START_DATE = "startDate";
     static final String STATE_START_TIME = "startTime";
     static final String STATE_END_DATE = "endDate";
     static final String STATE_END_TIME = "endTime";
+    static final String STATE_TITLE = "title";
+    static final String STATE_LOCATION = "location";
+    static final String STATE_NOTES = "notes";
+    Event mEvent;
     //static final int SHARE_REQUEST = 1001;
 
 
@@ -56,6 +65,7 @@ public class NewEventActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mEvent = getIntent().getParcelableExtra(Constants.EVENT);
         initializeUI(savedInstanceState);
 
     }
@@ -81,19 +91,22 @@ public class NewEventActivity extends AppCompatActivity
         mEndTime = (Button)findViewById(R.id.event_end_time);
         mlocation = (TextView)findViewById(R.id.event_location);
         if (savedInstanceState!=null){
+            mTitle.setText(savedInstanceState.getString(STATE_TITLE));
+            mlocation.setText(savedInstanceState.getString(STATE_LOCATION));
             mStartDate.setText(savedInstanceState.getString(STATE_START_DATE));
             mStartTime.setText(savedInstanceState.getString(STATE_START_TIME));
             mEndDate.setText(savedInstanceState.getString(STATE_END_DATE));
             mEndTime.setText(savedInstanceState.getString(STATE_END_TIME));
+            mNotes.setText(savedInstanceState.getString(STATE_NOTES));
         }else {
-            final Calendar c = Calendar.getInstance();
+            mTitle.setText(mEvent.getTitle());
+            mlocation.setText(mEvent.getLocation());
+            mStartDate.setText(Util.getFormattedDateFromTimeStamp(mEvent.getFromTime()));
+            mEndDate.setText(Util.getFormattedDateFromTimeStamp(mEvent.getToTime()));
+            mStartTime.setText(Util.getTimeFromTimeStamp(mEvent.getFromTime()));
+            mEndTime.setText(Util.getTimeFromTimeStamp(mEvent.getToTime()));
+            mNotes.setText(mEvent.getNotes());
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MMM d, yyyy");
-            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
-            mStartDate.setText(dateFormat.format(c.getTime()));
-            mEndDate.setText(dateFormat.format(c.getTime()));
-            mStartTime.setText(timeFormat.format(c.getTime()));
-            mEndTime.setText(timeFormat.format(c.getTime()));
         }
         // Retrieve the PlaceAutocompleteFragment.
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
@@ -103,14 +116,6 @@ public class NewEventActivity extends AppCompatActivity
         // Register a listener to receive callbacks when a place has been selected or an error has
         // occurred.
         autocompleteFragment.setOnPlaceSelectedListener(this);
-       /* mMembers = (EditText) findViewById(R.id.event_member);
-        mMembers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(NewEventActivity.this, ShareEventActivity.class);
-                startActivityForResult(i,SHARE_REQUEST);
-            }
-        });*/
 
 
     }
@@ -118,10 +123,13 @@ public class NewEventActivity extends AppCompatActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(STATE_TITLE,mTitle.getText().toString());
+        outState.putString(STATE_LOCATION,mlocation.getText().toString());
         outState.putString(STATE_START_DATE,mStartDate.getText().toString());
         outState.putString(STATE_START_TIME,mStartTime.getText().toString());
         outState.putString(STATE_END_DATE,mEndDate.getText().toString());
         outState.putString(STATE_END_TIME,mEndTime.getText().toString());
+        outState.putString(STATE_NOTES,mNotes.getText().toString());
         super.onSaveInstanceState(outState);
     }
 
@@ -190,7 +198,7 @@ public class NewEventActivity extends AppCompatActivity
     @Override
     public void onError(Status status) {
 
-        Toast.makeText(this, getString(R.string.place_selection_failed)  + status.getStatusMessage(),
+        Toast.makeText(this, getString(R.string.place_selection_failed) + status.getStatusMessage(),
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -208,7 +216,7 @@ public class NewEventActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_new_event, menu);
+        getMenuInflater().inflate(R.menu.menu_edit_event, menu);
         return true;
     }
 
@@ -218,10 +226,13 @@ public class NewEventActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if(id==android.R.id.home){
+            finish();
+        }
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_next) {
-            startEventSharingActivity();
+        if (id == R.id.action_save) {
+            saveEvent();
             return true;
         }
 
@@ -236,7 +247,7 @@ public class NewEventActivity extends AppCompatActivity
             mEndTime.setText(Util.formatTime(hourOfDay,minute));
     }
 
-    private void startEventSharingActivity(){
+    private void saveEvent(){
         String eventTitle = mTitle.getText().toString();
         long eventFrom = Util.getTimeStamp(mStartDate.getText().toString(), mStartTime.getText().toString());
         long eventTo = Util.getTimeStamp(mEndDate.getText().toString(), mEndTime.getText().toString());
@@ -250,21 +261,20 @@ public class NewEventActivity extends AppCompatActivity
                 Toast.makeText(this, R.string.event_timing_data_error,Toast.LENGTH_SHORT).show();
             }else{
 
-                Intent i = new Intent(NewEventActivity.this, ShareEventActivity.class);
-                i.putExtra("type","NEW");
-                i.putExtra(Constants.EVENT_TITLE,eventTitle);
-                i.putExtra(Constants.EVENT_FROM, eventFrom);
-                i.putExtra(Constants.EVENT_TO,eventTo);
-                i.putExtra(Constants.EVENT_NOTES, eventNotes);
-                i.putExtra(Constants.EVENT_LOCATION,eventLocationName);
-                i.putExtra(Constants.EVENT_LOCATION_LAT,mLocationLat);
-                i.putExtra(Constants.EVENT_LOCATION_LNG,mLocationLng);
-                i.putExtra(Constants.EVENT_LOCATION_ID,mLocationId);
-                startActivity(i);
+                DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).child(mEvent.getEventId());
+
+                HashMap<String, Object> timestampLastUpdated = new HashMap<>();
+                timestampLastUpdated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
+                mEvent.setTitle(eventTitle);
+                mEvent.setLocation(eventLocationName);
+                mEvent.setNotes(eventNotes);
+                mEvent.setFromTime(eventFrom);
+                mEvent.setToTime(eventTo);
+                mEvent.setTimestampLastChanged(timestampLastUpdated);
+                eventRef.setValue(mEvent);
+                finish();
             }
         }
-
-
     }
 
 

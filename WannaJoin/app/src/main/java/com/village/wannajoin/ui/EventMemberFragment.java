@@ -1,20 +1,26 @@
 package com.village.wannajoin.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
 import com.village.wannajoin.R;
+import com.village.wannajoin.model.Event;
 import com.village.wannajoin.model.Member;
 import com.village.wannajoin.util.ArrayFirebase;
 import com.village.wannajoin.util.Constants;
@@ -26,6 +32,8 @@ import java.util.ArrayList;
 public class EventMemberFragment extends Fragment {
 
     private String mEventId;
+    private String mOwnerId;
+    private Event mEvent;
     private ArrayList<Member> mEventMemberList;
     Query mRef;
     ArrayFirebase mSnapshotsEventMembers;
@@ -38,10 +46,10 @@ public class EventMemberFragment extends Fragment {
 
 
     // TODO: Rename and change types and number of parameters
-    public static EventMemberFragment newInstance(String eventId) {
+    public static EventMemberFragment newInstance(Event event) {
         EventMemberFragment fragment = new EventMemberFragment();
         Bundle args = new Bundle();
-        args.putString(Constants.EVENT_ID,eventId);
+        args.putParcelable(Constants.EVENT,event);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,7 +58,8 @@ public class EventMemberFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mEventId = getArguments().getString(Constants.EVENT_ID);
+            mEvent = getArguments().getParcelable(Constants.EVENT);
+            mEventId = mEvent.getEventId();
             mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENT_MEMBERS).child(mEventId).child(Constants.FIREBASE_LOCATION_USERS).orderByChild("name");
             mEventMemberList = new ArrayList<>();
             mAdapter = new EventMembersRecyclerViewAdapter(getActivity(),mEventMemberList);
@@ -86,6 +95,8 @@ public class EventMemberFragment extends Fragment {
 
 
         }
+
+        setHasOptionsMenu(true);
 
     }
 
@@ -146,5 +157,38 @@ public class EventMemberFragment extends Fragment {
         super.onDestroy();
         mSnapshotsEventMembers.cleanup();
         // mAdapter.cleanup();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_event_member_fragment,menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem itemEdit = menu.findItem(R.id.action_add);
+        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(mEvent.getOwnerId())){
+            itemEdit.setVisible(true);
+        }else
+            itemEdit.setVisible(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_add) {
+            Intent i = new Intent(getActivity(), ShareEventActivity.class);
+            i.putExtra("type","EDIT");
+            i.putExtra(Constants.EVENT, mEvent);
+            i.putParcelableArrayListExtra(Constants.EVENT_MEMBERS,mEventMemberList);
+            startActivity(i);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -84,6 +84,11 @@
     <string name="empty_event_list_text">No available events. Start by creating events and sharing with friends.</string>
     <string name="snapshots_incomplete_case_error">Incomplete case statement</string>
     <string name="sign_in_failed_msg">Sign in failed. Please try again.</string>
+    <string name="title_activity_edit_event">Edit Event</string>
+    <string name="place_selection_failed">"Place selection failed: "</string>
+    <string name="menu_add_people">Add people</string>
+    <string name="title_activity_edit_group">EditGroupActivity</string>
+    <string name="user_not_exist_error">User doesn\'t exist</string>
 
 
 </resources>

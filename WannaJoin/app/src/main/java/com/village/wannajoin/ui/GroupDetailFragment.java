@@ -1,6 +1,7 @@
 package com.village.wannajoin.ui;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,11 +19,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.ContactAndGroup;
+import com.village.wannajoin.model.Group;
 import com.village.wannajoin.model.Member;
 import com.village.wannajoin.util.ArrayFirebase;
 import com.village.wannajoin.util.Constants;
@@ -38,6 +45,7 @@ public class GroupDetailFragment extends Fragment implements GroupDetailRecycler
     ArrayFirebase mSnapshotsGroupMembers;
     ArrayList<Member> mGroupMemberList;
     GroupDetailRecyclerViewAdapter mAdapter;
+    Group mGroup;
 
     public GroupDetailFragment() {
         // Required empty public constructor
@@ -50,6 +58,7 @@ public class GroupDetailFragment extends Fragment implements GroupDetailRecycler
         if (getArguments() != null) {
             mContactAndGroup = getArguments().getParcelable(Constants.GROUP);
         }
+
 
         mGroupMemberList = new ArrayList<>();
         mGroupMemberRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUP_MEMBERS).child(mContactAndGroup.getId()).orderByChild("name");
@@ -92,7 +101,7 @@ public class GroupDetailFragment extends Fragment implements GroupDetailRecycler
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_group_detail, container, false);
-        //Log.d("RB",getActivity().getClass().getSimpleName());
+        Log.d("RB",getActivity().getClass().getSimpleName());
         if (getActivity().getClass().getSimpleName().equals("GroupDetailActivity")) {
             Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -118,6 +127,20 @@ public class GroupDetailFragment extends Fragment implements GroupDetailRecycler
                 }
             });
         }
+
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUPS).child(mContactAndGroup.getId());
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mGroup = dataSnapshot.getValue(Group.class);
+                getActivity().invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         ImageView backdropImage = (ImageView)view.findViewById(R.id.backdrop);
         backdropImage.setContentDescription(mContactAndGroup.getName());
@@ -155,6 +178,24 @@ public class GroupDetailFragment extends Fragment implements GroupDetailRecycler
         inflater.inflate(R.menu.menu_group_detail, menu);
     }
 
+   @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem itemDelete = menu.findItem(R.id.action_delete);
+        MenuItem itemEdit = menu.findItem(R.id.action_edit);
+        if (mGroup !=null) {
+           if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(mGroup.getGroupOwner())) {
+               itemDelete.setVisible(true);
+           } else {
+               itemDelete.setVisible(false);
+           }
+            itemEdit.setVisible(true);
+        }else{
+           itemDelete.setVisible(false);
+           itemEdit.setVisible(false);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -176,6 +217,14 @@ public class GroupDetailFragment extends Fragment implements GroupDetailRecycler
                 getParentFragment().getChildFragmentManager().beginTransaction().remove(this).commit();
             }
 
+            return true;
+        }
+
+        if (id == R.id.action_edit){
+            Intent i = new Intent(getActivity(),EditGroupActivity.class);
+            i.putExtra(Constants.GROUP,mGroup);
+            i.putParcelableArrayListExtra(Constants.GROUP_MEMBERS,mGroupMemberList);
+            startActivity(i);
             return true;
         }
 

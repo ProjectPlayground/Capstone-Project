@@ -205,7 +205,7 @@ public class EventDetailActivity extends AppCompatActivity implements EventDetai
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position){
                 case 0: return EventDetailFragment.newInstance(mEvent);
-                case 1: return EventMemberFragment.newInstance(mEventId);
+                case 1: return EventMemberFragment.newInstance(mEvent);
             }
             return PlaceholderFragment.newInstance(position + 1);
         }

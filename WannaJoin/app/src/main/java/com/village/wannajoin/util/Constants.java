@@ -29,8 +29,11 @@ public class Constants {
     public static final String EVENT_LOCATION_LNG = "EventLocationLng";
     public static final String EVENT_LOCATION_ID = "EventLocationId";
     public static final String EVENT_ID = "EventId";
+    public static final String OWNER_ID = "OwnerId";
+    public static final String EVENT_MEMBERS = "EventMembers";
     public static final String EVENT = "Event";
     public static final String GROUP = "Group";
+    public static final String GROUP_MEMBERS = "GroupMembers";
     public static final String CONTACT_ID = "ContactId";
     public static final String CONTACT_NAME = "ContactName";
     public static final String CONTACT_PHOTO_URL = "ContactPhotoUrl";

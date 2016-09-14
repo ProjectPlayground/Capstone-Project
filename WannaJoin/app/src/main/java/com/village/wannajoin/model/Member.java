@@ -1,6 +1,10 @@
 package com.village.wannajoin.model;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.firebase.database.ServerValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +12,7 @@ import java.util.Map;
 /**
  * Created by richa on 6/28/16.
  */
-public class Member {
+public class Member implements Parcelable {
     private String name;
     private String userId;
     private Uri photoUrl;
@@ -36,6 +40,26 @@ public class Member {
         this.status = status;
         this.timestampJoined = timestampJoined;
     }
+
+    protected Member(Parcel in) {
+        name = in.readString();
+        userId = in.readString();
+        status = in.readString();
+        timestampJoined = in.readHashMap(ServerValue.class.getClassLoader());
+        photoUrl = in.readParcelable(Uri.class.getClassLoader());
+    }
+
+    public static final Creator<Member> CREATOR = new Creator<Member>() {
+        @Override
+        public Member createFromParcel(Parcel in) {
+            return new Member(in);
+        }
+
+        @Override
+        public Member[] newArray(int size) {
+            return new Member[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -73,5 +97,19 @@ public class Member {
         result.put("status",status);
         result.put("timestampJoined", timestampJoined);
         return result;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(userId);
+        dest.writeString(status);
+        dest.writeMap(timestampJoined);
+        dest.writeParcelable(photoUrl,0);
     }
 }

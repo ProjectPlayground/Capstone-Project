@@ -10,7 +10,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.village.wannajoin.R;
+import com.village.wannajoin.model.Group;
+import com.village.wannajoin.model.Member;
 import com.village.wannajoin.model.User;
 import com.village.wannajoin.util.Util;
 
@@ -22,18 +25,21 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by richa on 6/13/16.
  */
 public class GroupMemberAdapter extends BaseAdapter{
-    ArrayList<User> members;
+    ArrayList<Member> members;
     Context mContext;
+    Group mGroup;
 
-    public GroupMemberAdapter(ArrayList<User> members, Context mContext) {
+    public GroupMemberAdapter(ArrayList<Member> members, Context mContext, Group group) {
         this.members = members;
         this.mContext = mContext;
+        this.mGroup = group;
     }
 
-    public void updateAdapter(ArrayList<User> members){
+    public void updateAdapter(ArrayList<Member> members){
         this.members = members;
         notifyDataSetChanged();
     }
+
 
     @Override
     public int getCount() {
@@ -77,13 +83,31 @@ public class GroupMemberAdapter extends BaseAdapter{
                     .into(holder.memberImageView);
         }
 
-        holder.removeMember.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                members.remove(position);
-                notifyDataSetChanged();
+        if (mGroup != null) {
+            if (mGroup.getGroupOwner().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                holder.removeMember.setVisibility(View.VISIBLE);
+                holder.removeMember.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        members.remove(position);
+                        notifyDataSetChanged();
+                    }
+                });
             }
-        });
+            else{
+                holder.removeMember.setVisibility(View.GONE);
+            }
+        }else {
+            holder.removeMember.setVisibility(View.VISIBLE);
+            holder.removeMember.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    members.remove(position);
+                    notifyDataSetChanged();
+                }
+            });
+        }
+
         return convertView;
     }
 

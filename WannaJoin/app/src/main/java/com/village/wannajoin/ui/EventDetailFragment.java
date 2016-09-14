@@ -3,12 +3,15 @@ package com.village.wannajoin.ui;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +96,7 @@ public class EventDetailFragment extends Fragment {
             mEventId = mEvent.getEventId();
         }
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -275,7 +279,34 @@ public class EventDetailFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_event_detail_fragment,menu);
+    }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem itemEdit = menu.findItem(R.id.action_edit);
+        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(mEvent.getOwnerId())){
+            itemEdit.setVisible(true);
+        }else
+            itemEdit.setVisible(false);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
+        if(id == R.id.action_edit){
+            Intent i = new Intent(getActivity(),EditEventActivity.class);
+            i.putExtra(Constants.EVENT,mEvent);
+            startActivity(i);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

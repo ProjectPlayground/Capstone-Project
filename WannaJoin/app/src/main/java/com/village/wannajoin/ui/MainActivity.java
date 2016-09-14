@@ -27,8 +27,20 @@ import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Event;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -114,6 +126,33 @@ public class MainActivity extends AppCompatActivity  {
                 }
             }
         });
+
+        //send registration token to app server for current user
+        /*OkHttpClient client = new OkHttpClient();
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("registration_token", FirebaseInstanceId.getInstance().getToken())
+                .add("user_id", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .build();
+        Request request = new Request.Builder()
+                .url("http://127.0.0.1:8080/wannajoin")
+                .post(formBody)
+                .build();
+
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RB",e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            }
+        });*/
+
+
 
 
     }
