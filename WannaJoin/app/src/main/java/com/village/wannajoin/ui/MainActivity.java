@@ -31,6 +31,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Event;
+import com.village.wannajoin.util.NotificationUtil;
 
 import java.io.IOException;
 
@@ -127,32 +128,9 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
-        //send registration token to app server for current user
-        /*OkHttpClient client = new OkHttpClient();
-
-        RequestBody formBody = new FormBody.Builder()
-                .add("registration_token", FirebaseInstanceId.getInstance().getToken())
-                .add("user_id", FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .build();
-        Request request = new Request.Builder()
-                .url("http://127.0.0.1:8080/wannajoin")
-                .post(formBody)
-                .build();
-
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("RB",e.toString());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-            }
-        });*/
-
-
+        //send registration token for current user
+        String token = FirebaseInstanceId.getInstance().getToken();
+        NotificationUtil.sendRegistrationToken(token);
 
 
     }
@@ -181,10 +159,14 @@ public class MainActivity extends AppCompatActivity  {
             return true;
         }
 
-        /*if (id == R.id.action_settings) {
+        if (id == R.id.action_settings) {
+            Intent i = new Intent(this,SettingsActivity.class);
+            startActivity(i);
             return true;
-        }*/
+        }
         if (id == R.id.action_signout) {
+            String token = FirebaseInstanceId.getInstance().getToken();
+            NotificationUtil.removeRegistrationToken(token);
             AuthUI.getInstance()
                     .signOut(this)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {

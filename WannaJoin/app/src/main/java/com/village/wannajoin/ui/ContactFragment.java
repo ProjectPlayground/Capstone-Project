@@ -36,6 +36,7 @@ import com.village.wannajoin.model.Member;
 import com.village.wannajoin.util.ArrayFirebase;
 import com.village.wannajoin.util.Constants;
 import com.village.wannajoin.util.DividerItemDecoration;
+import com.village.wannajoin.util.NotificationUtil;
 import com.village.wannajoin.util.Util;
 
 import java.util.ArrayList;
@@ -322,10 +323,12 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
 
             childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + firebaseUser.getUid(), new Member(firebaseUser.getDisplayName(), firebaseUser.getUid(), firebaseUser.getPhotoUrl(), "1",timestampCreated).toMap());
             final String memberStatus = String.valueOf(eventFrom)+"-0";
+            final ArrayList<String> sendToUsers = new ArrayList<>();
             for (ContactAndGroup cg : contactAndGroupArrayList) {
                 if ((cg.getType() == 2) && (cg.isSelected())) {
                     childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + cg.getId(), memberStatus);
                     childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + cg.getId(), new Member(cg.getName(), cg.getId(), cg.getPhotoUrl(), "0",timestampCreated).toMap());
+                    sendToUsers.add(cg.getId());
                 }
                 if ((cg.getType() == 1) && (cg.isSelected())) {
                    //get group members and associate them with the event
@@ -340,7 +343,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
                                 member.setStatus("0");
                                 groupUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + member.getUserId(), memberStatus);
                                 groupUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + member.getUserId(), member.toMap());
-
+                                sendToUsers.add(member.getUserId());
                             }
                             dbRef.updateChildren(groupUpdates);
                         }
@@ -358,6 +361,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
 
             }
             dbRef.updateChildren(childUpdates);
+            NotificationUtil.sendEventNotification(firebaseUser.getDisplayName(),"New",i.getStringExtra(Constants.EVENT_TITLE),sendToUsers);
         }
 
 
@@ -367,17 +371,18 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
         Intent i = getActivity().getIntent();
         final Event event = i.getParcelableExtra(Constants.EVENT);
         final String eventId = event.getEventId();
-        ArrayList<Member> eventMembers = i.getParcelableArrayListExtra(Constants.EVENT_MEMBERS);
+       // ArrayList<Member> eventMembers = i.getParcelableArrayListExtra(Constants.EVENT_MEMBERS);
         final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
         final HashMap<String, Object> timestampCreated = new HashMap<>();
         timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
-
+        final ArrayList<String> sendToUsers = new ArrayList<>();
         Map<String, Object> childUpdates = new HashMap<>();
         final String memberStatus = String.valueOf(event.getFromTime())+"-0";
         for (final ContactAndGroup cg : contactAndGroupArrayList) {
             if ((cg.getType() == 2) && (cg.isSelected()) && (!event.getEventMembers().containsKey(cg.getId()))) {
                 childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + cg.getId(), memberStatus);
                 childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + cg.getId(), new Member(cg.getName(), cg.getId(), cg.getPhotoUrl(), "0",timestampCreated).toMap());
+                sendToUsers.add(cg.getId());
             }
             if ((cg.getType() == 1) && (cg.isSelected())) {
                 //get group members and associate them with the event
@@ -393,6 +398,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
                             if (!event.getEventMembers().containsKey(member.getUserId())) {
                                 groupUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + member.getUserId(), memberStatus);
                                 groupUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + member.getUserId(), member.toMap());
+                                sendToUsers.add(member.getUserId());
                             }
                         }
                         dbRef.updateChildren(groupUpdates);
@@ -411,6 +417,8 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
 
         }
         dbRef.updateChildren(childUpdates);
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        NotificationUtil.sendEventNotification(firebaseUser.getDisplayName(),"New",i.getStringExtra(Constants.EVENT_TITLE),sendToUsers);
 
     }
 

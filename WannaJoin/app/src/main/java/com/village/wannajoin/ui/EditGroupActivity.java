@@ -145,6 +145,10 @@ public class EditGroupActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id ==android.R.id.home){
+            finish();
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
             saveGroup();

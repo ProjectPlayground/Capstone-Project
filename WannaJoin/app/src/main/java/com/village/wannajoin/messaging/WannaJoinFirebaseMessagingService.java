@@ -1,12 +1,20 @@
 package com.village.wannajoin.messaging;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
+import android.preference.PreferenceManager;
+import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -19,6 +27,7 @@ import com.village.wannajoin.ui.WelcomeActivity;
  */
 public class WannaJoinFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "FirebaseMsgService";
+    private final static String GROUP_NOTIFICATION = "wannajoin_notifications";
 
     /**
      * Called when message is received.
@@ -40,12 +49,15 @@ public class WannaJoinFirebaseMessagingService extends FirebaseMessagingService 
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
+       // Log.d(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-            sendNotification(remoteMessage.getData().get("message"));
+            String sender = remoteMessage.getData().get("owner");
+            String title = remoteMessage.getData().get("eventTitle");
+            String type = remoteMessage.getData().get("type");
+            sendNotification(sender, type, title);
         }
 
         // Check if message contains a notification payload.
@@ -58,29 +70,63 @@ public class WannaJoinFirebaseMessagingService extends FirebaseMessagingService 
     }
     // [END receive_message]
 
-    /**
-     * Create and show a simple notification containing the received FCM message.
-     *
-     * @param messageBody FCM message body received.
-     */
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, WelcomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.wannajoinlogo)
-                .setContentTitle("FCM Message")
-                .setContentText(messageBody)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+    private void sendNotification(String sender, String type, String title) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Boolean notificationPref = sharedPref.getBoolean("notifications_new_message",true);
+        if (notificationPref) {
+            Intent intent = new Intent(this, WelcomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
+            String messageBody = null;
+            if (type.equals("New")) {
+                messageBody = getString(R.string.notification_new_event, title);
+            } else if (type.equals("Update")) {
+                messageBody = getString(R.string.notification_update_event, title);
+            } else if (type.equals("Delete")) {
+                messageBody = getString(R.string.notification_delete_event, title);
+            }
+            Boolean notificationVibratePref = sharedPref.getBoolean("notifications_new_message_vibrate",true);
+            Uri soundUri = Uri.parse(sharedPref.getString("notifications_new_message_ringtone","content://settings/system/notification_sound"));
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+           // Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Notification notification1;
+            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
+                    R.mipmap.wannajoinlogo);
+
+            if (notificationVibratePref) {
+                notification1 = new NotificationCompat.Builder(this)
+                        .setDefaults(Notification.DEFAULT_VIBRATE)
+                        .setSmallIcon(R.mipmap.wannajoinlogo)
+                        .setLargeIcon(largeIcon)
+                        .setContentTitle(getString(R.string.notification_title_for_msg, sender))
+                        .setContentText(messageBody)
+                        .setGroup(GROUP_NOTIFICATION)
+                        .setAutoCancel(true)
+                        .setSound(soundUri)
+                        .setContentIntent(pendingIntent).build();
+            }else{
+                notification1 = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.wannajoinlogo)
+                        .setLargeIcon(largeIcon)
+                        .setContentTitle(getString(R.string.notification_title_for_msg, sender))
+                        .setContentText(messageBody)
+                        .setGroup(GROUP_NOTIFICATION)
+                        .setAutoCancel(true)
+                        .setSound(soundUri)
+                        .setVibrate(new long[]{0l})
+                        .setContentIntent(pendingIntent).build();
+            }
+
+
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int notificationId = (int) (System.currentTimeMillis()%10000);
+
+            notificationManager.notify(notificationId, notification1);
+
+        }
     }
 }

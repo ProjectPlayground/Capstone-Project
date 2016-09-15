@@ -117,7 +117,15 @@
         <activity
             android:name=".ui.EditGroupActivity"
             android:label="@string/title_activity_edit_group"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.village.wannajoin.ui.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

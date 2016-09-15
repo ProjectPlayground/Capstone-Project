@@ -8,11 +8,11 @@
         android:title="@string/action_favorite_locations"
         app:showAsAction="never" />
 
-   <!-- <item
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="202"
         android:title="@string/action_settings"
-        app:showAsAction="never" />-->
+        app:showAsAction="never"/>
     <item
         android:id="@+id/action_signout"
         android:orderInCategory="203"

@@ -24,9 +24,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Event;
 import com.village.wannajoin.util.Constants;
+import com.village.wannajoin.util.NotificationUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class EventDetailActivity extends AppCompatActivity implements EventDetailFragment.OnFragmentInteractionListener  {
 
@@ -135,6 +139,16 @@ public class EventDetailActivity extends AppCompatActivity implements EventDetai
             childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENTS + "/" + mEventId,null);
             childUpdates.put("/"+Constants.FIREBASE_LOCATION_EVENT_MEMBERS+"/"+mEventId,null);
             dbref.updateChildren(childUpdates);
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            ArrayList<String> sendToUsers = new ArrayList<>();
+            Set<String> set = mEvent.getEventMembers().keySet();
+            Iterator<String> iterator = set.iterator();
+            while(iterator.hasNext()){
+                String uid = iterator.next();
+                if (!uid.equals(firebaseUser.getUid()))
+                    sendToUsers.add(uid);
+            }
+            NotificationUtil.sendEventNotification(firebaseUser.getDisplayName(),"Delete",mEvent.getTitle(),sendToUsers);
             finish();
             return true;
         }

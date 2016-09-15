@@ -21,17 +21,24 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.Event;
 import com.village.wannajoin.util.Constants;
+import com.village.wannajoin.util.NotificationUtil;
 import com.village.wannajoin.util.Util;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class EditEventActivity extends AppCompatActivity
         implements PlaceSelectionListener , DatePickerFragment.DateSelectedListener, TimePickerFragment.TimeSelectedListener {
@@ -272,6 +279,16 @@ public class EditEventActivity extends AppCompatActivity
                 mEvent.setToTime(eventTo);
                 mEvent.setTimestampLastChanged(timestampLastUpdated);
                 eventRef.setValue(mEvent);
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                ArrayList<String> sendToUsers = new ArrayList<>();
+                Set<String> set = mEvent.getEventMembers().keySet();
+                Iterator<String> iterator = set.iterator();
+                while(iterator.hasNext()){
+                    String id = iterator.next();
+                    if (!id.equals(firebaseUser.getUid()))
+                    sendToUsers.add(id);
+                }
+                NotificationUtil.sendEventNotification(firebaseUser.getDisplayName(),"Update",eventTitle,sendToUsers);
                 finish();
             }
         }

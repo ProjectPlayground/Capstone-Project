@@ -18,7 +18,12 @@ public class Constants {
     public static final String FIREBASE_LOCATION_EVENT_MEMBERS = "eventMembers";
     public static final String FIREBASE_LOCATION_CONTACTS = "userContacts";
     public static final String FIREBASE_LOCATION_MEMBER_STATUS = "status";
-
+    public static final String FIREBASE_LOCATION_REGISTRATIONS = "registrations";
+    public static final String FIREBASE_LOCATION_NOTIFICATIONS = "notifications";
+    public static final String FIREBASE_LOCATION_OWNER = "owner";
+    public static final String FIREBASE_LOCATION_TYPE = "type";
+    public static final String FIREBASE_LOCATION_TITLE = "eventTitle";
+    public static final String FIREBASE_LOCATION_SENDTO = "sendTo";
 
     public static final String EVENT_TITLE = "EventTitle";
     public static final String EVENT_FROM = "EventFrom";
