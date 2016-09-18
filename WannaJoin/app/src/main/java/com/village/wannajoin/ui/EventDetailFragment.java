@@ -162,7 +162,7 @@ public class EventDetailFragment extends Fragment {
                 SupportMapFragment supportmapfragment = SupportMapFragment.newInstance(options);
                 FragmentTransaction fragmentTransaction = fmanager.beginTransaction();
                 fragmentTransaction.add(R.id.location_map, supportmapfragment);
-                fragmentTransaction.commit();
+                fragmentTransaction.commitAllowingStateLoss();
                 supportmapfragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {

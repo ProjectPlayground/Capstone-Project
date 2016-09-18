@@ -8,19 +8,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.preference.PreferenceManager;
-import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.village.wannajoin.R;
 import com.village.wannajoin.ui.WelcomeActivity;
+import com.village.wannajoin.util.Util;
 
 /**
  * Created by richa on 9/11/16.
@@ -72,6 +69,7 @@ public class WannaJoinFirebaseMessagingService extends FirebaseMessagingService 
 
 
     private void sendNotification(String sender, String type, String title) {
+        Util.updateWidgets(this);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Boolean notificationPref = sharedPref.getBoolean("notifications_new_message",true);
         if (notificationPref) {
@@ -87,6 +85,9 @@ public class WannaJoinFirebaseMessagingService extends FirebaseMessagingService 
             } else if (type.equals("Delete")) {
                 messageBody = getString(R.string.notification_delete_event, title);
             }
+
+            //get previous active notification messages
+
             Boolean notificationVibratePref = sharedPref.getBoolean("notifications_new_message_vibrate",true);
             Uri soundUri = Uri.parse(sharedPref.getString("notifications_new_message_ringtone","content://settings/system/notification_sound"));
 
@@ -95,6 +96,12 @@ public class WannaJoinFirebaseMessagingService extends FirebaseMessagingService 
             Notification notification1;
             Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
                     R.mipmap.wannajoinlogo);
+
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int notificationCount = 0;
+
+
 
             if (notificationVibratePref) {
                 notification1 = new NotificationCompat.Builder(this)
@@ -121,9 +128,8 @@ public class WannaJoinFirebaseMessagingService extends FirebaseMessagingService 
             }
 
 
-            NotificationManager notificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            int notificationId = (int) (System.currentTimeMillis()%10000);
+
+            int notificationId = 0; //(int) (System.currentTimeMillis()%10000);
 
             notificationManager.notify(notificationId, notification1);
 

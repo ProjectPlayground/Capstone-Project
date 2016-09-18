@@ -18,7 +18,7 @@ public class Group implements Parcelable {
     private String groupOwner;
     private Uri groupPhotoUrl;
     private HashMap<String, Object> timestampCreated;
-    private HashMap<String,Boolean> groupMembers;
+    private HashMap<String,String> groupMembers;
 
     /**
      * Required public constructor
@@ -27,7 +27,7 @@ public class Group implements Parcelable {
     }
 
 
-    public Group(String name, String groupId,String groupOwner,  Uri groupPhotoUrl, HashMap<String, Object> timestampCreated, HashMap<String, Boolean> groupMembers) {
+    public Group(String name, String groupId,String groupOwner,  Uri groupPhotoUrl, HashMap<String, Object> timestampCreated, HashMap<String, String> groupMembers) {
         this.name = name;
         this.groupOwner = groupOwner;
         this.groupId = groupId;
@@ -41,7 +41,7 @@ public class Group implements Parcelable {
         groupId = in.readString();
         groupOwner = in.readString();
         timestampCreated = in.readHashMap(ServerValue.class.getClassLoader());
-        groupMembers = in.readHashMap(Boolean.class.getClassLoader());
+        groupMembers = in.readHashMap(String.class.getClassLoader());
         groupPhotoUrl = in.readParcelable(Uri.class.getClassLoader());
     }
 
@@ -81,11 +81,11 @@ public class Group implements Parcelable {
         return timestampCreated;
     }
 
-    public HashMap<String, Boolean> getGroupMembers() {
+    public HashMap<String, String> getGroupMembers() {
         return groupMembers;
     }
 
-    public void setGroupMembers(HashMap<String, Boolean> groupMembers) {
+    public void setGroupMembers(HashMap<String, String> groupMembers) {
         this.groupMembers = groupMembers;
     }
 

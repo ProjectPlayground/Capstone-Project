@@ -115,7 +115,7 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
                     default:
                         throw new IllegalStateException(getString(R.string.snapshots_incomplete_case_error));
                 }
-                Util.updateWidgets(getContext());
+
             }
         });
 

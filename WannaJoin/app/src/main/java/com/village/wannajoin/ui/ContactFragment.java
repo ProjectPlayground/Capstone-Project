@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -91,8 +92,8 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
         contactAndGroupArrayList.add(new ContactAndGroup(getString(R.string.empty_contact_list_text),null,null,false,-1));
         lastGroupPosition =1;
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Query mGroupRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUPS).orderByChild("groupMembers/"+currentUserId).equalTo(true);
-        DatabaseReference mContactRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_CONTACTS).child(currentUserId);
+        Query mGroupRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUPS).orderByChild("groupMembers/"+currentUserId);
+        Query mContactRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_CONTACTS).child(currentUserId).orderByChild("name");
         mSnapshotsGroups = new ArrayFirebase(mGroupRef);
         mSnapshotsContacts = new ArrayFirebase(mContactRef);
 
@@ -107,25 +108,27 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
                         if (contactAndGroupArrayList.get(pos-1).getType()==-1){
                             contactAndGroupArrayList.remove(pos-1);
                             mContactsRecyclerViewAdapter.notifyItemRemoved(pos-1);
-                            pos = pos-1;
                         }
+
+                        pos = index+lastGroupPosition+1;
+                       // Log.d("RB","pos contact: "+pos);
                         contactAndGroupArrayList.add(pos,cg);
                         mContactsRecyclerViewAdapter.notifyItemInserted(pos);
                         break;
                     case Changed:
                         Member member1 = mSnapshotsContacts.getItem(index).getValue(Member.class);
                         ContactAndGroup cg1 = new ContactAndGroup(Util.capitalizeWords(member1.getName()),member1.getUserId(),member1.getPhotoUrl(),false,2);
-                        int posc = index+lastGroupPosition+2;
+                        int posc = index+lastGroupPosition+1;
                         contactAndGroupArrayList.set(posc,cg1);
                         mContactsRecyclerViewAdapter.notifyItemChanged(posc);
                         break;
                     case Removed:
-                        int posr = index+lastGroupPosition+2;
+                        int posr = index+lastGroupPosition+1;
                         contactAndGroupArrayList.remove(posr);
                         mContactsRecyclerViewAdapter.notifyItemRemoved(posr);
                         break;
                     case Moved:
-                        //notifyItemMoved(oldIndex, index);
+                        mContactsRecyclerViewAdapter.notifyItemMoved(oldIndex+lastGroupPosition+1, index+lastGroupPosition+1);
                         break;
                     default:
                         throw new IllegalStateException(getString(R.string.snapshots_incomplete_case_error));
@@ -144,11 +147,11 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
                         if(contactAndGroupArrayList.get(pos).getType()==-1){
                             contactAndGroupArrayList.remove(pos);
                             mContactsRecyclerViewAdapter.notifyItemRemoved(pos);
-                        }else{
-                            pos = pos+1;
                         }
+                        pos = index+1;
+                       // Log.d("RB","pos group: "+pos);
                         contactAndGroupArrayList.add(pos,cg);
-                        lastGroupPosition = pos;
+                        lastGroupPosition = lastGroupPosition+1;
                         mContactsRecyclerViewAdapter.notifyItemInserted(pos);
                         break;
                     case Changed:
@@ -165,7 +168,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
                         mContactsRecyclerViewAdapter.notifyItemRemoved(posr);
                         break;
                     case Moved:
-                        //notifyItemMoved(oldIndex, index);
+                        mContactsRecyclerViewAdapter.notifyItemMoved(oldIndex+1, index+1);
                         break;
                     default:
                         throw new IllegalStateException("Incomplete case statement");

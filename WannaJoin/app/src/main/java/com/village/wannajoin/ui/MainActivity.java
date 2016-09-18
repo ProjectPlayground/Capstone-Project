@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,6 +46,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity  {
 
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity  {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private static final String TAG = MainActivity.class.getSimpleName();
-
+    private static final int REQUEST_INVITE = 100;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -158,6 +160,16 @@ public class MainActivity extends AppCompatActivity  {
             startActivity(i);
             return true;
         }
+
+        if (id == R.id.action_invite) {
+            Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.title_invite_friends))
+                    .setMessage(getString(R.string.invite_subject))
+                    .build();
+            startActivityForResult(intent, REQUEST_INVITE);
+            return true;
+        }
+
+
 
         if (id == R.id.action_settings) {
             Intent i = new Intent(this,SettingsActivity.class);

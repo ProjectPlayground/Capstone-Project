@@ -113,7 +113,9 @@ public class EditEventActivity extends AppCompatActivity
             mStartTime.setText(Util.getTimeFromTimeStamp(mEvent.getFromTime()));
             mEndTime.setText(Util.getTimeFromTimeStamp(mEvent.getToTime()));
             mNotes.setText(mEvent.getNotes());
-
+            mLocationId = mEvent.getLocationId();
+            mLocationLat = mEvent.getLocationLat();
+            mLocationLng = mEvent.getLocationLng();
         }
         // Retrieve the PlaceAutocompleteFragment.
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
@@ -274,6 +276,9 @@ public class EditEventActivity extends AppCompatActivity
                 timestampLastUpdated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
                 mEvent.setTitle(eventTitle);
                 mEvent.setLocation(eventLocationName);
+                mEvent.setLocationId(mLocationId);
+                mEvent.setLocationLat(mLocationLat);
+                mEvent.setLocationLng(mLocationLng);
                 mEvent.setNotes(eventNotes);
                 mEvent.setFromTime(eventFrom);
                 mEvent.setToTime(eventTo);

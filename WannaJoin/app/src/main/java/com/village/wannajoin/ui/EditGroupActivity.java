@@ -169,14 +169,15 @@ public class EditGroupActivity extends AppCompatActivity {
                 //save data in firebase
                 DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
 
-                HashMap<String, Boolean> groupMembersMap = new HashMap<>();
+                HashMap<String, String> groupMembersMap = new HashMap<>();
                 Map<String, Object> childUpdates = new HashMap<>();
+                String groupName = mGroupName.getText().toString();
                 for(Member member: mGroupMemberList){
-                    groupMembersMap.put(member.getUserId(),true);
+                    groupMembersMap.put(member.getUserId(),groupName);
                     childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + mGroup.getGroupId()+"/"+member.getUserId(), member.toMap());
                 }
 
-                mGroup.setName(mGroupName.getText().toString());
+                mGroup.setName(groupName);
                 mGroup.setGroupMembers(groupMembersMap);
 
                 childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUPS+"/" + mGroup.getGroupId(), mGroup.toMap());

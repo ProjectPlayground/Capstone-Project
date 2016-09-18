@@ -9,13 +9,19 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_invite"
         android:orderInCategory="202"
+        android:title="@string/action_invite_friends"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="203"
         android:title="@string/action_settings"
         app:showAsAction="never"/>
     <item
         android:id="@+id/action_signout"
-        android:orderInCategory="203"
+        android:orderInCategory="204"
         android:title="@string/action_signout"
         app:showAsAction="never" />
 </menu>

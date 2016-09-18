@@ -170,21 +170,23 @@ public class NewGroupActivity extends AppCompatActivity {
                 final String groupId = newGroupRef.getKey();
                 HashMap<String, Object> timestampCreated = new HashMap<>();
                 timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
-                HashMap<String, Boolean> groupMembersMap = new HashMap<>();
+                HashMap<String, String> groupMembersMap = new HashMap<>();
                 Map<String, Object> childUpdates = new HashMap<>();
+                String groupName = mGroupName.getText().toString();
                 for(Member member: groupMembers){
-                    groupMembersMap.put(member.getUserId(),true);
+                    groupMembersMap.put(member.getUserId(),groupName);
                     childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+member.getUserId(), member.toMap());
                 }
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                groupMembersMap.put(currentUserId,true);
+                groupMembersMap.put(currentUserId,groupName);
                 childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+currentUserId, new Member(currentUser.getDisplayName(),currentUser.getUid(),currentUser.getPhotoUrl(),timestampCreated).toMap());
 
                 Group group = new Group(mGroupName.getText().toString(),groupId, currentUserId,null, timestampCreated,groupMembersMap);
 
 
-                childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUPS+"/" + groupId, group.toMap());
+               // childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUPS+"/" + groupId, group.toMap());
+                dbRef.child(Constants.FIREBASE_LOCATION_GROUPS).child(groupId).setValue(group);
 
                 dbRef.updateChildren(childUpdates);
                 finish();
