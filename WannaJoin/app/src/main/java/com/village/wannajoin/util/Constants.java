@@ -24,6 +24,7 @@ public class Constants {
     public static final String FIREBASE_LOCATION_TYPE = "type";
     public static final String FIREBASE_LOCATION_TITLE = "eventTitle";
     public static final String FIREBASE_LOCATION_SENDTO = "sendTo";
+    public static final String FIREBASE_LOCATION_EVENTID = "eventId";
 
     public static final String EVENT_TITLE = "EventTitle";
     public static final String EVENT_FROM = "EventFrom";

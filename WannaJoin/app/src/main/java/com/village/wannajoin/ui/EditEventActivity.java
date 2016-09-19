@@ -293,7 +293,7 @@ public class EditEventActivity extends AppCompatActivity
                     if (!id.equals(firebaseUser.getUid()))
                     sendToUsers.add(id);
                 }
-                NotificationUtil.sendEventNotification(firebaseUser.getDisplayName(),"Update",eventTitle,sendToUsers);
+                NotificationUtil.sendEventNotification(mEvent.getEventId(),firebaseUser.getDisplayName(),"Update",eventTitle,sendToUsers);
                 finish();
             }
         }

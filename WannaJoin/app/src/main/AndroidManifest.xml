@@ -109,6 +109,10 @@
             android:name=".FavoriteEventLocationData.EventLocationProvider"
             android:authorities="com.village.wannajoin"
             android:exported="false" />
+        <provider
+            android:name=".FCMNotificationData.NotificationProvider"
+            android:authorities="com.village.wannajoin.notification"
+            android:exported="false" />
 
         <activity
             android:name=".ui.EditEventActivity"

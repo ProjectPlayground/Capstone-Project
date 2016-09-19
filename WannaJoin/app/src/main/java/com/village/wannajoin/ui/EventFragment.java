@@ -1,14 +1,18 @@
 package com.village.wannajoin.ui;
 
 import android.app.ActivityOptions;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +29,9 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.village.wannajoin.FCMNotificationData.NotificationContract;
+import com.village.wannajoin.FCMNotificationData.NotificationLoader;
+import com.village.wannajoin.FCMNotificationData.NotificationQueryHandler;
 import com.village.wannajoin.R;
 import com.village.wannajoin.model.ContactAndGroup;
 import com.village.wannajoin.model.Event;
@@ -39,9 +46,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 
-public class EventFragment extends Fragment implements EventsRecyclerViewAdapter.OnClickedListener{
+public class EventFragment extends Fragment implements EventsRecyclerViewAdapter.OnClickedListener, LoaderManager.LoaderCallbacks<Cursor>{
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -52,6 +60,7 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
     EventsRecyclerViewAdapter mAdapter;
     ArrayList<Event> mEventList;
     ArrayFirebase mSnapshotsEvents;
+    HashMap<String,Integer> eventNotificationMap;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -82,6 +91,7 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
         mRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_EVENTS).orderByChild("eventMembers/"+currentUserId).startAt(Util.getMidNightTimeStamp());
        // mAdapter = new EventRecyclerViewAdapter(Event.class, R.layout.fragment_event,EventRecyclerViewAdapter.ViewHolder.class,mRef, getContext());
         mEventList = new ArrayList<>();
+        eventNotificationMap = new HashMap<>();
         Event emptyEvent = new Event(null,getString(R.string.empty_event_list_text),null,null,null,1,1,null,null);
         emptyEvent.setType(-1); // set -1 for empty event
         mEventList.add(emptyEvent);
@@ -120,6 +130,7 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
         });
 
         setHasOptionsMenu(true);
+        getActivity().getSupportLoaderManager().initLoader(0, null, this);
 
     }
 
@@ -225,6 +236,14 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
     @Override
     public void onItemClicked(Event event) {
         if (event!=null){
+            //delete event notifications from local notification db
+            ContentResolver contentResolver = getActivity().getContentResolver();
+            NotificationQueryHandler notificationQueryHandler =new NotificationQueryHandler(contentResolver,getContext());
+            String where = NotificationContract.NotificationEntry.COLUMN_EVENT_ID + "="+ "\""+event.getEventId()+"\"";
+            notificationQueryHandler.startDelete(0,null,NotificationContract.NotificationEntry.CONTENT_URI,where,null);
+            eventNotificationMap.remove(event.getEventId());
+            mAdapter.updateEventNotificationMap(eventNotificationMap);
+            mAdapter.notifyDataSetChanged();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle();
                 Intent i = new Intent(getActivity(), EventDetailActivity.class);
@@ -235,10 +254,41 @@ public class EventFragment extends Fragment implements EventsRecyclerViewAdapter
                 i.putExtra(Constants.EVENT, event);
                 startActivity(i);
             }
+
+
         }else{
             Intent i = new Intent(getActivity(),NewEventActivity.class);
             startActivity(i);
         }
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return NotificationLoader.newAllEventInstance(getContext());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data !=null){
+            if (data.getCount()>0) {
+                while(data.moveToNext()){
+                    String eventId = data.getString(NotificationLoader.Query.COLUMN_EVENT_ID);
+                    if (!eventNotificationMap.containsKey(eventId)){
+                        eventNotificationMap.put(eventId,1);
+                    }else{
+                        int n = eventNotificationMap.get(eventId);
+                        eventNotificationMap.put(eventId,n+1);
+                    }
+                }
+                data.close();
+            }
+        }
+        mAdapter.updateEventNotificationMap(eventNotificationMap);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        eventNotificationMap.clear();
+    }
 }

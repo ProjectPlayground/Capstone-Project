@@ -48,6 +48,7 @@
     <string name="title_activity_event_detail">Event Details</string>
     <string name="cancel_button_text">Cancel</string>
     <string name="event_member_going">going</string>
+    <string name="event_member_going_including_you">(+ you) going</string>
     <string name="menu_delete_title">Delete</string>
     <string name="title_activity_group_detail">Group Detail</string>
     <string name="menu_edit_title">Edit</string>
@@ -155,6 +156,12 @@
     <string name="action_invite_friends">Invite Friends</string>
     <string name="title_invite_friends">Invite Friends</string>
     <string name="invite_subject">Hey, Check out WannaJoin App</string>
+    <string name="summary_notification_title">%1$d new message</string>
+    <string name="summary_notification_title_mm">%1$d new messages</string>
+    <string name="summary_notification_new_event">%1$s shared a new event "%2$s".</string>
+    <string name="summary_notification_update_event">%1$s updated the event "%2$s".</string>
+    <string name="summary_notification_delete_event">%1$s cancelled the event "%2$s".</string>
+
 
 
 </resources>

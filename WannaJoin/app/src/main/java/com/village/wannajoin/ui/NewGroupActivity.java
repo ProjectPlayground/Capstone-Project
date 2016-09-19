@@ -179,8 +179,11 @@ public class NewGroupActivity extends AppCompatActivity {
                 }
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                String userPhotoUrl=null;
+                if (currentUser.getPhotoUrl()!=null)
+                    userPhotoUrl = currentUser.getPhotoUrl().toString();
                 groupMembersMap.put(currentUserId,groupName);
-                childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+currentUserId, new Member(currentUser.getDisplayName(),currentUser.getUid(),currentUser.getPhotoUrl(),timestampCreated).toMap());
+                childUpdates.put("/"+Constants.FIREBASE_LOCATION_GROUP_MEMBERS + "/" + groupId+"/"+currentUserId, new Member(currentUser.getDisplayName(),currentUser.getUid(),userPhotoUrl,timestampCreated).toMap());
 
                 Group group = new Group(mGroupName.getText().toString(),groupId, currentUserId,null, timestampCreated,groupMembersMap);
 

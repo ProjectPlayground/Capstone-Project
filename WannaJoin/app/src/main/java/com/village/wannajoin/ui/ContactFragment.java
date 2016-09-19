@@ -92,7 +92,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
         contactAndGroupArrayList.add(new ContactAndGroup(getString(R.string.empty_contact_list_text),null,null,false,-1));
         lastGroupPosition =1;
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Query mGroupRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUPS).orderByChild("groupMembers/"+currentUserId);
+        Query mGroupRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_GROUPS).orderByChild("groupMembers/"+currentUserId).startAt("");
         Query mContactRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_CONTACTS).child(currentUserId).orderByChild("name");
         mSnapshotsGroups = new ArrayFirebase(mGroupRef);
         mSnapshotsContacts = new ArrayFirebase(mContactRef);
@@ -303,6 +303,9 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
 
     private void saveNewEvent(){
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String userPhotoUrl=null;
+        if (firebaseUser.getPhotoUrl()!=null)
+            userPhotoUrl = firebaseUser.getPhotoUrl().toString();
         final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
         final HashMap<String, Object> timestampCreated = new HashMap<>();
         timestampCreated.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
@@ -315,7 +318,8 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
             long eventFrom = i.getLongExtra(Constants.EVENT_FROM, 0);
             String ownerStatus = String.valueOf(eventFrom)+"-1";
             eventMembers.put(firebaseUser.getUid(), ownerStatus);
-            Event newEvent = new Event(eventId, i.getStringExtra(Constants.EVENT_TITLE), firebaseUser.getUid(), firebaseUser.getDisplayName(), firebaseUser.getPhotoUrl(), i.getLongExtra(Constants.EVENT_FROM, 0), i.getLongExtra(Constants.EVENT_TO, 0), timestampCreated, eventMembers);
+
+            Event newEvent = new Event(eventId, i.getStringExtra(Constants.EVENT_TITLE), firebaseUser.getUid(), firebaseUser.getDisplayName(), userPhotoUrl, i.getLongExtra(Constants.EVENT_FROM, 0), i.getLongExtra(Constants.EVENT_TO, 0), timestampCreated, eventMembers);
             newEvent.setLocation(i.getStringExtra(Constants.EVENT_LOCATION));
             newEvent.setNotes(i.getStringExtra(Constants.EVENT_NOTES));
             newEvent.setLocationLat(i.getDoubleExtra(Constants.EVENT_LOCATION_LAT,0.0));
@@ -324,7 +328,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
             newEventRef.setValue(newEvent);
             Map<String, Object> childUpdates = new HashMap<>();
 
-            childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + firebaseUser.getUid(), new Member(firebaseUser.getDisplayName(), firebaseUser.getUid(), firebaseUser.getPhotoUrl(), "1",timestampCreated).toMap());
+            childUpdates.put("/" + Constants.FIREBASE_LOCATION_EVENT_MEMBERS + "/" + eventId + "/" + Constants.FIREBASE_LOCATION_USERS + "/" + firebaseUser.getUid(), new Member(firebaseUser.getDisplayName(), firebaseUser.getUid(), userPhotoUrl, "1",timestampCreated).toMap());
             final String memberStatus = String.valueOf(eventFrom)+"-0";
             final ArrayList<String> sendToUsers = new ArrayList<>();
             for (ContactAndGroup cg : contactAndGroupArrayList) {
@@ -359,12 +363,12 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
 
 
 
-                 }
+                }
 
 
             }
             dbRef.updateChildren(childUpdates);
-            NotificationUtil.sendEventNotification(firebaseUser.getDisplayName(),"New",i.getStringExtra(Constants.EVENT_TITLE),sendToUsers);
+            NotificationUtil.sendEventNotification(eventId,firebaseUser.getDisplayName(),"New",i.getStringExtra(Constants.EVENT_TITLE),sendToUsers);
         }
 
 
@@ -421,7 +425,7 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
         }
         dbRef.updateChildren(childUpdates);
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        NotificationUtil.sendEventNotification(firebaseUser.getDisplayName(),"New",i.getStringExtra(Constants.EVENT_TITLE),sendToUsers);
+        NotificationUtil.sendEventNotification(eventId,firebaseUser.getDisplayName(),"New",i.getStringExtra(Constants.EVENT_TITLE),sendToUsers);
 
     }
 

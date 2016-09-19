@@ -72,15 +72,18 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                     /* If nothing is there ...*/
+                String userPhotoUrl=null;
+                if (firebaseUser.getPhotoUrl()!=null)
+                    userPhotoUrl = firebaseUser.getPhotoUrl().toString();
                 if (dataSnapshot.getValue() == null) {
                     HashMap<String, Object> timestampJoined = new HashMap<>();
                     timestampJoined.put(Constants.FIREBASE_PROPERTY_TIMESTAMP, ServerValue.TIMESTAMP);
 
-                    User newUser = new User(firebaseUser.getDisplayName(), firebaseUser.getUid(),firebaseUser.getEmail(), firebaseUser.getPhotoUrl(),timestampJoined);
+                    User newUser = new User(firebaseUser.getDisplayName(), firebaseUser.getUid(),firebaseUser.getEmail(), userPhotoUrl,timestampJoined);
                     userLocation.setValue(newUser);
                 }else{
                     User user = dataSnapshot.getValue(User.class);
-                    User updateUser = new User(firebaseUser.getDisplayName(), firebaseUser.getUid(),firebaseUser.getEmail(), firebaseUser.getPhotoUrl(),user.getTimestampJoined());
+                    User updateUser = new User(firebaseUser.getDisplayName(), firebaseUser.getUid(),firebaseUser.getEmail(), userPhotoUrl,user.getTimestampJoined());
                     userLocation.setValue(updateUser);
                 }
             }

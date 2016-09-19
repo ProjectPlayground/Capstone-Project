@@ -22,7 +22,7 @@ public class Event implements Parcelable {
     private String locationId; //place id from google place api
     private String ownerId;
     private String ownerName;
-    private Uri ownerPhotoUrl;
+    private String ownerPhotoUrl;
     private long fromTime;
     private long toTime;
     private String notes;
@@ -34,7 +34,7 @@ public class Event implements Parcelable {
     public Event() {
     }
 
-    public Event(String eventId, String title, String ownerId, String ownerName, Uri ownerPhotoUrl, long fromTime, long toTime, HashMap<String, Object> timestampCreated, HashMap<String,String> eventMembers) {
+    public Event(String eventId, String title, String ownerId, String ownerName, String ownerPhotoUrl, long fromTime, long toTime, HashMap<String, Object> timestampCreated, HashMap<String,String> eventMembers) {
         this.eventId = eventId;
         this.title = title;
         this.ownerId = ownerId;
@@ -60,13 +60,13 @@ public class Event implements Parcelable {
         locationId = in.readString();
         ownerId = in.readString();
         ownerName = in.readString();
+        ownerPhotoUrl = in.readString();
         fromTime = in.readLong();
         toTime = in.readLong();
         notes = in.readString();
         timestampLastChanged = in.readHashMap(ServerValue.class.getClassLoader());
         timestampCreated = in.readHashMap(ServerValue.class.getClassLoader());
         eventMembers = in.readHashMap(String.class.getClassLoader());
-        ownerPhotoUrl = in.readParcelable(Uri.class.getClassLoader());
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -161,7 +161,7 @@ public class Event implements Parcelable {
         return ownerName;
     }
 
-    public Uri getOwnerPhotoUrl() {
+    public String getOwnerPhotoUrl() {
         return ownerPhotoUrl;
     }
 
@@ -200,12 +200,12 @@ public class Event implements Parcelable {
         dest.writeString(locationId);
         dest.writeString(ownerId);
         dest.writeString(ownerName);
+        dest.writeString(ownerPhotoUrl);
         dest.writeLong(fromTime);
         dest.writeLong(toTime);
         dest.writeString(notes);
         dest.writeMap(timestampLastChanged);
         dest.writeMap(timestampCreated);
         dest.writeMap(eventMembers);
-        dest.writeParcelable(ownerPhotoUrl,0);
     }
 }

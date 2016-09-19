@@ -16,7 +16,7 @@ public class Group implements Parcelable {
     private String name;
     private String groupId;
     private String groupOwner;
-    private Uri groupPhotoUrl;
+    private String groupPhotoUrl;
     private HashMap<String, Object> timestampCreated;
     private HashMap<String,String> groupMembers;
 
@@ -27,7 +27,7 @@ public class Group implements Parcelable {
     }
 
 
-    public Group(String name, String groupId,String groupOwner,  Uri groupPhotoUrl, HashMap<String, Object> timestampCreated, HashMap<String, String> groupMembers) {
+    public Group(String name, String groupId,String groupOwner,  String groupPhotoUrl, HashMap<String, Object> timestampCreated, HashMap<String, String> groupMembers) {
         this.name = name;
         this.groupOwner = groupOwner;
         this.groupId = groupId;
@@ -40,9 +40,9 @@ public class Group implements Parcelable {
         name = in.readString();
         groupId = in.readString();
         groupOwner = in.readString();
+        groupPhotoUrl = in.readString();
         timestampCreated = in.readHashMap(ServerValue.class.getClassLoader());
         groupMembers = in.readHashMap(String.class.getClassLoader());
-        groupPhotoUrl = in.readParcelable(Uri.class.getClassLoader());
     }
 
     public static final Creator<Group> CREATOR = new Creator<Group>() {
@@ -73,7 +73,7 @@ public class Group implements Parcelable {
         return groupId;
     }
 
-    public Uri getGroupPhotoUrl() {
+    public String getGroupPhotoUrl() {
         return groupPhotoUrl;
     }
 
@@ -112,8 +112,8 @@ public class Group implements Parcelable {
         dest.writeString(name);
         dest.writeString(groupId);
         dest.writeString(groupOwner);
+        dest.writeString(groupPhotoUrl);
         dest.writeMap(timestampCreated);
         dest.writeMap(groupMembers);
-        dest.writeParcelable(groupPhotoUrl, 0);
     }
 }

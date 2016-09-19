@@ -1,5 +1,6 @@
 package com.village.wannajoin.ui;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -28,21 +29,14 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.village.wannajoin.FCMNotificationData.NotificationContract;
+import com.village.wannajoin.FCMNotificationData.NotificationQueryHandler;
+import com.village.wannajoin.FavoriteEventLocationData.EventLocationContract;
+import com.village.wannajoin.FavoriteEventLocationData.EventLocationQueryHandler;
 import com.village.wannajoin.R;
-import com.village.wannajoin.model.Event;
 import com.village.wannajoin.util.NotificationUtil;
 
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -137,7 +131,10 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -275,7 +272,15 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
+    private void removeNotificationsFromDatabase(){
+        ContentResolver contentResolver = getContentResolver();
+        NotificationQueryHandler notificationHandler = new NotificationQueryHandler(contentResolver, this);
 
+        //String where = EventLocationContract.LocationEntry.COLUMN_LOCATION_ID + "="+ "\""+locationId+"\"";
+
+        notificationHandler.startDelete(0,null, NotificationContract.NotificationEntry.CONTENT_URI,null,null);
+
+    }
 
 
 }

@@ -1,14 +1,10 @@
 package com.village.wannajoin.ui;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,14 +31,14 @@ public class ContactDetailDialogFragment extends DialogFragment {
 
     private String mContactId;
     private String mContactName;
-    private Uri mContactPhotoUrl;
+    private String mContactPhotoUrl;
 
-    public static ContactDetailDialogFragment newInstance(String contactId, String name, Uri photoUrl) {
+    public static ContactDetailDialogFragment newInstance(String contactId, String name, String photoUrl) {
         ContactDetailDialogFragment contactDetailDialogFragment= new ContactDetailDialogFragment();
         Bundle args = new Bundle();
         args.putString(Constants.CONTACT_ID,contactId);
         args.putString(Constants.CONTACT_NAME,name);
-        args.putParcelable(Constants.CONTACT_PHOTO_URL,photoUrl);
+        args.putString(Constants.CONTACT_PHOTO_URL,photoUrl);
 
         contactDetailDialogFragment.setArguments(args);
         return contactDetailDialogFragment;
@@ -56,7 +52,7 @@ public class ContactDetailDialogFragment extends DialogFragment {
         Bundle args = getArguments();
         mContactId = args.getString(Constants.CONTACT_ID);
         mContactName = args.getString(Constants.CONTACT_NAME);
-        mContactPhotoUrl = args.getParcelable(Constants.CONTACT_PHOTO_URL);
+        mContactPhotoUrl = args.getString(Constants.CONTACT_PHOTO_URL);
 
     }
 

@@ -15,7 +15,7 @@ import java.util.Map;
 public class Member implements Parcelable {
     private String name;
     private String userId;
-    private Uri photoUrl;
+    private String photoUrl;
     private String status;
     private HashMap<String, Object> timestampJoined;
 
@@ -26,14 +26,14 @@ public class Member implements Parcelable {
     public Member() {
     }
 
-    public Member(String name, String userId, Uri photoUrl, HashMap<String, Object> timestampJoined) {
+    public Member(String name, String userId, String photoUrl, HashMap<String, Object> timestampJoined) {
         this.name = name;
         this.userId = userId;
         this.photoUrl = photoUrl;
         this.timestampJoined = timestampJoined;
     }
 
-    public Member(String name, String userId, Uri photoUrl,  String status, HashMap<String, Object> timestampJoined) {
+    public Member(String name, String userId, String photoUrl,  String status, HashMap<String, Object> timestampJoined) {
         this.name = name;
         this.userId = userId;
         this.photoUrl = photoUrl;
@@ -44,9 +44,9 @@ public class Member implements Parcelable {
     protected Member(Parcel in) {
         name = in.readString();
         userId = in.readString();
+        photoUrl = in.readString();
         status = in.readString();
         timestampJoined = in.readHashMap(ServerValue.class.getClassLoader());
-        photoUrl = in.readParcelable(Uri.class.getClassLoader());
     }
 
     public static final Creator<Member> CREATOR = new Creator<Member>() {
@@ -69,7 +69,7 @@ public class Member implements Parcelable {
         return userId;
     }
 
-    public Uri getPhotoUrl() {
+    public String getPhotoUrl() {
         return photoUrl;
     }
 
@@ -108,8 +108,9 @@ public class Member implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(userId);
+        dest.writeString(photoUrl);
         dest.writeString(status);
+        //dest.writeString(photoUrl);
         dest.writeMap(timestampJoined);
-        dest.writeParcelable(photoUrl,0);
     }
 }

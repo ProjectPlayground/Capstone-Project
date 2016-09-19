@@ -148,7 +148,7 @@ public class EventDetailActivity extends AppCompatActivity implements EventDetai
                 if (!uid.equals(firebaseUser.getUid()))
                     sendToUsers.add(uid);
             }
-            NotificationUtil.sendEventNotification(firebaseUser.getDisplayName(),"Delete",mEvent.getTitle(),sendToUsers);
+            NotificationUtil.sendEventNotification(mEventId,firebaseUser.getDisplayName(),"Delete",mEvent.getTitle(),sendToUsers);
             finish();
             return true;
         }

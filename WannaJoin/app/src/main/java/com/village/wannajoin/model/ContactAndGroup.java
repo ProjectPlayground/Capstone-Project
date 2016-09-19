@@ -10,12 +10,12 @@ import android.os.Parcelable;
 public class ContactAndGroup implements Comparable, Parcelable {
     private String name;
     private String id;
-    private Uri photoUrl;
+    private String photoUrl;
     private boolean isGroup;
     private boolean isSelected;
     private int type;  //0 for label, 1 for group and 2 for contact
 
-    public ContactAndGroup(String name, String id, Uri photoUrl, boolean isGroup, int type) {
+    public ContactAndGroup(String name, String id, String photoUrl, boolean isGroup, int type) {
         this.name = name;
         this.id = id;
         this.photoUrl = photoUrl;
@@ -27,10 +27,10 @@ public class ContactAndGroup implements Comparable, Parcelable {
     protected ContactAndGroup(Parcel in) {
         name = in.readString();
         id = in.readString();
+        photoUrl = in.readString();
         isGroup = in.readByte() != 0;
         isSelected = in.readByte() != 0;
         type = in.readInt();
-        photoUrl = in.readParcelable(Uri.class.getClassLoader());
     }
 
     public static final Creator<ContactAndGroup> CREATOR = new Creator<ContactAndGroup>() {
@@ -53,7 +53,7 @@ public class ContactAndGroup implements Comparable, Parcelable {
         return id;
     }
 
-    public Uri getPhotoUrl() {
+    public String getPhotoUrl() {
         return photoUrl;
     }
 
@@ -101,9 +101,9 @@ public class ContactAndGroup implements Comparable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(id);
+        dest.writeString(photoUrl);
         dest.writeByte((byte) (isGroup ? 1 : 0));
         dest.writeByte((byte) (isSelected ? 1 : 0));
         dest.writeInt(type);
-        dest.writeParcelable(photoUrl,0);
     }
 }

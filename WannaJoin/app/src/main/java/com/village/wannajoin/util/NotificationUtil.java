@@ -29,12 +29,13 @@ public class NotificationUtil {
         dbRef.setValue(false);
     }
 
-    public static void sendEventNotification(String senderName, String type, String eventTitle, ArrayList<String> users){
+    public static void sendEventNotification(String eventId,String senderName, String type, String eventTitle, ArrayList<String> users){
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_LOCATION_NOTIFICATIONS);
         DatabaseReference notificationRef = dbRef.push();
         String notificationKey = notificationRef.getKey();
 
         Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/" + notificationKey+"/"+ Constants.FIREBASE_LOCATION_EVENTID,eventId);
         childUpdates.put("/" + notificationKey+"/"+ Constants.FIREBASE_LOCATION_OWNER,senderName);
         childUpdates.put("/" + notificationKey+"/"+ Constants.FIREBASE_LOCATION_TYPE,type);
         childUpdates.put("/" + notificationKey+"/"+ Constants.FIREBASE_LOCATION_TITLE,eventTitle);

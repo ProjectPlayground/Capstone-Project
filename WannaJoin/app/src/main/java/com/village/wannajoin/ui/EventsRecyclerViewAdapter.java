@@ -34,6 +34,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     ArrayList<Event> mEventList;
     OnClickedListener mListener;
     FirebaseUser firebaseUser ;
+    HashMap<String,Integer> eventNotificationMap;
 
     interface OnClickedListener {
         void onItemClicked(Event event);
@@ -45,6 +46,10 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         this.mListener = mListener;
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
+    }
+
+    public void updateEventNotificationMap(HashMap<String,Integer> eventNotificationMap){
+        this.eventNotificationMap = eventNotificationMap;
     }
 
     @Override
@@ -125,10 +130,15 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             }
             String status = mEventList.get(position).getEventMembers().get(firebaseUser.getUid());
             String[] statusarray = status.split("-");
-            if (statusarray[1].equals("1"))
+            boolean joinFlag=false;
+            if (statusarray[1].equals("1")) {
                 viewHolder.mJoinButton.setText(R.string.cancel_button_text);
-            else
+                joinFlag = true;
+            }
+            else {
                 viewHolder.mJoinButton.setText(R.string.join_button_text);
+                joinFlag = false;
+            }
             String dateString = Util.getDateFromTimeStamp(mEventList.get(position).getFromTime());
             String timeString = Util.getTimeFromTimeStamp(mEventList.get(position).getFromTime());
             viewHolder.mDate.setText(dateString);
@@ -141,7 +151,16 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         count++;
                 }
             }
-            viewHolder.mPeople.setText("+"+count+ " "+mContext.getString(R.string.event_member_going));
+            /*if (joinFlag)
+                viewHolder.mPeople.setText(count+ " "+mContext.getString(R.string.event_member_going));
+            else*/
+            viewHolder.mPeople.setText(count+ " "+mContext.getString(R.string.event_member_going));
+            if (eventNotificationMap.containsKey(mEventList.get(position).getEventId())) {
+                viewHolder.mNotification.setVisibility(View.VISIBLE);
+                viewHolder.mNotification.setText(String.valueOf(eventNotificationMap.get(mEventList.get(position).getEventId())));
+            }else{
+                viewHolder.mNotification.setVisibility(View.GONE);
+            }
             if (mEventList.get(position).getLocation().equals("")){
                 if (count>1)
                     viewHolder.itemView.setContentDescription(mContext.getString(R.string.event_list_item_content_description2,owner,mEventList.get(position).getTitle(),dateString,timeString,count));
@@ -176,6 +195,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public TextView mDate;
         public TextView mTime;
         public Button mJoinButton;
+        public TextView mNotification;
         public ViewHolder(View view, ViewHolderClicks clickListener) {
             super(view);
 
@@ -187,6 +207,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             mTime = (TextView) view.findViewById(R.id.time);
             mPeople = (TextView) view.findViewById(R.id.people_going);
             mJoinButton = (Button) view.findViewById(R.id.join_button);
+            mNotification = (TextView) view.findViewById(R.id.notificationCircle);
             mJoinButton.setOnClickListener(this);
             view.setOnClickListener(this);
             mClickListener = clickListener;

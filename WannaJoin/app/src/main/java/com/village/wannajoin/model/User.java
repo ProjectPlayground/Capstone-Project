@@ -15,7 +15,7 @@ public class User implements Parcelable{
     private String name;
     private String email;
     private String userId;
-    private Uri photoUrl;
+    private String photoUrl;
     private HashMap<String, Object> timestampJoined;
     private HashMap<String,Boolean> groups;
     private HashMap<String,Boolean> contactOf;
@@ -35,7 +35,7 @@ public class User implements Parcelable{
      * @param email
      * @param timestampJoined
      */
-    public User(String name, String uid, String email, Uri photoUrl, HashMap<String, Object> timestampJoined) {
+    public User(String name, String uid, String email, String photoUrl, HashMap<String, Object> timestampJoined) {
         this.name = name;
         this.userId = uid;
         this.email = email;
@@ -47,10 +47,10 @@ public class User implements Parcelable{
         name = in.readString();
         email = in.readString();
         userId = in.readString();
+        photoUrl = in.readString();
         timestampJoined = in.readHashMap(ServerValue.class.getClassLoader());
         groups = in.readHashMap(Boolean.class.getClassLoader());
         contactOf = in.readHashMap(Boolean.class.getClassLoader());
-        photoUrl = in.readParcelable(Uri.class.getClassLoader());
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -77,7 +77,7 @@ public class User implements Parcelable{
         return timestampJoined;
     }
 
-    public Uri getPhotoUrl() {
+    public String getPhotoUrl() {
         return photoUrl;
     }
 
@@ -103,10 +103,10 @@ public class User implements Parcelable{
         dest.writeString(name);
         dest.writeString(email);
         dest.writeString(userId);
+        dest.writeString(photoUrl);
         dest.writeMap(timestampJoined);
         dest.writeMap(groups);
         dest.writeMap(contactOf);
-        dest.writeParcelable(photoUrl,0);
 
     }
 
