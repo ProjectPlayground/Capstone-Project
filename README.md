@@ -1,11 +1,11 @@
-### Capstone-Project
-####App Name: WannaJoin
+## Capstone-Project
+###App Name: WannaJoin
 This app would be for parents who want an easy and informal way of letting their kids’ friends, classmates, etc., know of their plans and also be aware of others’ plans without the overhead of calls, emails, etc. It would enable on the spur of the moment group play/activities.
 
-####UI Mockups
+###Project Overview and UI Mockups
 Please see Capstone_Stage1.pdf
 
-####Installation Instructions
+###How to install and run
 1. Create a Firebase project in the Firebase console “https://firebase.google.com/“
 2. Click Add Firebase to the Android app and follow setup steps. 
 3. When prompted, enter app's package name “com.village.wannajoin” and SHA-1 hash of the signing certificate 
