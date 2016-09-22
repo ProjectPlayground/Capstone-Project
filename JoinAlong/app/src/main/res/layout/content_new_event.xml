@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.village.joinalong.ui.NewEventActivity"
+    tools:showIn="@layout/activity_new_event">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        >
+        <EditText
+            android:id="@+id/event_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/edit_text_min_height"
+            android:inputType="textCapSentences"
+            android:imeOptions="actionDone"
+            android:hint="@string/event_title_hint"
+            android:background="@android:color/transparent"/>
+        <View style="@style/Divider"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="@dimen/event_icons_dimen"
+                android:layout_height="@dimen/event_icons_dimen"
+                android:layout_marginTop="@dimen/event_location_icon_margintop"
+                android:src="@drawable/ic_room_black_36dp"
+                android:tint="@color/colorPrimary"
+                />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/event_icon_text_gap"
+                android:layout_marginLeft="@dimen/event_icon_text_gap"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/event_location_view_margin"
+                    android:layout_marginBottom="@dimen/event_location_view_margin">
+
+                    <fragment
+                        android:id="@+id/autocomplete_fragment"
+                        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+                </android.support.v7.widget.CardView>
+
+                <TextView
+                    android:id="@+id/event_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/event_location_view_margin"/>
+
+                <View style="@style/Divider"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/event_view_top_margin"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/event_icons_dimen"
+                android:layout_height="@dimen/event_icons_dimen"
+                android:src="@drawable/ic_schedule_black_36dp"
+                android:layout_marginTop="@dimen/date_notes_icon_top_margin"
+                android:tint="@color/colorPrimary"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/event_icon_text_gap"
+                android:layout_marginLeft="@dimen/event_icon_text_gap">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/event_start_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:onClick="showDatePickerDialog" />
+
+                    <Button
+                        android:id="@+id/event_start_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/event_date_time_gap"
+                        android:layout_marginStart="@dimen/event_date_time_gap"
+                        android:background="@android:color/transparent"
+                        android:onClick="showTimePickerDialog" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/event_end_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:onClick="showDatePickerDialog" />
+
+                    <Button
+                        android:id="@+id/event_end_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/event_date_time_gap"
+                        android:layout_marginStart="@dimen/event_date_time_gap"
+                        android:background="@android:color/transparent"
+                        android:onClick="showTimePickerDialog" />
+
+                </LinearLayout>
+                <View style="@style/Divider"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/event_view_top_margin"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="@dimen/event_icons_dimen"
+                android:layout_height="@dimen/event_icons_dimen"
+                android:layout_marginTop="@dimen/date_notes_icon_top_margin"
+                android:src="@drawable/ic_subject_black_36dp"
+                android:tint="@color/colorPrimary"
+                />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/event_icon_text_gap"
+                android:layout_marginLeft="@dimen/event_icon_text_gap"
+                android:orientation="vertical">
+                <EditText
+                    android:id="@+id/event_notes"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:minHeight="@dimen/edit_text_min_height"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapSentences"
+                    android:hint="@string/event_notes_hint"
+                    android:background="@android:color/transparent"/>
+
+                <View style="@style/Divider"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/event_view_top_margin"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="@dimen/event_icons_dimen"
+                android:layout_height="@dimen/event_icons_dimen"
+                android:layout_marginTop="@dimen/date_notes_icon_top_margin"
+                android:src="@drawable/ic_group_black_36dp"
+                android:tint="@color/colorPrimary"
+                />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/event_icon_text_gap"
+                android:layout_marginLeft="@dimen/event_icon_text_gap"
+                android:orientation="vertical">
+                <EditText
+                    android:id="@+id/event_member"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:minHeight="@dimen/edit_text_min_height"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:hint="@string/event_share_hint"
+                    android:background="@android:color/transparent"/>
+
+                <View style="@style/Divider"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        -->
+
+    </LinearLayout>
+</ScrollView>
