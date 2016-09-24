@@ -108,25 +108,24 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
                             contactAndGroupArrayList.remove(pos-1);
                             mContactsRecyclerViewAdapter.notifyItemRemoved(pos-1);
                         }
-                        pos = index+lastGroupPosition+1;
-                        Log.d("RB","pos contact: "+pos);
+                        pos = index+lastGroupPosition+2;
                         contactAndGroupArrayList.add(pos,cg);
                         mContactsRecyclerViewAdapter.notifyItemInserted(pos);
                         break;
                     case Changed:
                         Member member1 = mSnapshotsContacts.getItem(index).getValue(Member.class);
                         ContactAndGroup cg1 = new ContactAndGroup(Util.capitalizeWords(member1.getName()),member1.getUserId(),member1.getPhotoUrl(),false,2);
-                        int posc = index+lastGroupPosition+1;
+                        int posc = index+lastGroupPosition+2;
                         contactAndGroupArrayList.set(posc,cg1);
                         mContactsRecyclerViewAdapter.notifyItemChanged(posc);
                         break;
                     case Removed:
-                        int posr = index+lastGroupPosition+1;
+                        int posr = index+lastGroupPosition+2;
                         contactAndGroupArrayList.remove(posr);
                         mContactsRecyclerViewAdapter.notifyItemRemoved(posr);
                         break;
                     case Moved:
-                        mContactsRecyclerViewAdapter.notifyItemMoved(oldIndex+lastGroupPosition+1, index+lastGroupPosition+1);
+                        mContactsRecyclerViewAdapter.notifyItemMoved(oldIndex+lastGroupPosition+2, index+lastGroupPosition+2);
                         break;
                     default:
                         throw new IllegalStateException(getString(R.string.snapshots_incomplete_case_error));
@@ -145,11 +144,11 @@ public class ContactFragment extends Fragment implements ContactsRecyclerViewAda
                         if(contactAndGroupArrayList.get(pos).getType()==-1){
                             contactAndGroupArrayList.remove(pos);
                             mContactsRecyclerViewAdapter.notifyItemRemoved(pos);
+                        }else{
+                            lastGroupPosition = lastGroupPosition+1;
                         }
                         pos = index+1;
-                        Log.d("RB","pos group: "+pos);
                         contactAndGroupArrayList.add(pos,cg);
-                        lastGroupPosition = lastGroupPosition+1;
                         mContactsRecyclerViewAdapter.notifyItemInserted(pos);
                         break;
                     case Changed:
