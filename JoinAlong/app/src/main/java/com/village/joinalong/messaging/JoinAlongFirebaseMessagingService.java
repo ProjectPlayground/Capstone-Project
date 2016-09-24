@@ -27,7 +27,7 @@ import com.village.joinalong.FCMNotificationData.NotificationLoader;
 /**
  * Created by richa on 9/11/16.
  */
-public class WannaJoinFirebaseMessagingService extends FirebaseMessagingService {
+public class JoinAlongFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "FirebaseMsgService";
     private final static String GROUP_NOTIFICATION = "wannajoin_notifications";
     /**

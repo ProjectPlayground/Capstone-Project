@@ -9,7 +9,7 @@ import com.village.joinalong.util.NotificationUtil;
 /**
  * Created by richa on 9/11/16.
  */
-public class WannaJoinFirebaseInstanceIdService extends FirebaseInstanceIdService {
+public class JoinAlongFirebaseInstanceIdService extends FirebaseInstanceIdService {
     private static final String TAG = "FbInstanceIdService";
 
     /**

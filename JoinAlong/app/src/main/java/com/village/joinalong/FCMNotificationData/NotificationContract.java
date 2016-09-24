@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
  * Created by richa on 9/17/16.
  */
 public class NotificationContract {
-    public static final String CONTENT_AUTHORITY = "com.village.wannajoin.notification";
+    public static final String CONTENT_AUTHORITY = "com.village.joinalong.notification";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_NOTIFICATIONS = "notifications";
 

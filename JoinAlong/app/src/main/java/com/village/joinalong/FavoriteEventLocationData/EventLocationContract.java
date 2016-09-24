@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
  * Created by richa on 8/29/16.
  */
 public class EventLocationContract {
-    public static final String CONTENT_AUTHORITY = "com.village.wannajoin";
+    public static final String CONTENT_AUTHORITY = "com.village.joinalong";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_LOCATIONS = "locations";
 

@@ -11,5 +11,12 @@
         android:text = "@string/signin_button"
         android:onClick="startLoginActivity"
         android:contentDescription="@string/signin_button"/>
+   <!-- <com.digits.sdk.android.DigitsAuthButton
+        android:id="@+id/auth_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text = "@string/signin_button"
+        android:contentDescription="@string/signin_button"/> -->
 
 </FrameLayout>
