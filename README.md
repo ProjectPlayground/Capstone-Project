@@ -15,7 +15,7 @@ Please see Capstone_Stage1.pdf
 7. Enable following APIs (a) Google Place API for Android (b) Google Map API for Android
 8. Go to Credentials section and copy Android API key
 9. Now paste Android API key from step 8 into AndroidManifest.xml file (android:name="com.google.android.geo.API_KEY")
-10. Go to Firebase console’s Auth section. Enable Google and Facebook login.
+10. Go to Firebase console’s Auth section. Enable Google login.
 11. You should be able to install and run the app now. 
 
 
