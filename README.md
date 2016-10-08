@@ -5,6 +5,8 @@ This app would be for parents who want an easy and informal way of letting their
 ###Project Overview and UI Mockups
 Please see Capstone_Stage1.pdf
 
+![GitHub Logo](device-joinalong_pictures.jpeg)
+
 ###How to install and run
 1. Create a Firebase project in the Firebase console “https://firebase.google.com/“
 2. Click Add Firebase to the Android app and follow setup steps. 
